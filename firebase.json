@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "panini-tracker",
     "public": ".",
     "ignore": [
       "firebase.json",
