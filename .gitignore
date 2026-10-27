@@ -1,0 +1,15 @@
+# Hassas anahtar ve kimlik bilgileri
+config.js
+
+# Firebase önbellek ve günlük dosyaları
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Sistem ve editör dosyaları
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+node_modules/

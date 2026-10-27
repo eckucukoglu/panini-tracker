@@ -1,0 +1,21 @@
+{
+  "name": "panini-wc-tracker",
+  "version": "0.0.1",
+  "description": "Panini World Cup 2026 Çıkartma Albümü Takip ve Takas Uygulaması",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eckucukoglu/panini-wc-tracker.git"
+  },
+  "keywords": [
+    "panini",
+    "world-cup-2026",
+    "stickers",
+    "firebase"
+  ],
+  "author": "Emre Can Kucukoglu",
+  "license": "MIT"
+}

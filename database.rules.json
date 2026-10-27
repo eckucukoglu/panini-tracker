@@ -1,0 +1,32 @@
+{
+  "rules": {
+    /* Kök dizinde genel okuma ve yazma kapalıdır.
+       Bu sayede "veritabanınızın tamamını okuyabilir/yazabilir" uyarısı çözülür. */
+    ".read": false,
+    ".write": false,
+
+    /* 1. Koleksiyon Düğümü */
+    "panini2026_collection": {
+      /* Ziyaretçilerin albümü ve çıkartma durumlarını görebilmesi için okuma açık */
+      ".read": true,
+      /* Sadece giriş yapmış olan yetkili Admin yazabilir.
+         NOT: 'admin@ornek.com' yerine Firebase Auth'ta kullandığınız admin e-postasını yazın.
+         Alternatif olarak UID kullanmak isterseniz: auth.uid === 'ADMIN_UID_DEGERI' yapabilirsiniz. */
+      ".write": "auth != null && auth.token.email === 'admin@ornek.com'"
+    },
+
+    /* 2. Mühür (Yedek) Düğümü */
+    "panini2026_seals": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email === 'admin@ornek.com'"
+    },
+
+    /* 3. Toplu Ekleme Geçmişi Düğümü */
+    "panini2026_bulk_history": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email === 'admin@ornek.com'",
+      /* index.html içindeki orderByChild('timestamp') sorgusunun performanslı çalışması için indeks */
+      ".indexOn": ["timestamp"]
+    }
+  }
+}
