@@ -1,15 +1,28 @@
 {
-  "hosting": {
-    "site": "panini-tracker",
-    "public": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**",
-      "README.md",
-      "package.json"
-    ]
-  },
+  "hosting": [
+    {
+      "site": "panini-tracker",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "README.md",
+        "package.json"
+      ]
+    },
+    {
+      "site": "paniniwc2026-75962",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "README.md",
+        "package.json"
+      ]
+    }
+  ],
   "database": {
     "rules": "database.rules.json"
   }
