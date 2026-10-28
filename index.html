@@ -1,95 +1,547 @@
 <!DOCTYPE html>
-<html lang="tr" id="htmlTag">
+<html lang="en" id="htmlTag">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panini WC 2026 Tracker (Cloud)</title>
+    <title>Panini Sticker Album Tracker</title>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <!-- HARİCİ AYAR DOSYASI -->
+    <!-- CONFIGURATION & MODULAR DATA -->
     <script src="config.js"></script>
+    <script src="data/tournaments-config.js"></script>
+    <script src="data/tournaments/wc2026.js"></script>
 
     <style>
         :root {
             --primary: #003366;
+            --primary-hover: #002244;
             --secondary: #e63946;
+            --secondary-hover: #a31919;
             --bg: #f4f6f9;
             --card: #ffffff;
-            --text: #333333;
+            --text: #222222;
+            --text-muted: #666666;
             --success: #2a9d8f;
             --warning: #f59f00;
             --info: #457b9d;
             --purple: #6a4c93;
             --dark-info: #1d3557;
+            --border: #e2e8f0;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-md: 0 6px 18px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 28px rgba(0,0,0,0.12);
         }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        
-        h1 { color: var(--primary); margin: 0; cursor: default; user-select: none; }
-        .app-version { font-size: 0.65rem; color: #777; font-weight: normal; vertical-align: middle; margin-left: 6px; background: rgba(0,0,0,0.06); padding: 2px 7px; border-radius: 12px; letter-spacing: 0.5px; display: inline-block; }
-        
-        .container { max-width: 1000px; margin: 0 auto; background: var(--card); padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: relative;}
-        
-        .dashboard-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
-        .header-title-container { display: flex; flex-direction: column; gap: 8px; }
-        
-        .auth-btn { display: none; align-self: flex-start; padding: 5px 12px; font-size: 0.85rem; background-color: var(--secondary); border-radius: 4px; color: white; cursor: pointer; border: none; font-weight: bold;}
-        .auth-btn:hover { background-color: #a31919; }
 
-        .header-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-        
-        .lang-flags { display: flex; gap: 10px; background: var(--bg); padding: 5px 10px; border-radius: 20px; border: 1px solid #ddd; align-items: center;}
-        .lang-flags img { cursor: pointer; transition: 0.2s; width: 28px; height: 20px; object-fit: cover; opacity: 0.3; filter: grayscale(100%); user-select: none; border-radius: 3px; }
-        .lang-flags img.active { opacity: 1; filter: grayscale(0%); transform: scale(1.1); box-shadow: 0 0 5px rgba(0,0,0,0.3); }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px 15px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 0 auto;
+            background: var(--card);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        /* Top Navigation & Breadcrumbs */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 14px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .brand-title {
+            color: var(--primary);
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+        }
+
+        .app-version {
+            font-size: 0.7rem;
+            color: #555;
+            font-weight: 600;
+            vertical-align: middle;
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 12px;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-btn {
+            display: none;
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            background-color: var(--secondary);
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .auth-btn:hover { background-color: var(--secondary-hover); }
+
+        .btn-admin-login-icon {
+            background: transparent;
+            border: 1px solid #ddd;
+            color: #666;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-admin-login-icon:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #f8fafc;
+        }
+
+        /* Breadcrumbs */
+        .breadcrumbs {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            padding: 8px 14px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .breadcrumb-item {
+            color: var(--info);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .breadcrumb-item:hover { text-decoration: underline; }
+        .breadcrumb-separator { color: #aaa; user-select: none; }
+        .breadcrumb-current { color: #333; font-weight: bold; }
+
+        /* Navigation Buttons */
+        .btn-nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #555;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 18px;
+            transition: background 0.2s;
+        }
+        .btn-nav-back:hover { background-color: #333; }
+
+        /* Landing Page / Category Selection */
+        .landing-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 10px 0;
+        }
+
+        .landing-header h2 {
+            font-size: 1.85rem;
+            color: var(--primary);
+            margin: 0 0 10px 0;
+            font-weight: 800;
+        }
+
+        .landing-header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 20px;
+        }
+
+        .category-card {
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            padding: 28px 24px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.25s ease-in-out;
+            min-height: 280px;
+        }
+
+        .category-card.active {
+            cursor: pointer;
+            border-color: #cbd5e1;
+        }
+
+        .category-card.active:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .category-card.disabled {
+            background: #fafbfc;
+            border-style: dashed;
+            border-color: #d1d5db;
+            cursor: not-allowed;
+            opacity: 0.88;
+        }
+
+        .category-badge {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-active {
+            background-color: #e6f4ea;
+            color: #137333;
+            border: 1px solid #b7e1cd;
+        }
+
+        .badge-construction {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .category-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 0 0 8px 0;
+        }
+
+        .category-subtitle {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--info);
+            margin-bottom: 12px;
+        }
+
+        .category-desc {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .btn-category-action {
+            width: 100%;
+            padding: 12px 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-category-action.active-btn {
+            background-color: var(--primary);
+            color: white;
+        }
+        .btn-category-action.active-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-category-action.disabled-btn {
+            background-color: #e2e8f0;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        /* Tournaments List View */
+        .tournaments-header {
+            margin-bottom: 24px;
+        }
+
+        .tournaments-header h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin: 0 0 6px 0;
+        }
+
+        .tournaments-header p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .tournaments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tournament-card {
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .tournament-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .tournament-year-badge {
+            display: inline-block;
+            background: #eef2f6;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            width: fit-content;
+        }
+
+        .tournament-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0 0 6px 0;
+        }
+
+        .tournament-sub {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+        }
+
+        .btn-open-tournament {
+            padding: 10px 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+        .btn-open-tournament:hover { background: var(--primary-hover); }
+
+        /* Dashboard & Album Tracker View */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .header-title-container h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 1.55rem;
+            cursor: default;
+            user-select: none;
+        }
 
         .stats { text-align: right; }
         .stats .album-stat { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
         .stats .total-stat { font-size: 0.95rem; color: var(--secondary); margin-top: 4px; font-weight: normal; }
         .stats .cost-stat { font-size: 1rem; color: var(--purple); margin-top: 4px; font-weight: bold; }
-        
-        #addStickerGroup, #bulkInputRow, .btn-reset, .seal-section { display: none; } 
-        
-        .controls { display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
-        .control-group { display: flex; border: 1px solid #ccc; border-radius: 5px; overflow: hidden; }
-        input { padding: 10px; border: none; outline: none; text-transform: uppercase; }
-        button { padding: 10px 15px; background-color: var(--primary); color: white; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        button:hover { background-color: #002244; }
-        
-        .btn-export { background-color: var(--success); border-radius: 5px; }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        input {
+            padding: 10px 12px;
+            border: none;
+            outline: none;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+            border-radius: 6px;
+        }
+        button:hover { background-color: var(--primary-hover); }
+
+        .btn-export { background-color: var(--success); }
         .btn-export:hover { background-color: #21867a; }
-        .btn-export-dup { background-color: var(--warning); border-radius: 5px; color: white; }
+        .btn-export-dup { background-color: var(--warning); color: white; }
         .btn-export-dup:hover { background-color: #e67700; }
-        .btn-bulk-query { background-color: var(--dark-info); border-radius: 5px; color: white; }
+        .btn-bulk-query { background-color: var(--dark-info); color: white; }
         .btn-bulk-query:hover { background-color: #112233; }
-        
-        .bulk-section { display: flex; gap: 10px; width: 100%; margin-bottom: 15px; padding-top: 15px; border-top: 1px dashed #ddd; flex-direction: column; }
+
+        .bulk-section {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+            margin-bottom: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed #ddd;
+            flex-direction: column;
+        }
+
         .bulk-input-row { display: flex; gap: 10px; width: 100%; }
-        #bulkInput { flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 5px; resize: vertical; text-transform: uppercase; font-family: monospace; }
-        .btn-bulk { background-color: var(--info); border-radius: 5px; white-space: nowrap; height: fit-content; }
+        #bulkInput {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            resize: vertical;
+            text-transform: uppercase;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .btn-bulk { background-color: var(--info); white-space: nowrap; height: fit-content; }
         .btn-bulk:hover { background-color: #1d3557; }
-        
-        .bulk-history-container { margin-top: 5px; background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 10px; }
-        .history-item { display: flex; flex-direction: column; background: #fff; padding: 10px; border: 1px solid #e0e0e0; border-radius: 5px; margin-bottom: 8px; transition: 0.2s; }
+
+        .bulk-history-container {
+            margin-top: 5px;
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .history-item {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            transition: 0.2s;
+        }
         .history-item:hover { border-color: var(--info); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .history-main-row { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
-        
         .history-info { flex-grow: 1; }
         .history-details { font-size: 0.85rem; color: #888; margin-top: 6px; }
-        
-        .history-actions { display: flex; gap: 5px; margin-left: 10px; }
-        .btn-delivery { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: none; cursor: pointer; color: white; transition: 0.2s; }
+        .history-actions { display: flex; gap: 6px; margin-left: 10px; }
+
+        .btn-delivery { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: none; cursor: pointer; color: white; }
         .btn-delivery.pending { background-color: #999; }
         .btn-delivery.pending:hover { background-color: #777; }
         .btn-delivery.delivered { background-color: var(--success); }
-        
-        .btn-undo { background-color: var(--secondary); padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; }
-        .btn-undo:hover { background-color: #a31919; }
 
-        .seal-section { display: flex; gap: 15px; padding: 15px; background: #f3f0f8; border-radius: 8px; border: 1px solid #d4c4e9; margin-bottom: 20px; align-items: center; }
-        .btn-seal { background-color: var(--purple); border-radius: 5px; flex: 1; }
+        .btn-undo { background-color: var(--secondary); padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; }
+        .btn-undo:hover { background-color: var(--secondary-hover); }
+
+        .seal-section {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: #f3f0f8;
+            border-radius: 8px;
+            border: 1px solid #d4c4e9;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .btn-seal { background-color: var(--purple); flex: 1; }
         .btn-seal:hover { background-color: #4a3469; }
-        .btn-unseal { background-color: #666; border-radius: 5px; flex: 1; }
+        .btn-unseal { background-color: #666; flex: 1; }
         .btn-unseal:hover { background-color: #444; }
 
         .team-navigation { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 15px; width: 100%; }
@@ -97,15 +549,14 @@
         .team-navigation .nav-btn:hover { background-color: #1d3557; }
         .team-navigation .spacer { flex: 1; }
 
-        .btn-back { background-color: #666; border-radius: 5px; margin-bottom: 15px; display: none; }
-        .btn-reset { background-color: #d62828; border-radius: 5px; margin-top: 30px; width: 100%; }
-        .btn-reset:hover { background-color: #a31919; }
-        
+        .btn-reset { background-color: #d62828; margin-top: 30px; width: 100%; }
+        .btn-reset:hover { background-color: var(--secondary-hover); }
+
         #teamsContainer { display: flex; flex-direction: column; gap: 20px; }
         .group-section { background: #fafafa; border: 1px solid #eee; padding: 15px; border-radius: 8px; }
-        .group-title { margin-top: 0; font-size: 1.1rem; border-bottom: 2px solid #ddd; padding-bottom: 5px; margin-bottom: 15px; }
+        .group-title { margin-top: 0; font-size: 1.15rem; border-bottom: 2px solid #ddd; padding-bottom: 6px; margin-bottom: 15px; color: #1e293b; font-weight: 700; }
         .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
-        
+
         .team-card { border: 1px solid #ddd; padding: 15px 5px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; position: relative; }
         .team-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); border-color: var(--primary); }
 
@@ -113,286 +564,289 @@
         .sticker { aspect-ratio: 3/4.5; display: flex; flex-direction: column; border-radius: 6px; font-weight: bold; background: #eee; color: #999; border: 2px dashed #ccc; overflow: hidden; position: relative; }
         .sticker.owned { background: var(--primary); color: white; border: 2px solid var(--primary); }
         .sticker-num { flex-grow: 1; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-        
+
         .sticker-controls { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.15); width: 100%; height: 30px; }
         .sticker.owned .sticker-controls { background: rgba(255,255,255,0.2); }
         .sticker-controls button { background: none; border: none; color: inherit; font-size: 1.3rem; width: 30px; height: 100%; display: flex; align-items: center; justify-content: center; padding: 0; margin: 0; border-radius: 0; }
         .sticker-controls button:hover { background: rgba(0,0,0,0.2); }
         .sticker-count { font-size: 0.9rem; pointer-events: none; }
-        
-        #loader { text-align: center; font-size: 1.2rem; color: var(--primary); padding: 50px; }
-        #appContent { display: none; }
 
+        #loader { text-align: center; font-size: 1.15rem; color: var(--primary); padding: 50px 20px; font-weight: 600; }
+
+        /* Modals */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 25px; border-radius: 8px; text-align: center; width: 320px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .modal-content input { width: 90%; margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 4px; text-transform: none; }
+        .modal-content { background: white; padding: 25px; border-radius: 10px; text-align: center; width: 340px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+        .modal-content input { width: 90%; margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 6px; text-transform: none; }
         .seal-slot-btn { width: 100%; margin-bottom: 10px; padding: 15px; background: #f8f9fa; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; text-align: left; font-weight: bold; color: var(--text); display: flex; flex-direction: column; }
         .seal-slot-btn:hover { border-color: var(--purple); background: #f3f0f8; }
         .seal-slot-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: #ddd; background: #eee; }
         .seal-date { font-size: 0.8rem; color: #666; margin-top: 5px; font-weight: normal; }
+
+        /* Notification Toast */
+        #toast {
+            visibility: hidden;
+            min-width: 280px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 14px 20px;
+            position: fixed;
+            z-index: 1500;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-size: 0.95rem;
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadeInOut 3s;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; bottom: 15px; }
+            15% { opacity: 1; bottom: 30px; }
+            85% { opacity: 1; bottom: 30px; }
+            100% { opacity: 0; bottom: 15px; }
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 10px 8px; }
+            .container { padding: 16px 12px; }
+            .brand-title { font-size: 1.2rem; }
+            .category-grid { grid-template-columns: 1fr; }
+            .stats { text-align: left; }
+            .dashboard-header { flex-direction: column; align-items: stretch; }
+        }
     </style>
 </head>
 <body>
 
+<!-- Login Modal -->
 <div id="loginModal" class="modal-overlay">
     <div class="modal-content">
-        <h3 style="margin-top:0;" data-i18n="modalTitle">Admin Girişi</h3>
-        <input type="email" id="emailInput" placeholder="E-posta adresin">
-        <input type="password" id="passwordInput" placeholder="Şifren">
-        <div>
-            <button onclick="loginUser()" style="background:var(--success);" data-i18n="loginBtn">Giriş</button>
-            <button onclick="document.getElementById('loginModal').style.display='none'" style="background:#666;" data-i18n="cancelBtn">İptal</button>
+        <h3 style="margin-top:0;">Admin Login</h3>
+        <input type="email" id="emailInput" placeholder="Email address">
+        <input type="password" id="passwordInput" placeholder="Password">
+        <div style="display:flex; gap:10px; justify-content:center;">
+            <button onclick="loginUser()" style="background:var(--success); flex:1;">Login</button>
+            <button onclick="document.getElementById('loginModal').style.display='none'" style="background:#666; flex:1;">Cancel</button>
         </div>
     </div>
 </div>
 
+<!-- Seal Modal -->
 <div id="sealModal" class="modal-overlay">
     <div class="modal-content">
-        <h3 id="sealModalTitle" style="margin-top:0; color: var(--purple);">Mühür İşlemi</h3>
-        <p id="sealModalDesc" style="font-size: 0.9rem; margin-bottom: 15px;"></p>
+        <h3 id="sealModalTitle" style="margin-top:0; color: var(--purple);">Seal Collection</h3>
+        <p id="sealModalDesc" style="font-size: 0.9rem; margin-bottom: 15px; color:#555;"></p>
         <div id="sealSlotsContainer"></div>
-        <button onclick="document.getElementById('sealModal').style.display='none'" style="background:#666; width: 100%; margin-top: 10px;" data-i18n="cancelBtn">İptal</button>
+        <button onclick="document.getElementById('sealModal').style.display='none'" style="background:#666; width: 100%; margin-top: 10px;">Cancel</button>
     </div>
 </div>
 
+<!-- Notification Toast -->
+<div id="toast"></div>
+
 <div class="container">
-    <div id="loader" data-i18n="loader">🔄 Bulut veritabanına bağlanılıyor...</div>
-    
-    <div id="appContent">
+    <!-- Top Navigation Bar -->
+    <div class="top-navbar">
+        <div class="brand-container" onclick="navigateTo('#/')">
+            <h1 class="brand-title">
+                🏆 Panini Tracker <span class="app-version">0.0.2</span>
+            </h1>
+        </div>
+        <div class="top-actions">
+            <button id="adminLoginBtn" class="btn-admin-login-icon" onclick="triggerLoginModal()">🔑 Admin</button>
+            <button id="authBtn" class="auth-btn" onclick="logoutUser()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Breadcrumbs Navigation Trail -->
+    <div class="breadcrumbs" id="breadcrumbsNav">
+        <span class="breadcrumb-item" onclick="navigateTo('#/')">Home</span>
+    </div>
+
+    <!-- Main Loader -->
+    <div id="loader">🔄 Connecting to database...</div>
+
+    <!-- VIEW 1: Categories Selection (Landing Page) -->
+    <div id="categoriesView" style="display:none;">
+        <div class="landing-header">
+            <h2>Select Championship Tournament</h2>
+            <p>Choose between FIFA World Cup and UEFA European Championship sticker collections to start tracking your album.</p>
+        </div>
+
+        <div class="category-grid">
+            <!-- 1. FIFA World Cup (Active) -->
+            <div class="category-card active" onclick="navigateTo('#/fifa-world-cup')">
+                <span class="category-badge badge-active">Available</span>
+                <div>
+                    <span class="category-icon">🏆</span>
+                    <h3 class="category-title">FIFA World Cup</h3>
+                    <div class="category-subtitle">Official Panini World Cup Albums</div>
+                    <p class="category-desc">Track official Panini FIFA World Cup albums starting with the 2026 tournament. Features full sticker checklists, duplicate swap management, bulk queries, and cloud backup seals.</p>
+                </div>
+                <button class="btn-category-action active-btn" onclick="event.stopPropagation(); navigateTo('#/fifa-world-cup')">
+                    Explore World Cup Albums →
+                </button>
+            </div>
+
+            <!-- 2. UEFA European Championship (Under Construction) -->
+            <div class="category-card disabled" onclick="showUnderConstructionNotice()">
+                <span class="category-badge badge-construction">🚧 Under Construction</span>
+                <div>
+                    <span class="category-icon">🇪🇺</span>
+                    <h3 class="category-title">UEFA European Championship</h3>
+                    <div class="category-subtitle">Official Panini UEFA EURO Albums</div>
+                    <p class="category-desc">Official Panini UEFA European Championship (EURO) album tracker is currently under development. Historic and future tournament albums will be available here soon.</p>
+                </div>
+                <button class="btn-category-action disabled-btn" onclick="event.stopPropagation(); showUnderConstructionNotice()">
+                    Coming Soon
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 2: Tournaments List (e.g. FIFA World Cup) -->
+    <div id="tournamentsListView" style="display:none;">
+        <button class="btn-nav-back" onclick="navigateTo('#/')">← Back to Championship Categories</button>
+        <div class="tournaments-header">
+            <h2 id="tournamentsCategoryTitle">FIFA World Cup Albums</h2>
+            <p id="tournamentsCategorySubtitle">Select an album edition to manage and track your sticker collection.</p>
+        </div>
+        <div class="tournaments-grid" id="tournamentsGridContainer">
+            <!-- Populated dynamically via JS -->
+        </div>
+    </div>
+
+    <!-- VIEW 3: Active Tournament Tracker Dashboard -->
+    <div id="tournamentTrackerView" style="display:none;">
+        <button class="btn-nav-back" id="backToTournamentsBtn" onclick="navigateTo('#/fifa-world-cup')">← Back to Tournaments</button>
+
         <div class="dashboard-header">
             <div class="header-title-container">
-                <h1 ondblclick="triggerLoginModal()">🏆 Panini WC 2026 Tracker <span class="app-version">0.0.1</span></h1>
-                <button id="authBtn" class="auth-btn" onclick="logoutUser()" data-i18n="authLogout">Çıkış Yap</button>
+                <h1 id="activeTournamentHeaderTitle">🏆 Panini WC 2026 Tracker</h1>
+                <span id="activeTournamentSubtitle" style="color:var(--text-muted); font-size:0.95rem;"></span>
             </div>
-            <div class="header-actions">
-                <div class="lang-flags">
-                    <img id="lang-tr" src="https://flagcdn.com/w40/tr.png" onclick="changeLang('tr')" alt="TR">
-                    <img id="lang-en" src="https://flagcdn.com/w40/gb.png" onclick="changeLang('en')" alt="EN">
-                </div>
-                <div class="stats" id="statsDisplay"></div>
-            </div>
+            <div class="stats" id="statsDisplay"></div>
         </div>
 
         <div class="controls" id="controlsDiv">
-            <div class="control-group" id="addStickerGroup">
-                <input type="text" id="addInput" onkeypress="handleEnter(event, 'add')">
-                <button onclick="addStickerFromInput()" data-i18n="addBtn">Çıkartma Ekle</button>
+            <div class="control-group" id="addStickerGroup" style="display:none;">
+                <input type="text" id="addInput" placeholder="e.g. TUR3" onkeypress="handleEnter(event, 'add')">
+                <button onclick="addStickerFromInput()">Add Sticker</button>
             </div>
             <div class="control-group">
-                <input type="text" id="queryInput" onkeypress="handleEnter(event, 'query')">
-                <button onclick="querySticker()" style="background-color: #4a4e69;" data-i18n="queryBtn">Sorgula</button>
+                <input type="text" id="queryInput" placeholder="e.g. FWC10 (or 00)" onkeypress="handleEnter(event, 'query')">
+                <button onclick="querySticker()" style="background-color: #4a4e69;">Query</button>
             </div>
-            <button class="btn-bulk-query" onclick="openBulkQueryView()" data-i18n="bulkQueryBtnTitle">Toplu Sorgula</button>
-            
-            <button class="btn-export" onclick="exportMissing()" data-i18n="copyMissing">Eksikleri Kopyala</button>
-            <button class="btn-export-dup" onclick="exportDuplicates()" data-i18n="copyDupes">Fazlalıkları Kopyala</button>
+            <button class="btn-bulk-query" onclick="openBulkQueryView()">Bulk Query</button>
+            <button class="btn-export" onclick="exportMissing()">Copy Missing</button>
+            <button class="btn-export-dup" onclick="exportDuplicates()">Copy Duplicates</button>
         </div>
 
-        <!-- Akıllı Toplu Sorgulama Paneli -->
-        <div id="bulkQueryContainer" style="display:none; flex-direction: column; gap: 15px;">
-            <h2 style="color: var(--primary); margin-bottom: 0;" data-i18n="bulkQueryPanelTitle">Toplu Sorgulama Paneli</h2>
-            <p style="font-size: 0.95rem; margin-top: 0;" data-i18n="bulkQueryPanelDesc">
-                Farklı formatlardaki listeleri (örn: "TUR2-5", "MEX: 1, 7", "ALG 4 5") buraya yapıştırın. Sistem tüm kodları otomatik ayrıştırır.
+        <!-- Smart Bulk Query Panel -->
+        <div id="bulkQueryContainer" style="display:none; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+            <button class="btn-nav-back" onclick="closeBulkQueryView()">← Back to Groups</button>
+            <h2 style="color: var(--primary); margin: 0;">Smart Bulk Query Panel</h2>
+            <p style="font-size: 0.95rem; margin: 0; color: var(--text-muted);">
+                Paste lists in flexible formats (e.g., "TUR2-5", "MEX: 1, 7", "ALG 4 5"). The system automatically extracts all valid sticker codes.
             </p>
-            <textarea id="bulkQueryInputText" rows="6" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-family: monospace; text-transform: uppercase; resize: vertical; box-sizing: border-box;"></textarea>
-            <button onclick="runBulkQuery()" style="background-color: var(--primary); padding: 12px; font-size: 1.1rem; width: 100%;" data-i18n="runQueryBtn">Sorguyu Başlat</button>
-            
-            <div id="bulkQueryResults" style="display:none; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-top: 5px;">
+            <textarea id="bulkQueryInputText" rows="6" style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #ccc; font-family: monospace; text-transform: uppercase; resize: vertical; box-sizing: border-box;"></textarea>
+            <button onclick="runBulkQuery()" style="background-color: var(--primary); padding: 12px; font-size: 1.05rem; width: 100%;">Run Query</button>
+
+            <div id="bulkQueryResults" style="display:none; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-top: 5px;">
                 <div id="missingStickersDisplay" style="margin-bottom: 20px;"></div>
                 <div id="dupesStickersDisplay" style="margin-bottom: 20px;"></div>
-                
+
                 <div class="bulk-query-actions" style="display:flex; gap:10px;">
-                    <button id="addMissingBtn" onclick="addBulkQueryStickers('missing')" style="background-color: var(--success); flex:1;" data-i18n="addMissingOnlyBtn">Sadece Eksikleri Ekle</button>
-                    <button id="addAllBtn" onclick="addBulkQueryStickers('all')" style="background-color: var(--warning); flex:1; color: white;" data-i18n="addAllParsedBtn">Hepsini Ekle (Fazlalık Dahil)</button>
+                    <button id="addMissingBtn" onclick="addBulkQueryStickers('missing')" style="background-color: var(--success); flex:1; display:none;">Add Missing Only</button>
+                    <button id="addAllBtn" onclick="addBulkQueryStickers('all')" style="background-color: var(--warning); flex:1; color: white; display:none;">Add All (Inc. Duplicates)</button>
                 </div>
             </div>
         </div>
 
-        <!-- Klasik Toplu İşlem Modülü -->
+        <!-- Classic Bulk Action & Public History Section -->
         <div class="bulk-section" id="bulkSectionDiv">
-            <div class="bulk-input-row" id="bulkInputRow">
-                <textarea id="bulkInput" rows="2"></textarea>
-                <button class="btn-bulk" onclick="bulkAddStickers()" data-i18n="bulkAdd">Toplu Ekle (Klasik)</button>
+            <div class="bulk-input-row" id="bulkInputRow" style="display:none;">
+                <textarea id="bulkInput" rows="2" placeholder="Bulk Add: Paste codes separated by commas or spaces..."></textarea>
+                <button class="btn-bulk" onclick="bulkAddStickers()">Bulk Add (Classic)</button>
             </div>
-            <!-- Herkese Açık Görülebilen Geçmiş Listesi -->
             <div class="bulk-history-container">
-                <h4 style="margin-top:0; font-size:0.95rem; color:var(--info);" data-i18n="historyTitle">Son Toplu Eklemeler</h4>
+                <h4 style="margin-top:0; font-size:0.95rem; color:var(--info);">Recent Bulk Additions</h4>
                 <div id="bulkHistoryList"></div>
             </div>
         </div>
 
-        <div class="seal-section" id="sealSectionDiv">
-            <button class="btn-seal" onclick="openSealModal('save')" data-i18n="btnSealSave">🔒 Koleksiyonu Mühürle</button>
-            <button class="btn-unseal" onclick="openSealModal('load')" data-i18n="btnSealLoad">🔓 Mührü Aç (Yedeğe Dön)</button>
+        <!-- Seal / Backup Section -->
+        <div class="seal-section" id="sealSectionDiv" style="display:none;">
+            <button class="btn-seal" onclick="openSealModal('save')">🔒 Seal Collection</button>
+            <button class="btn-unseal" onclick="openSealModal('load')">🔓 Unseal (Revert to Backup)</button>
         </div>
 
-        <button class="btn-back" id="backBtn" onclick="showTeams()" data-i18n="backBtn">← Ana Ekrana Dön</button>
-
+        <!-- Groups & Teams Grid -->
         <div id="teamsContainer"></div>
 
-        <h2 id="currentTeamTitle" style="display:none; text-align:center; margin-bottom: 20px;"></h2>
-        
-        <div id="teamNavigation" class="team-navigation" style="display:none;"></div>
-        <div class="stickers-grid" id="stickersGrid"></div>
-        
-        <button class="btn-reset" id="resetBtn" onclick="resetCollection()" data-i18n="resetBtn">🚨 Koleksiyonu Tamamen Sıfırla</button>
+        <!-- Single Team Detail View -->
+        <div id="teamDetailSection" style="display:none;">
+            <button class="btn-nav-back" onclick="navigateToTeamDetailBack()">← Back to Groups</button>
+            <h2 id="currentTeamTitle" style="text-align:center; margin-bottom: 20px;"></h2>
+            <div id="teamNavigation" class="team-navigation"></div>
+            <div class="stickers-grid" id="stickersGrid" style="display:grid;"></div>
+        </div>
+
+        <button class="btn-reset" id="resetBtn" onclick="resetCollection()" style="display:none;">🚨 Reset Entire Collection</button>
     </div>
 </div>
 
 <script>
     if (typeof firebaseConfig === 'undefined') {
-        alert("HATA: config.js dosyası bulunamadı veya hatalı. Lütfen config.js dosyasının doğru yüklendiğinden emin olun.");
+        alert("CRITICAL ERROR: config.js is missing or invalid. Please check your configuration.");
     }
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const auth = firebase.auth();
-    const collectionRef = db.ref('panini2026_collection');
-    const sealsRef = db.ref('panini2026_seals');
-    const bulkHistoryRef = db.ref('panini2026_bulk_history');
 
-    // ================= DİL SİSTEMİ (i18n) =================
-    let currentLang = localStorage.getItem('panini_lang') || 'tr';
+    // ================= STATE & REFS =================
+    let isAdmin = false;
+    let activeTournament = null;
+    let collectionRef = null;
+    let sealsRef = null;
+    let bulkHistoryRef = null;
 
-    const i18n = {
-        tr: {
-            authLogout: "Çıkış Yap", addBtn: "Çıkartma Ekle", queryBtn: "Sorgula",
-            copyMissing: "Eksikleri Kopyala", copyDupes: "Fazlalıkları Kopyala", bulkAdd: "Toplu Ekle (Klasik)",
-            bulkQueryBtnTitle: "Toplu Sorgula", bulkQueryPanelTitle: "Toplu Sorgulama Paneli",
-            bulkQueryPanelDesc: "Farklı formatlardaki listeleri (örn: 'TUR2-5', 'MEX: 1, 7', 'ALG 4 5') buraya yapıştırın. Sistem tüm kodları otomatik ayrıştırır.",
-            runQueryBtn: "Sorguyu Başlat", addMissingOnlyBtn: "Sadece Eksikleri Ekle", addAllParsedBtn: "Hepsini Ekle (Fazlalık Dahil)",
-            btnSealSave: "🔒 Koleksiyonu Mühürle", btnSealLoad: "🔓 Mührü Aç (Yedeğe Dön)",
-            historyTitle: "Son Toplu Eklemeler", undoBtn: "Geri Al", noHistory: "Henüz toplu ekleme geçmişi yok.",
-            confirmUndo: "DİKKAT: Bu işlemi geri almak istediğinize emin misiniz? Bu toplu işlemle eklenen tüm çıkartmalar koleksiyondan düşülecektir.",
-            successUndo: "Toplu ekleme işlemi başarıyla geri alındı!",
-            backBtn: "← Ana Ekrana Dön", resetBtn: "🚨 Koleksiyonu Tamamen Sıfırla", loader: "🔄 Bulut veritabanına bağlanılıyor...",
-            modalTitle: "Admin Girişi", loginBtn: "Giriş", cancelBtn: "İptal",
-            statsProgress: "Albüm İlerlemesi", statsTotal: "Fiziksel Toplam (Fazlalıklar Dahil)", statsItems: "Adet",
-            totalSpent: "Toplam Harcama", promptCost: "Bu işlem için harcanan tutarı girin (Boş bırakabilirsiniz):",
-            placeholderAdd: "Örn: TUR3", placeholderQuery: "Örn: FWC10 (veya 00)", placeholderBulk: "Toplu Ekleme: Virgül veya boşluk ile ayrılmış kodları yapıştır...",
-            emailPlaceholder: "E-posta adresin", passPlaceholder: "Şifren", alertNoAuth: "Yetkiniz yok!",
-            alertLoginFail: "Giriş Hatalı: ", errNotFound: "Hata: {code} adında bir çıkartma veritabanında yok!",
-            warnDuplicate: "Uyarı: {code} zaten var! Fazlalık (duplicate) olarak +1 eklemek istiyor musun?",
-            infoHasDupes: "ℹ️ Durum: {code} VAR. Takas edebileceğin {dupes} adet FAZLALIĞIN bulunuyor.",
-            infoHasOne: "✅ Durum: {code} VAR. Tam 1 adet mevcut.", infoMissing: "❌ Durum: {code} EKSİK!",
-            successBulk: "Tebrikler! Toplam {count} adet çıkartma başarıyla işlendi.",
-            warnBulk: "\n\n⚠️ UYARI: {count} adet veri geçersiz olduğu için atlandı.\n(Örn: {samples})",
-            msgAllDone: "Tebrikler! Hiç eksiğin kalmadı.", msgCopyMissing: "Toplam {count} adet eksik çıkartman panoya kopyalandı!",
-            msgNoDupes: "Şu an hiç fazlalık (duplicate) çıkartman bulunmuyor.", msgCopyDupes: "Toplam {count} çeşit fazlalık çıkartman panoya kopyalandı!",
-            warnReset: "⚠️ DİKKAT: Tüm koleksiyonun SİLİNECEK! Bu işlemi geri alamazsın. Gerçekten sıfırlamak istiyor musun?",
-            successReset: "Koleksiyon başarıyla sıfırlandı!", stickersTitle: "Çıkartmaları",
-            sealTitleSave: "🔒 Koleksiyonu Mühürle", sealDescSave: "Koleksiyonun şu anki fiziksel durumunu kaydetmek için bir slot seçin.",
-            sealTitleLoad: "🔓 Mührü Aç", sealDescLoad: "Geri dönmek istediğiniz geçmiş mühür kaydını seçin. DİKKAT: Şu anki kaydedilmemiş eklemeleriniz ve işlem geçmişiniz silinir!",
-            slotEmpty: "Boş Slot", confirmSave: "Bu slota mevcut koleksiyonu ve işlem geçmişini mühürlemek istediğine emin misin? (Eski kayıt varsa silinir)",
-            confirmLoad: "DİKKAT! Mührü açmak, henüz mühürlemediğin çıkartmaları silecek ve koleksiyonun ile geçmiş işlemlerini seçtiğin tarihteki duruma geri götürecektir. Emin misin?",
-            successSave: "Mühürleme işlemi başarıyla tamamlandı!", successLoad: "Sistem başarıyla mühürlendiği tarihe geri döndürüldü!",
-            historyDetailsHint: "🔽 Detay", missingListTitle: "Eksik Olan Çıkartmalar", 
-            dupesListTitle: "Sorgudaki Fazlalıklar (Sende Zaten Tekrarlı Olanlar)",
-            noneMissingTitle: "Harika! Sorgulanan listedeki tüm çıkartmalara zaten sahipsin.",
-            noValidCodes: "Yazdığınız metinde geçerli bir çıkartma kodu algılanamadı.", btnCopyList: "📋 Kopyala",
-            statusDelivered: "✅ Teslim Edildi", statusPending: "⏳ Bekliyor",
-            promptSealDelivery: "Sipariş teslim alındı! Koleksiyonun bu güncel halini mühürlemek (yedeklemek) ister misin?",
-            groupTitles: {
-                "Özel Bölüm": "Özel Bölüm", "A Grubu": "A Grubu", "B Grubu": "B Grubu", "C Grubu": "C Grubu", "D Grubu": "D Grubu",
-                "E Grubu": "E Grubu", "F Grubu": "F Grubu", "G Grubu": "G Grubu", "H Grubu": "H Grubu", "I Grubu": "I Grubu",
-                "J Grubu": "J Grubu", "K Grubu": "K Grubu", "L Grubu": "L Grubu"
-            }
-        },
-        en: {
-            authLogout: "Logout", addBtn: "Add Sticker", queryBtn: "Query",
-            copyMissing: "Copy Missing", copyDupes: "Copy Duplicates", bulkAdd: "Bulk Add (Classic)",
-            bulkQueryBtnTitle: "Bulk Query", bulkQueryPanelTitle: "Bulk Query Panel",
-            bulkQueryPanelDesc: "Paste complex formats (e.g., 'TUR2-5', 'MEX: 1, 7', 'ALG 4 5') here. The system will auto-parse all codes.",
-            runQueryBtn: "Run Query", addMissingOnlyBtn: "Add Missing Only", addAllParsedBtn: "Add All (Inc. Dupes)",
-            btnSealSave: "🔒 Seal Collection", btnSealLoad: "🔓 Unseal (Revert)",
-            historyTitle: "Recent Bulk Adds", undoBtn: "Undo", noHistory: "No bulk add history yet.",
-            confirmUndo: "WARNING: Are you sure you want to undo this bulk action? The added stickers will be removed from your collection.",
-            successUndo: "Bulk action successfully undone!",
-            backBtn: "← Back to Home", resetBtn: "🚨 Reset Entire Collection", loader: "🔄 Connecting to cloud database...",
-            modalTitle: "Admin Login", loginBtn: "Login", cancelBtn: "Cancel",
-            statsProgress: "Album Progress", statsTotal: "Physical Total (Including Duplicates)", statsItems: "Items",
-            totalSpent: "Total Spent", promptCost: "Enter the cost for this transaction (You can leave it blank):",
-            placeholderAdd: "e.g. TUR3", placeholderQuery: "e.g. FWC10 (or 00)", placeholderBulk: "Bulk Add: Paste codes separated by comma or space...",
-            emailPlaceholder: "Email address", passPlaceholder: "Password", alertNoAuth: "Unauthorized!",
-            alertLoginFail: "Login Failed: ", errNotFound: "Error: Sticker {code} not found in database!",
-            warnDuplicate: "Warning: {code} already exists! Add +1 as duplicate?",
-            infoHasDupes: "ℹ️ Status: {code} EXISTS. You have {dupes} DUPLICATES for swap.",
-            infoHasOne: "✅ Status: {code} EXISTS. You have exactly 1.", infoMissing: "❌ Status: {code} is MISSING!",
-            successBulk: "Congratulations! {count} stickers processed successfully.",
-            warnBulk: "\n\n⚠️ WARNING: {count} invalid codes were skipped.\n(e.g. {samples})",
-            msgAllDone: "Congratulations! You have no missing stickers.", msgCopyMissing: "Total {count} missing stickers copied to clipboard!",
-            msgNoDupes: "You currently have no duplicate stickers.", msgCopyDupes: "Total {count} duplicate types copied to clipboard!",
-            warnReset: "⚠️ WARNING: Your ENTIRE collection will be DELETED! This cannot be undone. Are you sure?",
-            successReset: "Collection successfully reset!", stickersTitle: "Stickers",
-            sealTitleSave: "🔒 Seal Collection", sealDescSave: "Select a slot to save the current physical state of your collection.",
-            sealTitleLoad: "🔓 Unseal Collection", sealDescLoad: "Select a past seal to revert to. WARNING: Unsealed additions and history will be lost!",
-            slotEmpty: "Empty Slot", confirmSave: "Are you sure you want to seal the current collection and history to this slot? (Overwrites old save)",
-            confirmLoad: "WARNING! Unsealing will revert both your collection and history to the selected date. Are you sure?",
-            successSave: "Collection successfully sealed!", successLoad: "System successfully reverted to the sealed state!",
-            historyDetailsHint: "🔽 Details", missingListTitle: "Missing Stickers", 
-            dupesListTitle: "Duplicates in Query (You already own these)",
-            noneMissingTitle: "Great! You already own all stickers in the queried list.",
-            noValidCodes: "No valid sticker codes were detected in your input.", btnCopyList: "📋 Copy",
-            statusDelivered: "✅ Delivered", statusPending: "⏳ Pending",
-            promptSealDelivery: "Order delivered! Do you want to seal (backup) this updated state?",
-            groupTitles: {
-                "Özel Bölüm": "Special Section", "A Grubu": "Group A", "B Grubu": "Group B", "C Grubu": "Group C", "D Grubu": "Group D",
-                "E Grubu": "Group E", "F Grubu": "Group F", "G Grubu": "Group G", "H Grubu": "Group H", "I Grubu": "Group I",
-                "J Grubu": "Group J", "K Grubu": "Group K", "L Grubu": "Group L"
-            }
-        }
-    };
+    let collection = {};
+    let sealData = {};
+    let bulkHistoryData = {};
 
-    function t(key, params = {}) {
-        let text = i18n[currentLang][key] || key;
-        for (const [k, v] of Object.entries(params)) { text = text.replace(`{${k}}`, v); }
-        return text;
+    let allStickers = [];
+    let teamMap = {};
+    let flatTeams = [];
+
+    // Toast helper
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.innerText = message;
+        toast.className = "show";
+        setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
     }
 
-    function changeLang(lang) {
-        currentLang = lang;
-        localStorage.setItem('panini_lang', lang);
-        document.getElementById('htmlTag').lang = lang;
-        
-        document.getElementById('lang-tr').className = lang === 'tr' ? 'active' : '';
-        document.getElementById('lang-en').className = lang === 'en' ? 'active' : '';
-
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
-        });
-
-        document.getElementById('addInput').placeholder = t('placeholderAdd');
-        document.getElementById('queryInput').placeholder = t('placeholderQuery');
-        document.getElementById('bulkInput').placeholder = t('placeholderBulk');
-        document.getElementById('emailInput').placeholder = t('emailPlaceholder');
-        document.getElementById('passwordInput').placeholder = t('passPlaceholder');
-
-        updateStats();
-        renderBulkHistory(); 
-        
-        if (document.getElementById('bulkQueryContainer').style.display === 'flex') {
-            if(currentParsedAll.length > 0) runBulkQuery();
-        } else if (document.getElementById('teamsContainer').style.display !== 'none') {
-            renderTeams();
-        } else {
-            const currentCode = document.getElementById('currentTeamTitle').getAttribute('data-code');
-            if(currentCode) renderTeamDetail(currentCode);
-        }
+    function showUnderConstructionNotice() {
+        showToast("UEFA European Championship albums are currently under construction. Stay tuned!");
     }
 
-    // ================= VERİTABANI VE İŞ MANTIĞI =================
-    let isAdmin = false; 
-
+    // ================= AUTHENTICATION =================
     auth.onAuthStateChanged(user => {
         if (user) {
             isAdmin = true;
-            document.getElementById('authBtn').style.display = 'block'; 
+            document.getElementById('authBtn').style.display = 'block';
+            document.getElementById('adminLoginBtn').style.display = 'none';
         } else {
             isAdmin = false;
-            document.getElementById('authBtn').style.display = 'none'; 
+            document.getElementById('authBtn').style.display = 'none';
+            document.getElementById('adminLoginBtn').style.display = 'inline-block';
         }
-        changeLang(currentLang); 
         updateUIVisibility();
     });
 
@@ -403,8 +857,8 @@
         }
     }
 
-    function logoutUser() { 
-        auth.signOut(); 
+    function logoutUser() {
+        auth.signOut();
     }
 
     function loginUser() {
@@ -416,157 +870,355 @@
                 document.getElementById('emailInput').value = '';
                 document.getElementById('passwordInput').value = '';
             })
-            .catch(error => alert(t('alertLoginFail') + error.message));
+            .catch(error => alert("Login Failed: " + error.message));
     }
 
     function updateUIVisibility() {
-        document.getElementById('addStickerGroup').style.display = isAdmin ? 'flex' : 'none';
-        
-        if (document.getElementById('teamsContainer').style.display !== 'none') {
-            document.getElementById('bulkSectionDiv').style.display = 'flex'; 
-            document.getElementById('bulkInputRow').style.display = isAdmin ? 'flex' : 'none'; 
-            document.getElementById('sealSectionDiv').style.display = isAdmin ? 'flex' : 'none'; 
-            document.getElementById('resetBtn').style.display = isAdmin ? 'block' : 'none';
-        }
+        const addGroup = document.getElementById('addStickerGroup');
+        const bulkInputRow = document.getElementById('bulkInputRow');
+        const sealSection = document.getElementById('sealSectionDiv');
+        const resetBtn = document.getElementById('resetBtn');
+        const addMissingBtn = document.getElementById('addMissingBtn');
+        const addAllBtn = document.getElementById('addAllBtn');
 
-        if (document.getElementById('bulkQueryContainer').style.display === 'flex') {
-            document.getElementById('addMissingBtn').style.display = isAdmin ? 'block' : 'none';
-            document.getElementById('addAllBtn').style.display = isAdmin ? 'block' : 'none';
-        }
+        if (addGroup) addGroup.style.display = isAdmin ? 'flex' : 'none';
+        if (bulkInputRow) bulkInputRow.style.display = isAdmin ? 'flex' : 'none';
+        if (sealSection) sealSection.style.display = isAdmin ? 'flex' : 'none';
+        if (resetBtn) resetBtn.style.display = isAdmin ? 'block' : 'none';
+        if (addMissingBtn) addMissingBtn.style.display = isAdmin ? 'block' : 'none';
+        if (addAllBtn) addAllBtn.style.display = isAdmin ? 'block' : 'none';
 
-        renderBulkHistory(); 
-        const currentCode = document.getElementById('currentTeamTitle').getAttribute('data-code');
-        if (currentCode && document.getElementById('stickersGrid').style.display === 'grid') {
-            renderTeamDetail(currentCode); 
-        }
-    }
-
-    const tournamentGroups = {
-        "Özel Bölüm": [{ code: "FWC", name: {tr: "Stadyum vb.", en: "Stadium etc."} }], 
-        "A Grubu": [{ code: "MEX", flags: ["mx"], name: {tr: "Meksika (H)", en: "Mexico (H)"} }, { code: "RSA", flags: ["za"], name: {tr: "Güney Afrika", en: "South Africa"} }, { code: "KOR", flags: ["kr"], name: {tr: "Güney Kore", en: "South Korea"} }, { code: "CZE", flags: ["cz"], name: {tr: "Çekya", en: "Czechia"} }],
-        "B Grubu": [{ code: "CAN", flags: ["ca"], name: {tr: "Kanada (H)", en: "Canada (H)"} }, { code: "BIH", flags: ["ba"], name: {tr: "Bosna-Hersek", en: "Bosnia & Herz."} }, { code: "QAT", flags: ["qa"], name: {tr: "Katar", en: "Qatar"} }, { code: "SUI", flags: ["ch"], name: {tr: "İsviçre", en: "Switzerland"} }],
-        "C Grubu": [{ code: "BRA", flags: ["br"], name: {tr: "Brezilya", en: "Brazil"} }, { code: "MAR", flags: ["ma"], name: {tr: "Fas", en: "Morocco"} }, { code: "HAI", flags: ["ht"], name: {tr: "Haiti", en: "Haiti"} }, { code: "SCO", flags: ["gb-sct"], name: {tr: "İskoçya", en: "Scotland"} }],
-        "D Grubu": [{ code: "USA", flags: ["us"], name: {tr: "ABD (H)", en: "USA (H)"} }, { code: "PAR", flags: ["py"], name: {tr: "Paraguay", en: "Paraguay"} }, { code: "AUS", flags: ["au"], name: {tr: "Avustralya", en: "Australia"} }, { code: "TUR", flags: ["tr"], name: {tr: "Türkiye", en: "Turkey"} }],
-        "E Grubu": [{ code: "GER", flags: ["de"], name: {tr: "Almanya", en: "Germany"} }, { code: "CUW", flags: ["cw"], name: {tr: "Curaçao", en: "Curaçao"} }, { code: "CIV", flags: ["ci"], name: {tr: "Fildişi Sahili", en: "Ivory Coast"} }, { code: "ECU", flags: ["ec"], name: {tr: "Ekvador", en: "Ecuador"} }],
-        "F Grubu": [{ code: "NED", flags: ["nl"], name: {tr: "Hollanda", en: "Netherlands"} }, { code: "JPN", flags: ["jp"], name: {tr: "Japonya", en: "Japan"} }, { code: "SWE", flags: ["se"], name: {tr: "İsveç", en: "Sweden"} }, { code: "TUN", flags: ["tn"], name: {tr: "Tunus", en: "Tunisia"} }],
-        "G Grubu": [{ code: "BEL", flags: ["be"], name: {tr: "Belçika", en: "Belgium"} }, { code: "EGY", flags: ["eg"], name: {tr: "Mısır", en: "Egypt"} }, { code: "IRN", flags: ["ir"], name: {tr: "İran", en: "Iran"} }, { code: "NZL", flags: ["nz"], name: {tr: "Yeni Zelanda", en: "New Zealand"} }],
-        "H Grubu": [{ code: "ESP", flags: ["es"], name: {tr: "İspanya", en: "Spain"} }, { code: "CPV", flags: ["cv"], name: {tr: "Yeşil Burun Ad.", en: "Cape Verde"} }, { code: "KSA", flags: ["sa"], name: {tr: "Suudi Arabistan", en: "Saudi Arabia"} }, { code: "URU", flags: ["uy"], name: {tr: "Uruguay", en: "Uruguay"} }],
-        "I Grubu": [{ code: "FRA", flags: ["fr"], name: {tr: "Fransa", en: "France"} }, { code: "SEN", flags: ["sn"], name: {tr: "Senegal", en: "Senegal"} }, { code: "IRQ", flags: ["iq"], name: {tr: "Irak", en: "Iraq"} }, { code: "NOR", flags: ["no"], name: {tr: "Norveç", en: "Norway"} }],
-        "J Grubu": [{ code: "ARG", flags: ["ar"], name: {tr: "Arjantin", en: "Argentina"} }, { code: "ALG", flags: ["dz"], name: {tr: "Cezayir", en: "Algeria"} }, { code: "AUT", flags: ["at"], name: {tr: "Avusturya", en: "Austria"} }, { code: "JOR", flags: ["jo"], name: {tr: "Ürdün", en: "Jordan"} }],
-        "K Grubu": [{ code: "POR", flags: ["pt"], name: {tr: "Portekiz", en: "Portugal"} }, { code: "COD", flags: ["cd"], name: {tr: "Kongo", en: "Congo"} }, { code: "UZB", flags: ["uz"], name: {tr: "Özbekistan", en: "Uzbekistan"} }, { code: "COL", flags: ["co"], name: {tr: "Kolombiya", en: "Colombia"} }],
-        "L Grubu": [{ code: "ENG", flags: ["gb-eng"], name: {tr: "İngiltere", en: "England"} }, { code: "CRO", flags: ["hr"], name: {tr: "Hırvatistan", en: "Croatia"} }, { code: "GHA", flags: ["gh"], name: {tr: "Gana", en: "Ghana"} }, { code: "PAN", flags: ["pa"], name: {tr: "Panama", en: "Panama"} }]
-    };
-    
-    let allStickers = [];
-    let teamMap = {};
-    let collection = {}; 
-    let sealData = {}; 
-    let bulkHistoryData = {}; 
-    let flatTeams = []; 
-    const STICKER_LIMIT_PER_TEAM = 20;
-
-    function getTeamStickers(code) {
-        if (code === "FWC") { return ["00", ...Array.from({length: 19}, (_, k) => `FWC${k+1}`)]; }
-        return Array.from({length: STICKER_LIMIT_PER_TEAM}, (_, k) => `${code}${k+1}`);
-    }
-
-    Object.keys(tournamentGroups).forEach(groupName => {
-        tournamentGroups[groupName].forEach(team => {
-            teamMap[team.code] = team;
-            flatTeams.push(team);
-            allStickers.push(...getTeamStickers(team.code));
-        });
-    });
-
-    sealsRef.on('value', (snapshot) => { sealData = snapshot.val() || {}; });
-
-    bulkHistoryRef.orderByChild('timestamp').on('value', (snapshot) => {
-        bulkHistoryData = snapshot.val() || {};
         renderBulkHistory();
-        updateStats(); 
-    });
 
-    collectionRef.on('value', (snapshot) => {
-        collection = snapshot.val() || {};
-        let needsDbUpdate = false;
-        
-        if (isAdmin) {
-            Object.keys(collection).forEach(key => {
-                if (key.startsWith("IBO")) { let newKey = key.replace("IBO", "IRQ"); collection[newKey] = (collection[newKey] || 0) + collection[key]; delete collection[key]; needsDbUpdate = true; } 
-                else if (key.startsWith("CDJ")) { let newKey = key.replace("CDJ", "COD"); collection[newKey] = (collection[newKey] || 0) + collection[key]; delete collection[key]; needsDbUpdate = true; }
-            });
-            Object.keys(collection).forEach(key => { if (!allStickers.includes(key)) { delete collection[key]; needsDbUpdate = true; }});
-            if (needsDbUpdate) { collectionRef.set(collection); }
+        // If team detail is open, refresh sticker controls
+        const currentCode = document.getElementById('currentTeamTitle').getAttribute('data-code');
+        if (currentCode && document.getElementById('teamDetailSection').style.display === 'block') {
+            renderTeamDetail(currentCode);
         }
+    }
 
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('appContent').style.display = 'block';
+    // ================= TOURNAMENT LOADER =================
+    function initTournament(tournamentId) {
+        const tournamentDef = TOURNAMENTS_CONFIG.tournaments[tournamentId];
+        if (!tournamentDef) return false;
 
-        changeLang(currentLang);
-    });
+        activeTournament = tournamentDef;
+
+        // Reset data containers
+        allStickers = [];
+        teamMap = {};
+        flatTeams = [];
+
+        Object.keys(activeTournament.groups).forEach(groupName => {
+            activeTournament.groups[groupName].forEach(team => {
+                teamMap[team.code] = team;
+                flatTeams.push(team);
+                const stickers = activeTournament.getStickersForTeam(team.code);
+                allStickers.push(...stickers);
+            });
+        });
+
+        // Detach old listeners if any
+        if (collectionRef) collectionRef.off();
+        if (sealsRef) sealsRef.off();
+        if (bulkHistoryRef) bulkHistoryRef.off();
+
+        const dbKey = activeTournament.dbKey || activeTournament.id;
+        collectionRef = db.ref(`${dbKey}_collection`);
+        sealsRef = db.ref(`${dbKey}_seals`);
+        bulkHistoryRef = db.ref(`${dbKey}_bulk_history`);
+
+        // Attach listeners
+        sealsRef.on('value', (snapshot) => {
+            sealData = snapshot.val() || {};
+        });
+
+        bulkHistoryRef.orderByChild('timestamp').on('value', (snapshot) => {
+            bulkHistoryData = snapshot.val() || {};
+            renderBulkHistory();
+            updateStats();
+        });
+
+        collectionRef.on('value', (snapshot) => {
+            collection = snapshot.val() || {};
+            let needsDbUpdate = false;
+
+            if (isAdmin) {
+                // Code normalization for 2026 legacy aliases if needed
+                Object.keys(collection).forEach(key => {
+                    if (key.startsWith("IBO")) {
+                        let newKey = key.replace("IBO", "IRQ");
+                        collection[newKey] = (collection[newKey] || 0) + collection[key];
+                        delete collection[key];
+                        needsDbUpdate = true;
+                    } else if (key.startsWith("CDJ")) {
+                        let newKey = key.replace("CDJ", "COD");
+                        collection[newKey] = (collection[newKey] || 0) + collection[key];
+                        delete collection[key];
+                        needsDbUpdate = true;
+                    }
+                });
+                Object.keys(collection).forEach(key => {
+                    if (!allStickers.includes(key)) {
+                        delete collection[key];
+                        needsDbUpdate = true;
+                    }
+                });
+                if (needsDbUpdate) { collectionRef.set(collection); }
+            }
+
+            document.getElementById('loader').style.display = 'none';
+            updateStats();
+
+            // Refresh current view if relevant
+            const route = parseRoute();
+            if (route.view === 'team' && route.teamCode) {
+                renderTeamDetail(route.teamCode);
+            } else if (route.view === 'tournament') {
+                renderTeams();
+            }
+        });
+
+        return true;
+    }
 
     function saveCollectionToCloud() {
-        if(!isAdmin) return;
+        if (!isAdmin || !collectionRef) return;
         collectionRef.set(collection);
     }
 
+    // ================= ROUTING & NAVIGATION =================
+    function parseRoute() {
+        const hash = window.location.hash || '#/';
+        const clean = hash.replace(/^#\/?/, '');
+        const parts = clean.split('/').filter(Boolean);
 
-    // ================= BAĞLAMA DUYARLI TOPLU SORGULAMA PARSER =================
-    
+        if (parts.length === 0) {
+            return { view: 'categories' };
+        }
+
+        const categoryId = parts[0];
+
+        if (parts.length === 1) {
+            return { view: 'tournaments', categoryId };
+        }
+
+        const yearOrTournamentId = parts[1];
+        let tournamentId = yearOrTournamentId;
+        if (categoryId === 'fifa-world-cup' && yearOrTournamentId === '2026') {
+            tournamentId = 'wc2026';
+        }
+
+        if (parts.length === 2) {
+            return { view: 'tournament', categoryId, tournamentId, year: yearOrTournamentId };
+        }
+
+        if (parts[2] === 'bulk-query') {
+            return { view: 'bulk-query', categoryId, tournamentId, year: yearOrTournamentId };
+        }
+
+        if (parts[2] === 'team' && parts[3]) {
+            return { view: 'team', categoryId, tournamentId, year: yearOrTournamentId, teamCode: parts[3].toUpperCase() };
+        }
+
+        // Fallback
+        return { view: 'tournament', categoryId, tournamentId, year: yearOrTournamentId };
+    }
+
+    function navigateTo(hash) {
+        window.location.hash = hash;
+    }
+
+    function navigateToTeamDetailBack() {
+        const route = parseRoute();
+        navigateTo(`#/${route.categoryId}/${route.year || '2026'}`);
+    }
+
+    function updateBreadcrumbs(route) {
+        const nav = document.getElementById('breadcrumbsNav');
+        let html = `<span class="breadcrumb-item" onclick="navigateTo('#/')">Home</span>`;
+
+        if (route.view === 'categories') {
+            html += ` <span class="breadcrumb-separator">/</span> <span class="breadcrumb-current">Championships</span>`;
+        } else if (route.view === 'tournaments') {
+            const cat = TOURNAMENTS_CONFIG.categories.find(c => c.id === route.categoryId);
+            const catName = cat ? cat.name : route.categoryId;
+            html += ` <span class="breadcrumb-separator">/</span> <span class="breadcrumb-current">${catName}</span>`;
+        } else if (route.view === 'tournament' || route.view === 'bulk-query' || route.view === 'team') {
+            const cat = TOURNAMENTS_CONFIG.categories.find(c => c.id === route.categoryId);
+            const catName = cat ? cat.name : route.categoryId;
+            html += ` <span class="breadcrumb-separator">/</span> <span class="breadcrumb-item" onclick="navigateTo('#/${route.categoryId}')">${catName}</span>`;
+            
+            const tourneyTitle = activeTournament ? activeTournament.title : route.year;
+            if (route.view === 'tournament') {
+                html += ` <span class="breadcrumb-separator">/</span> <span class="breadcrumb-current">${tourneyTitle}</span>`;
+            } else {
+                html += ` <span class="breadcrumb-separator">/</span> <span class="breadcrumb-item" onclick="navigateTo('#/${route.categoryId}/${route.year}')">${tourneyTitle}</span>`;
+                if (route.view === 'bulk-query') {
+                    html += ` <span class="breadcrumb-separator">/</span> <span class="breadcrumb-current">Bulk Query</span>`;
+                } else if (route.view === 'team') {
+                    const team = teamMap[route.teamCode];
+                    const teamName = team ? team.name : route.teamCode;
+                    html += ` <span class="breadcrumb-separator">/</span> <span class="breadcrumb-current">${teamName}</span>`;
+                }
+            }
+        }
+
+        nav.innerHTML = html;
+    }
+
+    function handleRoute() {
+        const route = parseRoute();
+        updateBreadcrumbs(route);
+
+        const categoriesView = document.getElementById('categoriesView');
+        const tournamentsListView = document.getElementById('tournamentsListView');
+        const tournamentTrackerView = document.getElementById('tournamentTrackerView');
+
+        // Hide all views first
+        categoriesView.style.display = 'none';
+        tournamentsListView.style.display = 'none';
+        tournamentTrackerView.style.display = 'none';
+
+        if (route.view === 'categories') {
+            document.getElementById('loader').style.display = 'none';
+            categoriesView.style.display = 'block';
+            return;
+        }
+
+        if (route.view === 'tournaments') {
+            document.getElementById('loader').style.display = 'none';
+            renderTournamentsList(route.categoryId);
+            tournamentsListView.style.display = 'block';
+            return;
+        }
+
+        // For tournament views, initialize tournament data if not already matching
+        if (!activeTournament || activeTournament.id !== route.tournamentId) {
+            document.getElementById('loader').style.display = 'block';
+            const initialized = initTournament(route.tournamentId);
+            if (!initialized) {
+                alert("Tournament not found. Returning to home.");
+                navigateTo('#/');
+                return;
+            }
+        }
+
+        tournamentTrackerView.style.display = 'block';
+        document.getElementById('activeTournamentHeaderTitle').innerText = activeTournament.title + ' Tracker';
+        document.getElementById('activeTournamentSubtitle').innerText = activeTournament.subtitle;
+        document.getElementById('backToTournamentsBtn').setAttribute('onclick', `navigateTo('#/${route.categoryId}')`);
+
+        const teamsContainer = document.getElementById('teamsContainer');
+        const bulkQueryContainer = document.getElementById('bulkQueryContainer');
+        const bulkSectionDiv = document.getElementById('bulkSectionDiv');
+        const controlsDiv = document.getElementById('controlsDiv');
+        const teamDetailSection = document.getElementById('teamDetailSection');
+
+        if (route.view === 'bulk-query') {
+            teamsContainer.style.display = 'none';
+            bulkSectionDiv.style.display = 'none';
+            controlsDiv.style.display = 'none';
+            teamDetailSection.style.display = 'none';
+            bulkQueryContainer.style.display = 'flex';
+        } else if (route.view === 'team') {
+            teamsContainer.style.display = 'none';
+            bulkSectionDiv.style.display = 'none';
+            controlsDiv.style.display = 'none';
+            bulkQueryContainer.style.display = 'none';
+            teamDetailSection.style.display = 'block';
+            renderTeamDetail(route.teamCode);
+        } else {
+            // Main tournament dashboard
+            bulkQueryContainer.style.display = 'none';
+            teamDetailSection.style.display = 'none';
+            controlsDiv.style.display = 'flex';
+            bulkSectionDiv.style.display = 'flex';
+            teamsContainer.style.display = 'flex';
+            renderTeams();
+        }
+
+        updateUIVisibility();
+    }
+
+    function renderTournamentsList(categoryId) {
+        const cat = TOURNAMENTS_CONFIG.categories.find(c => c.id === categoryId);
+        document.getElementById('tournamentsCategoryTitle').innerText = (cat ? cat.name : 'Tournaments') + ' Albums';
+        document.getElementById('tournamentsCategorySubtitle').innerText = 'Select an album edition to manage and track your collection.';
+
+        const grid = document.getElementById('tournamentsGridContainer');
+        grid.innerHTML = '';
+
+        if (categoryId === 'fifa-world-cup') {
+            // Currently 2026 is available
+            const card = document.createElement('div');
+            card.className = 'tournament-card';
+            card.onclick = () => navigateTo('#/fifa-world-cup/2026');
+            card.innerHTML = `
+                <div>
+                    <span class="tournament-year-badge">🏆 2026 EDITION</span>
+                    <h3 class="tournament-title">FIFA World Cup 2026</h3>
+                    <div class="tournament-sub">Canada, Mexico, USA • 48 Teams • Special FWC Section</div>
+                    <p style="font-size:0.88rem; color:#555; margin-bottom:16px;">
+                        Complete official Panini sticker album tracker with real-time sync, smart bulk queries, and duplicate swaps.
+                    </p>
+                </div>
+                <button class="btn-open-tournament">Open 2026 Tracker →</button>
+            `;
+            grid.appendChild(card);
+        } else {
+            grid.innerHTML = `<div style="color:#777; padding:20px;">No tournaments available in this category yet.</div>`;
+        }
+    }
+
+    // ================= SMART BULK QUERY PARSER =================
     let currentParsedMissing = [];
     let currentParsedDupes = [];
     let currentParsedAll = [];
 
     function openBulkQueryView() {
-        document.getElementById('teamsContainer').style.display = 'none';
-        document.getElementById('bulkSectionDiv').style.display = 'none';
-        document.getElementById('sealSectionDiv').style.display = 'none';
-        document.getElementById('stickersGrid').style.display = 'none';
-        document.getElementById('teamNavigation').style.display = 'none';
-        document.getElementById('resetBtn').style.display = 'none';
-        
-        document.getElementById('bulkQueryContainer').style.display = 'flex';
-        document.getElementById('backBtn').style.display = 'block';
-        document.getElementById('currentTeamTitle').style.display = 'none';
-        
-        document.getElementById('addMissingBtn').style.display = isAdmin ? 'block' : 'none';
-        document.getElementById('addAllBtn').style.display = isAdmin ? 'block' : 'none';
+        const route = parseRoute();
+        navigateTo(`#/${route.categoryId}/${route.year || '2026'}/bulk-query`);
+    }
+
+    function closeBulkQueryView() {
+        const route = parseRoute();
+        navigateTo(`#/${route.categoryId}/${route.year || '2026'}`);
     }
 
     function parseComplexBulkText(text) {
         const lines = text.toUpperCase().split('\n');
         const parsedStickers = new Set();
-        
+
         lines.forEach(line => {
             const sanitizedLine = line.replace(/[-:,;]/g, ' ');
             const tokens = sanitizedLine.split(/\s+/).filter(t => t.trim() !== '');
-            
             let currentTeamContext = null;
-            
+
             tokens.forEach(token => {
                 if (token === '00' || token === 'FWC00') {
                     parsedStickers.add('00');
                     return;
                 }
-                
+
                 if (teamMap[token]) {
                     currentTeamContext = token;
-                    return; 
+                    return;
                 }
-                
+
                 const match = token.match(/^([A-Z]{3})?(\d+)$/);
                 if (match) {
                     const teamPart = match[1];
                     const numPart = match[2];
-                    
+
                     if (teamPart && teamMap[teamPart]) {
                         currentTeamContext = teamPart;
                     }
-                    
+
                     if (currentTeamContext) {
                         let potentialCode = currentTeamContext + numPart;
                         if (potentialCode === 'FWC00') potentialCode = '00';
-                        
+
                         if (allStickers.includes(potentialCode)) {
                             parsedStickers.add(potentialCode);
                         }
@@ -574,16 +1226,16 @@
                 }
             });
         });
-        
+
         return Array.from(parsedStickers);
     }
 
     function runBulkQuery() {
         const text = document.getElementById('bulkQueryInputText').value;
         const parsed = parseComplexBulkText(text);
-        
+
         if (parsed.length === 0) {
-            alert(t('noValidCodes'));
+            alert("No valid sticker codes were detected in your input.");
             return;
         }
 
@@ -594,28 +1246,28 @@
         const resultsDiv = document.getElementById('bulkQueryResults');
         const missingDisplayDiv = document.getElementById('missingStickersDisplay');
         const dupesDisplayDiv = document.getElementById('dupesStickersDisplay');
-        
+
         resultsDiv.style.display = 'block';
 
         if (currentParsedMissing.length > 0) {
             missingDisplayDiv.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <h3 style="color: var(--secondary); margin:0;">${t('missingListTitle')} (${currentParsedMissing.length})</h3>
-                    <button onclick="copyArrayToClipboard('missing')" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #ccc; cursor:pointer; background-color: var(--bg);">${t('btnCopyList')}</button>
+                    <h3 style="color: var(--secondary); margin:0;">Missing Stickers (${currentParsedMissing.length})</h3>
+                    <button onclick="copyArrayToClipboard('missing')" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #ccc; cursor:pointer; background-color: var(--bg); color: var(--text);">📋 Copy</button>
                 </div>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                     ${currentParsedMissing.map(code => `<span style="background: #f8d7da; color: #721c24; padding: 5px 10px; border-radius: 4px; font-weight: bold; border: 1px solid #f5c6cb;">${code}</span>`).join('')}
                 </div>
             `;
         } else {
-            missingDisplayDiv.innerHTML = `<h3 style="color: var(--success); margin-top:0;">${t('noneMissingTitle')}</h3>`;
+            missingDisplayDiv.innerHTML = `<h3 style="color: var(--success); margin-top:0;">Great! You already own all stickers in the queried list.</h3>`;
         }
 
         if (currentParsedDupes.length > 0) {
             dupesDisplayDiv.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; margin-top: 20px;">
-                    <h3 style="color: var(--warning); margin:0;">${t('dupesListTitle')} (${currentParsedDupes.length})</h3>
-                    <button onclick="copyArrayToClipboard('dupes')" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #ccc; cursor:pointer; background-color: var(--bg);">${t('btnCopyList')}</button>
+                    <h3 style="color: var(--warning); margin:0;">Duplicates in Query (${currentParsedDupes.length})</h3>
+                    <button onclick="copyArrayToClipboard('dupes')" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #ccc; cursor:pointer; background-color: var(--bg); color: var(--text);">📋 Copy</button>
                 </div>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                     ${currentParsedDupes.map(code => `<span style="background: #fff3cd; color: #856404; padding: 5px 10px; border-radius: 4px; font-weight: bold; border: 1px solid #ffeeba;">${code}</span>`).join('')}
@@ -624,21 +1276,23 @@
         } else {
             dupesDisplayDiv.innerHTML = '';
         }
+
+        updateUIVisibility();
     }
 
     function copyArrayToClipboard(type) {
         const arr = type === 'missing' ? currentParsedMissing : currentParsedDupes;
-        if(arr.length === 0) return;
+        if (arr.length === 0) return;
         navigator.clipboard.writeText(arr.join(", ")).then(() => {
-            alert("Kopyalandı!");
+            showToast("Copied to clipboard!");
         });
     }
 
     function executeDynamicBulkAdd(stickerArray) {
-        if(!isAdmin) return;
-        
-        let costInput = prompt(t('promptCost'), "0");
-        if (costInput === null) return; 
+        if (!isAdmin) return;
+
+        let costInput = prompt("Enter the cost for this transaction (leave blank if zero):", "0");
+        if (costInput === null) return;
         let parsedCost = parseFloat(costInput.replace(',', '.')) || 0;
 
         let addedCount = 0;
@@ -652,49 +1306,47 @@
 
         if (addedCount > 0) {
             saveCollectionToCloud();
-            
+
             const uniqueId = 'BLK-' + Date.now().toString(36).toUpperCase();
             bulkHistoryRef.child(uniqueId).set({
                 timestamp: Date.now(),
                 stickers: addedInThisSession,
                 total: addedCount,
                 cost: parsedCost,
-                delivered: false // YENİ: Başlangıçta teslim edilmedi
+                delivered: false
             });
-            
-            alert(t('successBulk', {count: addedCount}));
+
+            alert(`Success! ${addedCount} stickers added to your collection.`);
             document.getElementById('bulkQueryInputText').value = '';
             document.getElementById('bulkQueryResults').style.display = 'none';
-            showTeams(); 
+            closeBulkQueryView();
         }
     }
 
     function addBulkQueryStickers(mode) {
-        if(!isAdmin) return;
+        if (!isAdmin) return;
         if (mode === 'missing') {
-            if(currentParsedMissing.length === 0) return;
+            if (currentParsedMissing.length === 0) return;
             executeDynamicBulkAdd(currentParsedMissing);
         } else if (mode === 'all') {
-            if(currentParsedAll.length === 0) return;
+            if (currentParsedAll.length === 0) return;
             executeDynamicBulkAdd(currentParsedAll);
         }
     }
 
-    // ================= TOPLU EKLEME GEÇMİŞİ (UNDO & DELIVER) =================
-    
+    // ================= BULK ACTIONS & HISTORY =================
     function toggleHistoryDetails(id) {
         const el = document.getElementById(`history-details-${id}`);
-        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
     }
 
     function toggleDeliveryStatus(id, currentStatus) {
-        if(!isAdmin) return;
+        if (!isAdmin) return;
         const newStatus = !currentStatus;
         bulkHistoryRef.child(id).child('delivered').set(newStatus).then(() => {
-            if(newStatus === true) {
-                // Sadece false'dan true'ya geçerken sor
+            if (newStatus === true) {
                 setTimeout(() => {
-                    if(confirm(t('promptSealDelivery'))) {
+                    if (confirm("Order delivered! Would you like to seal (backup) your updated collection now?")) {
                         openSealModal('save');
                     }
                 }, 300);
@@ -706,41 +1358,38 @@
         const container = document.getElementById('bulkHistoryList');
         if (!container) return;
         container.innerHTML = '';
-        
+
         const sortedKeys = Object.keys(bulkHistoryData)
-            .sort((a,b) => bulkHistoryData[b].timestamp - bulkHistoryData[a].timestamp)
+            .sort((a, b) => bulkHistoryData[b].timestamp - bulkHistoryData[a].timestamp)
             .slice(0, 10);
-        
+
         if (sortedKeys.length === 0) {
-            container.innerHTML = `<div style="color:#999; font-size:0.85rem; padding: 5px;">${t('noHistory')}</div>`;
+            container.innerHTML = `<div style="color:#999; font-size:0.85rem; padding: 5px;">No bulk addition history yet.</div>`;
             return;
         }
 
         sortedKeys.forEach(key => {
             const item = bulkHistoryData[key];
-            const dateStr = new Date(item.timestamp).toLocaleString(currentLang === 'tr' ? 'tr-TR' : 'en-GB', {
+            const dateStr = new Date(item.timestamp).toLocaleString('en-GB', {
                 day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
             });
-            
+
             let detailsText = Object.entries(item.stickers).map(([code, qty]) => `${code}(x${qty})`).join(', ');
             let costText = item.cost ? ` | <b style="color:var(--purple);">💰 ${item.cost}</b>` : '';
-
-            // YENİ: Teslimat Durumu
             const isDelivered = item.delivered || false;
-            
+
             let actionsHtml = '';
             if (isAdmin) {
                 const deliveryBtnClass = isDelivered ? 'delivered' : 'pending';
-                const deliveryBtnText = isDelivered ? t('statusDelivered') : t('statusPending');
+                const deliveryBtnText = isDelivered ? '✅ Delivered' : '⏳ Pending';
                 actionsHtml = `
                     <div class="history-actions">
                         <button class="btn-delivery ${deliveryBtnClass}" onclick="toggleDeliveryStatus('${key}', ${isDelivered})">${deliveryBtnText}</button>
-                        <button class="btn-undo" onclick="undoBulkAction('${key}')">${t('undoBtn')}</button>
+                        <button class="btn-undo" onclick="undoBulkAction('${key}')">Undo</button>
                     </div>
                 `;
             } else {
-                const deliveryStatusText = isDelivered ? `<span style="font-size:0.8rem; color:var(--success); margin-left:10px;">${t('statusDelivered')}</span>` : `<span style="font-size:0.8rem; color:#999; margin-left:10px;">${t('statusPending')}</span>`;
-                actionsHtml = deliveryStatusText;
+                actionsHtml = isDelivered ? `<span style="font-size:0.8rem; color:var(--success); margin-left:10px;">✅ Delivered</span>` : `<span style="font-size:0.8rem; color:#999; margin-left:10px;">⏳ Pending</span>`;
             }
 
             const div = document.createElement('div');
@@ -750,8 +1399,8 @@
                     <div class="history-info">
                         <strong style="user-select: text;">${key}</strong> <span style="color:#666; font-size:0.8rem; margin-left: 5px;">(${dateStr})</span>
                         <div class="history-details">
-                            Toplam ${item.total} ${t('statsItems')}${costText} 
-                            <span style="margin-left:8px; color:var(--primary); cursor:pointer; padding: 2px 5px; background: #eef2f5; border-radius: 4px;" onclick="toggleHistoryDetails('${key}')"><b>${t('historyDetailsHint')}</b></span>
+                            Total ${item.total} Items${costText}
+                            <span style="margin-left:8px; color:var(--primary); cursor:pointer; padding: 2px 5px; background: #eef2f5; border-radius: 4px;" onclick="toggleHistoryDetails('${key}')"><b>Details 🔽</b></span>
                         </div>
                     </div>
                     ${actionsHtml}
@@ -765,11 +1414,11 @@
     }
 
     function undoBulkAction(id) {
-        if(!isAdmin) return;
-        if(!confirm(t('confirmUndo'))) return;
+        if (!isAdmin) return;
+        if (!confirm("WARNING: Are you sure you want to undo this bulk action? The stickers added in this action will be subtracted from your collection.")) return;
 
         const record = bulkHistoryData[id];
-        if(!record) return;
+        if (!record) return;
 
         for (const [code, qty] of Object.entries(record.stickers)) {
             if (collection[code]) {
@@ -781,47 +1430,47 @@
         }
 
         collectionRef.set(collection);
-        bulkHistoryRef.child(id).remove(); 
+        bulkHistoryRef.child(id).remove();
+        showToast("Bulk addition successfully undone.");
     }
 
-    // ================= MÜHÜR (SEAL) FONKSİYONLARI =================
-    
-    let currentSealMode = ''; 
+    // ================= SEALS & BACKUPS =================
+    let currentSealMode = '';
 
     function openSealModal(mode) {
-        if(!isAdmin) return;
+        if (!isAdmin) return;
         currentSealMode = mode;
         const modal = document.getElementById('sealModal');
         const titleEl = document.getElementById('sealModalTitle');
         const descEl = document.getElementById('sealModalDesc');
         const container = document.getElementById('sealSlotsContainer');
-        
-        container.innerHTML = ''; 
+
+        container.innerHTML = '';
 
         if (mode === 'save') {
-            titleEl.innerText = t('sealTitleSave');
-            descEl.innerText = t('sealDescSave');
+            titleEl.innerText = "🔒 Seal Collection (Backup)";
+            descEl.innerText = "Select a slot to seal and save the current state of your collection and transaction history.";
         } else {
-            titleEl.innerText = t('sealTitleLoad');
-            descEl.innerText = t('sealDescLoad');
+            titleEl.innerText = "🔓 Unseal Collection (Revert)";
+            descEl.innerText = "Select a past seal to restore. WARNING: Any unsealed recent changes will be reverted to this saved point!";
         }
 
         for (let i = 1; i <= 3; i++) {
             const slotData = sealData[`slot${i}`];
             const btn = document.createElement('button');
             btn.className = 'seal-slot-btn';
-            
-            let slotTitle = `Slot ${i}`;
-            let dateText = slotData ? new Date(slotData.timestamp).toLocaleString(currentLang === 'tr' ? 'tr-TR' : 'en-GB') : t('slotEmpty');
-            
+
+            let slotTitle = `Seal Slot ${i}`;
+            let dateText = slotData ? new Date(slotData.timestamp).toLocaleString('en-GB') : "Empty Slot";
+
             btn.innerHTML = `<span>${slotTitle}</span><span class="seal-date">${dateText}</span>`;
-            
+
             if (mode === 'load' && !slotData) {
-                btn.disabled = true; 
+                btn.disabled = true;
             } else {
                 btn.onclick = () => handleSealAction(`slot${i}`);
             }
-            
+
             container.appendChild(btn);
         }
         modal.style.display = 'flex';
@@ -829,141 +1478,138 @@
 
     function handleSealAction(slotId) {
         if (currentSealMode === 'save') {
-            if (confirm(t('confirmSave'))) {
-                // YENİ: Mühür oluştururken hem koleksiyonu hem de o anki geçmişi (historyData) kaydet
+            if (confirm("Are you sure you want to seal the current collection and history into this slot? (Overwrites any previous save)")) {
                 sealsRef.child(slotId).set({
                     timestamp: Date.now(),
                     data: collection,
-                    historyData: bulkHistoryData 
+                    historyData: bulkHistoryData
                 }).then(() => {
                     document.getElementById('sealModal').style.display = 'none';
-                    alert(t('successSave'));
+                    alert("Collection sealed and backed up successfully!");
                 });
             }
         } else if (currentSealMode === 'load') {
-            if (confirm(t('confirmLoad'))) {
-                // YENİ: Geri dönerken hem koleksiyonu hem de geçmişi (historyData) eski haline getir
+            if (confirm("WARNING: Unsealing will restore your collection and history to the date of this seal. Any additions made since then will be reverted. Proceed?")) {
                 const dataToLoad = sealData[slotId].data || {};
                 const historyToLoad = sealData[slotId].historyData || {};
-                
+
                 Promise.all([
                     collectionRef.set(dataToLoad),
                     bulkHistoryRef.set(historyToLoad)
                 ]).then(() => {
                     document.getElementById('sealModal').style.display = 'none';
-                    alert(t('successLoad'));
+                    alert("Collection restored successfully from seal backup!");
                 });
             }
         }
     }
 
-
-    // ================= ARAYÜZ FONKSİYONLARI =================
-
+    // ================= STATS & RENDERING =================
     function updateStats() {
         const uniqueCollected = Object.keys(collection).length;
-        const total = allStickers.length; 
+        const total = allStickers.length;
         let totalPhysical = 0;
         for (let code in collection) { totalPhysical += collection[code]; }
         const percentage = total === 0 ? 0 : ((uniqueCollected / total) * 100).toFixed(1);
-        
+
         let grandTotalCost = 0;
         for (let key in bulkHistoryData) {
             grandTotalCost += (parseFloat(bulkHistoryData[key].cost) || 0);
         }
 
-        document.getElementById('statsDisplay').innerHTML = `
-            <div class="album-stat">${t('statsProgress')}: ${uniqueCollected} / ${total} (${percentage}%)</div>
-            <div class="total-stat">${t('statsTotal')}: ${totalPhysical} ${t('statsItems')}</div>
-            <div class="cost-stat">${t('totalSpent')}: ${grandTotalCost.toFixed(2)}</div>
-        `;
+        const statsDiv = document.getElementById('statsDisplay');
+        if (statsDiv) {
+            statsDiv.innerHTML = `
+                <div class="album-stat">Album Progress: ${uniqueCollected} / ${total} (${percentage}%)</div>
+                <div class="total-stat">Physical Total (Inc. Duplicates): ${totalPhysical} Items</div>
+                <div class="cost-stat">Total Spent: $${grandTotalCost.toFixed(2)}</div>
+            `;
+        }
     }
 
     function renderTeams() {
         const container = document.getElementById('teamsContainer');
+        if (!container || !activeTournament) return;
         container.innerHTML = '';
-        
-        Object.keys(tournamentGroups).forEach(groupName => {
+
+        const route = parseRoute();
+
+        Object.keys(activeTournament.groups).forEach(groupName => {
             const groupDiv = document.createElement('div');
             groupDiv.className = 'group-section';
-            
-            const translatedGroupName = i18n[currentLang].groupTitles[groupName];
-            groupDiv.innerHTML = `<h3 class="group-title">${translatedGroupName}</h3>`;
-            
+            groupDiv.innerHTML = `<h3 class="group-title">${groupName}</h3>`;
+
             const grid = document.createElement('div');
             grid.className = 'teams-grid';
-            
-            tournamentGroups[groupName].forEach(team => {
+
+            activeTournament.groups[groupName].forEach(team => {
                 let collectedInTeam = 0;
-                let teamStickers = getTeamStickers(team.code);
-                
-                teamStickers.forEach(stickerCode => { if(collection[stickerCode]) collectedInTeam++; });
-                
+                let teamStickers = activeTournament.getStickersForTeam(team.code);
+
+                teamStickers.forEach(stickerCode => { if (collection[stickerCode]) collectedInTeam++; });
+
                 const card = document.createElement('div');
                 card.className = 'team-card';
-                card.onclick = () => renderTeamDetail(team.code);
-                
+                card.onclick = () => navigateTo(`#/${route.categoryId}/${route.year || '2026'}/team/${team.code}`);
+
                 let overlay = (collectedInTeam === teamStickers.length) ? 'rgba(210, 245, 210, 0.9)' : 'rgba(255, 255, 255, 0.85)';
                 if (team.flags) {
                     card.style.backgroundImage = `linear-gradient(${overlay}, ${overlay}), url('https://flagcdn.com/w320/${team.flags[0]}.png')`;
-                    card.style.backgroundPosition = 'center'; card.style.backgroundSize = 'cover';
+                    card.style.backgroundPosition = 'center';
+                    card.style.backgroundSize = 'cover';
                 } else {
                     card.style.backgroundImage = `linear-gradient(${overlay}, ${overlay}), repeating-linear-gradient(45deg, #ccc, #ccc 10px, #eee 10px, #eee 20px)`;
                 }
 
-                if (collectedInTeam === teamStickers.length) { card.style.borderColor = 'var(--success)'; card.style.boxShadow = '0 0 10px rgba(42, 157, 143, 0.5)'; }
-
-                const teamDisplayName = team.name[currentLang] || team.name.tr;
+                if (collectedInTeam === teamStickers.length) {
+                    card.style.borderColor = 'var(--success)';
+                    card.style.boxShadow = '0 0 10px rgba(42, 157, 143, 0.5)';
+                }
 
                 card.innerHTML = `
-                    <div style="font-size: 1.05rem; margin-bottom: 5px; color: var(--primary); text-shadow: 1px 1px 0px rgba(255,255,255,0.8);">${teamDisplayName}</div>
+                    <div style="font-size: 1.05rem; margin-bottom: 5px; color: var(--primary); text-shadow: 1px 1px 0px rgba(255,255,255,0.8);">${team.name}</div>
                     <div style="font-size: 1rem; color: #111;"><b>${team.code}</b></div>
                     <span style="font-size: 0.9rem; background: rgba(255,255,255,0.85); padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 6px; color: #000; border: 1px solid #ccc;">${collectedInTeam} / ${teamStickers.length}</span>
                 `;
                 grid.appendChild(card);
             });
-            groupDiv.appendChild(grid); container.appendChild(groupDiv);
+            groupDiv.appendChild(grid);
+            container.appendChild(groupDiv);
         });
     }
 
     function renderTeamDetail(code) {
-        document.getElementById('teamsContainer').style.display = 'none';
-        document.getElementById('bulkQueryContainer').style.display = 'none'; 
-        document.getElementById('bulkSectionDiv').style.display = 'none'; 
-        document.getElementById('sealSectionDiv').style.display = 'none'; 
-        document.getElementById('stickersGrid').style.display = 'grid';
-        document.getElementById('backBtn').style.display = 'block';
-        document.getElementById('resetBtn').style.display = 'none'; 
-        document.getElementById('teamNavigation').style.display = 'flex'; 
-        
         const team = teamMap[code];
+        if (!team || !activeTournament) return;
+
         const title = document.getElementById('currentTeamTitle');
-        title.style.display = 'block';
-        
+        title.setAttribute('data-code', code);
+
         let flagsHtml = '';
         if (team.flags) {
-            team.flags.forEach(f => { flagsHtml += `<img src="https://flagcdn.com/h40/${f}.png" style="height: 30px; margin-right: 10px; vertical-align: middle; border: 1px solid #ccc; border-radius: 4px;">`; });
+            team.flags.forEach(f => {
+                flagsHtml += `<img src="https://flagcdn.com/h40/${f}.png" style="height: 28px; margin-right: 10px; vertical-align: middle; border: 1px solid #ccc; border-radius: 4px;">`;
+            });
         }
-        
-        const teamDisplayName = team.name[currentLang] || team.name.tr;
-        title.innerHTML = `${flagsHtml} <span style="vertical-align: middle;">${teamDisplayName} ${t('stickersTitle')}</span>`;
-        title.setAttribute('data-code', code);
+
+        title.innerHTML = `${flagsHtml} <span style="vertical-align: middle;">${team.name} Stickers</span>`;
 
         const currentIndex = flatTeams.findIndex(t => t.code === code);
         const prevTeam = currentIndex > 0 ? flatTeams[currentIndex - 1] : null;
         const nextTeam = currentIndex < flatTeams.length - 1 ? flatTeams[currentIndex + 1] : null;
 
+        const route = parseRoute();
+        const baseRoute = `#/${route.categoryId}/${route.year || '2026'}/team/`;
+
         let navHtml = '';
         if (prevTeam) {
-            const prevName = prevTeam.name[currentLang] || prevTeam.name.tr;
-            navHtml += `<button onclick="renderTeamDetail('${prevTeam.code}')" class="nav-btn">← ${prevName}</button>`;
+            navHtml += `<button onclick="navigateTo('${baseRoute}${prevTeam.code}')" class="nav-btn">← ${prevTeam.name}</button>`;
         } else {
             navHtml += `<div class="spacer"></div>`;
         }
-        
+
         if (nextTeam) {
-            const nextName = nextTeam.name[currentLang] || nextTeam.name.tr;
-            navHtml += `<button onclick="renderTeamDetail('${nextTeam.code}')" class="nav-btn">${nextName} →</button>`;
+            navHtml += `<button onclick="navigateTo('${baseRoute}${nextTeam.code}')" class="nav-btn">${nextTeam.name} →</button>`;
         } else {
             navHtml += `<div class="spacer"></div>`;
         }
@@ -971,18 +1617,18 @@
 
         const grid = document.getElementById('stickersGrid');
         grid.innerHTML = '';
-        
-        let teamStickers = getTeamStickers(code);
+
+        let teamStickers = activeTournament.getStickersForTeam(code);
 
         for (let i = 0; i < teamStickers.length; i++) {
             const stickerCode = teamStickers[i];
             const isOwned = collection[stickerCode] > 0;
             const count = collection[stickerCode] || 0;
-            
+
             const div = document.createElement('div');
             div.className = 'sticker';
             if (isOwned) div.classList.add('owned');
-            
+
             let controlsHtml = '';
             if (isAdmin) {
                 controlsHtml = `
@@ -1005,104 +1651,118 @@
         if (!isAdmin) return;
         let current = collection[code] || 0;
         current += delta;
-        if (current <= 0) { delete collection[code]; } else { collection[code] = current; }
-        saveCollectionToCloud(); 
-    }
-
-    function showTeams() {
-        document.getElementById('teamsContainer').style.display = 'flex';
-        document.getElementById('bulkQueryContainer').style.display = 'none'; 
-        document.getElementById('bulkSectionDiv').style.display = 'flex'; 
-        document.getElementById('bulkInputRow').style.display = isAdmin ? 'flex' : 'none'; 
-        document.getElementById('sealSectionDiv').style.display = isAdmin ? 'flex' : 'none'; 
-        document.getElementById('resetBtn').style.display = isAdmin ? 'block' : 'none'; 
-        document.getElementById('stickersGrid').style.display = 'none';
-        document.getElementById('teamNavigation').style.display = 'none'; 
-        document.getElementById('backBtn').style.display = 'none';
-        document.getElementById('currentTeamTitle').style.display = 'none';
+        if (current <= 0) {
+            delete collection[code];
+        } else {
+            collection[code] = current;
+        }
+        saveCollectionToCloud();
     }
 
     function addStickerFromInput() {
-        if(!isAdmin) return;
+        if (!isAdmin) return;
         const input = document.getElementById('addInput');
         const code = input.value.trim().toUpperCase();
         if (!code) return;
-        if (!allStickers.includes(code)) { alert(t('errNotFound', {code})); input.value = ''; return; }
+        if (!allStickers.includes(code)) {
+            alert(`Error: Sticker code "${code}" does not exist in this tournament album.`);
+            input.value = '';
+            return;
+        }
         if (collection[code]) {
-            if (confirm(t('warnDuplicate', {code}))) { updateStickerCount(code, 1); }
-        } else { updateStickerCount(code, 1); }
-        input.value = ''; input.focus();
+            if (confirm(`Warning: You already own ${code}! Add +1 as a duplicate?`)) {
+                updateStickerCount(code, 1);
+            }
+        } else {
+            updateStickerCount(code, 1);
+        }
+        input.value = '';
+        input.focus();
     }
 
     function bulkAddStickers() {
-        if(!isAdmin) return;
+        if (!isAdmin) return;
         const inputElement = document.getElementById('bulkInput');
         const rawText = inputElement.value;
         if (!rawText.trim()) return;
 
         const rawCodes = rawText.split(/[\s,]+/);
-        let addedCount = 0; 
+        let addedCount = 0;
         let invalidCodes = [];
-        let addedInThisSession = {}; 
+        let addedInThisSession = {};
 
-        let costInput = prompt(t('promptCost'), "0");
-        if (costInput === null) return; 
+        let costInput = prompt("Enter the cost for this transaction (leave blank if zero):", "0");
+        if (costInput === null) return;
         let parsedCost = parseFloat(costInput.replace(',', '.')) || 0;
 
         rawCodes.forEach(rawCode => {
             const code = rawCode.trim().toUpperCase();
             if (code) {
-                if (allStickers.includes(code)) { 
-                    collection[code] = (collection[code] || 0) + 1; 
+                if (allStickers.includes(code)) {
+                    collection[code] = (collection[code] || 0) + 1;
                     addedInThisSession[code] = (addedInThisSession[code] || 0) + 1;
-                    addedCount++; 
-                } 
-                else { invalidCodes.push(code); }
+                    addedCount++;
+                } else {
+                    invalidCodes.push(code);
+                }
             }
         });
 
         if (addedCount > 0) {
             saveCollectionToCloud();
-            
+
             const uniqueId = 'BLK-' + Date.now().toString(36).toUpperCase();
             bulkHistoryRef.child(uniqueId).set({
                 timestamp: Date.now(),
                 stickers: addedInThisSession,
                 total: addedCount,
                 cost: parsedCost,
-                delivered: false // YENİ
+                delivered: false
             });
         }
 
-        let message = t('successBulk', {count: addedCount});
+        let message = `Success! ${addedCount} stickers added.`;
         if (invalidCodes.length > 0) {
             const sampleInvalid = invalidCodes.slice(0, 5).join(", ");
             const moreIndicator = invalidCodes.length > 5 ? `... (+${invalidCodes.length - 5})` : "";
-            message += t('warnBulk', {count: invalidCodes.length, samples: sampleInvalid + moreIndicator});
+            message += `\n\n⚠️ ${invalidCodes.length} invalid codes were skipped: (${sampleInvalid}${moreIndicator})`;
         }
         alert(message);
-        inputElement.value = ''; 
+        inputElement.value = '';
     }
 
     function querySticker() {
         const input = document.getElementById('queryInput');
         const code = input.value.trim().toUpperCase();
         if (!code) return;
-        if (!allStickers.includes(code)) { alert(t('errNotFound', {code})); return; }
+        if (!allStickers.includes(code)) {
+            alert(`Error: Sticker code "${code}" does not exist in this tournament album.`);
+            return;
+        }
         if (collection[code]) {
             let dupes = collection[code] - 1;
-            if (dupes > 0) alert(t('infoHasDupes', {code, dupes}));
-            else alert(t('infoHasOne', {code}));
-        } else { alert(t('infoMissing', {code})); }
+            if (dupes > 0) {
+                alert(`ℹ️ Status: ${code} EXISTS. You have ${dupes} DUPLICATES available for swap.`);
+            } else {
+                alert(`✅ Status: ${code} EXISTS. You have exactly 1.`);
+            }
+        } else {
+            alert(`❌ Status: ${code} is MISSING!`);
+        }
         input.value = '';
     }
 
     function exportMissing() {
         const missing = allStickers.filter(code => !collection[code]);
-        if (missing.length === 0) { alert(t('msgAllDone')); return; }
+        if (missing.length === 0) {
+            alert("Congratulations! You have completed the album with no missing stickers.");
+            return;
+        }
         navigator.clipboard.writeText(missing.join(", ")).then(() => {
-            alert(t('msgCopyMissing', {count: missing.length}));
-        }).catch(err => { alert("Failed to copy / Kopyalama başarısız."); });
+            alert(`Total ${missing.length} missing stickers copied to clipboard!`);
+        }).catch(() => {
+            alert("Failed to copy missing stickers to clipboard.");
+        });
     }
 
     function exportDuplicates() {
@@ -1113,17 +1773,22 @@
                 duplicates.push(`${code} (+${extraCount})`);
             }
         }
-        if (duplicates.length === 0) { alert(t('msgNoDupes')); return; }
+        if (duplicates.length === 0) {
+            alert("You currently have no duplicate stickers for swap.");
+            return;
+        }
         navigator.clipboard.writeText(duplicates.join(", ")).then(() => {
-            alert(t('msgCopyDupes', {count: duplicates.length}));
-        }).catch(err => { alert("Failed to copy / Kopyalama başarısız."); });
+            alert(`Total ${duplicates.length} duplicate sticker types copied to clipboard!`);
+        }).catch(() => {
+            alert("Failed to copy duplicate stickers to clipboard.");
+        });
     }
 
     function resetCollection() {
-        if(!isAdmin) return;
-        if (confirm(t('warnReset'))) {
-            collectionRef.set({}); 
-            alert(t('successReset'));
+        if (!isAdmin) return;
+        if (confirm("⚠️ CRITICAL WARNING: Your entire collection will be completely deleted! This cannot be undone. Are you sure?")) {
+            collectionRef.set({});
+            alert("Collection successfully reset.");
         }
     }
 
@@ -1133,6 +1798,12 @@
             if (action === 'query') querySticker();
         }
     }
+
+    // Initialize Routing on load and on hash change
+    window.addEventListener('hashchange', handleRoute);
+    window.addEventListener('DOMContentLoaded', handleRoute);
+    // Run immediately in case DOMContentLoaded already fired
+    handleRoute();
 </script>
 
 </body>

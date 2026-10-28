@@ -1,39 +1,58 @@
-# Panini World Cup 2026 Sticker Tracker (panini-wc-tracker)
+# Panini Sticker Album Tracker (panini-tracker)
 
-**Versiyon:** `0.0.1`
+**Version:** `0.0.2`
 
-Panini World Cup 2026 çıkartma albümü koleksiyonunuzu, eksiklerinizi ve takas fazlalıklarınızı takip edebileceğiniz, Firebase Realtime Database tabanlı bulut destekli web uygulaması.
+A modular, cloud-powered web application built with Firebase Realtime Database and Authentication to track Panini sticker album collections, missing stickers, and duplicate swaps across FIFA World Cup and UEFA European Championship (EURO) tournaments.
 
-## Özellikler
+## Live Application
 
-- 🏆 **Grup ve Takım Görünümü**: Turnuvadaki tüm grupları ve takımları bayraklarıyla birlikte listeleme.
-- 📊 **İlerleme İstatistikleri**: Albüm tamamlanma yüzdesi ve fiziksel çıkartma sayısı takibi.
-- 🔄 **Takas ve Eksik Yönetimi**: Eksik ve fazlalık (duplicate) çıkartmaları tek tıkla panoya kopyalama.
-- ⚡ **Gelişmiş Toplu Ekleme ve Sorgulama**: Farklı formatlardaki listeleri otomatik ayrıştırma.
-- 🔒 **Mühürleme (Yedekleme)**: Koleksiyonun belirli bir andaki durumunu dondurma ve geri dönebilme.
-- 🌐 **İki Dilli (TR / EN)**: Türkçe ve İngilizce arayüz desteği.
-- 🔐 **Admin Yetkilendirmesi**: Firebase Auth ile güvenli admin paneli.
+- Production URL: [https://panini-tracker.web.app](https://panini-tracker.web.app)
 
-## Kurulum ve Çalıştırma
+## Features
 
-1. Projeyi klonlayın:
+- 🏆 **Championship Hub**: Seamless navigation between **FIFA World Cup** and **UEFA European Championship** (EURO) tournaments.
+- 📅 **Tournament Selection**: Explore individual tournament editions (starting with FIFA World Cup 2026, expandable to historic albums).
+- 🧩 **Modular Architecture**: Clean, extensible tournament definitions in `data/tournaments/` with dedicated rules, team lists, flags, and database mapping.
+- 🧭 **Stateful Navigation & Deep Linking**: Hash-based URL routing (`#/`, `#/fifa-world-cup`, `#/fifa-world-cup/2026`, etc.) with full browser back/forward and refresh support.
+- 📊 **Progress & Analytics**: Real-time album completion percentage, total physical sticker count, and expense tracking.
+- ⚡ **Smart Bulk Query**: Intelligent list parsing from informal text (e.g., `TUR2-5`, `MEX: 1, 7`, `ALG 4 5`).
+- 🔄 **Swap & Duplicate Management**: One-click copying of missing lists and duplicate stickers for trading.
+- 🔒 **Seals & Backups**: Freeze and restore collection milestones to rollback unsealed transactions.
+- 🔐 **Admin Access**: Secure administration via Firebase Authentication.
+
+## Project Structure
+
+```
+├── config.js                      # Firebase credentials & config (git-ignored)
+├── config.example.js              # Template for Firebase credentials
+├── data/
+│   ├── tournaments-config.js      # Central category & tournament registry
+│   └── tournaments/
+│       └── wc2026.js              # FIFA World Cup 2026 tournament specification
+├── index.html                     # Single-page application entry point
+├── database.rules.json            # Firebase Realtime Database security rules
+├── firebase.json                  # Firebase hosting and database settings
+├── package.json                   # Project metadata and versioning
+└── README.md
+```
+
+## Setup & Local Development
+
+1. Clone the repository:
    ```bash
    git clone https://github.com/eckucukoglu/panini-wc-tracker.git
-   cd panini-wc-tracker
+   cd panini-tracker
    ```
 
-2. Yapılandırma dosyasını oluşturun:
-   `config.example.js` dosyasını `config.js` olarak kopyalayın ve kendi Firebase proje bilgilerinizi girin:
+2. Configure Firebase:
+   Copy `config.example.js` to `config.js` and enter your Firebase project credentials:
    ```bash
    cp config.example.js config.js
    ```
 
-3. Yerel sunucuyu başlatın:
+3. Start local development server:
    ```bash
-   python3 -m http.server 8000
+   npm start
+   # or: python3 -m http.server 8000
    ```
-   Tarayıcınızda `http://localhost:8000` adresini açın.
-
-## Güvenlik Kuralları
-
-Firebase Realtime Database güvenlik kurallarını `database.rules.json` dosyasından inceleyebilir ve Firebase Console üzerinden projenize uygulayabilirsiniz.
+   Open `http://localhost:8000` in your web browser.

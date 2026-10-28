@@ -1,7 +1,7 @@
 {
-  "name": "panini-wc-tracker",
-  "version": "0.0.1",
-  "description": "Panini World Cup 2026 Çıkartma Albümü Takip ve Takas Uygulaması",
+  "name": "panini-tracker",
+  "version": "0.0.2",
+  "description": "Panini World Cup and UEFA EURO Sticker Album Tracker & Swap Manager",
   "main": "index.html",
   "scripts": {
     "start": "python3 -m http.server 8000"
@@ -12,7 +12,8 @@
   },
   "keywords": [
     "panini",
-    "world-cup-2026",
+    "world-cup",
+    "euro",
     "stickers",
     "firebase"
   ],
