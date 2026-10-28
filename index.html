@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panini Sticker Album Tracker</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans for classy, modern sports typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -15,53 +22,99 @@
 
     <style>
         :root {
-            --primary: #003366;
-            --primary-hover: #002244;
-            --secondary: #e63946;
-            --secondary-hover: #a31919;
-            --bg: #f4f6f9;
-            --card: #ffffff;
-            --text: #222222;
-            --text-muted: #666666;
-            --success: #2a9d8f;
-            --warning: #f59f00;
-            --info: #457b9d;
-            --purple: #6a4c93;
-            --dark-info: #1d3557;
-            --border: #e2e8f0;
-            --shadow-sm: 0 2px 4px rgba(0,0,0,0.06);
-            --shadow-md: 0 6px 18px rgba(0,0,0,0.08);
-            --shadow-lg: 0 12px 28px rgba(0,0,0,0.12);
+            /* Prestigious Football & Stadium Twilight Palette (Eye-Friendly) */
+            --bg-canvas: #090e17;
+            --bg-gradient: radial-gradient(circle at 50% -10%, #172844 0%, #0c1524 45%, #080d16 100%);
+            --surface: #101b2b;
+            --surface-elevated: #15243a;
+            --surface-card: #121e31;
+            --surface-hover: #1b2f4c;
+            --border: #1e3352;
+            --border-light: #28446c;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+
+            /* Football Turf & Pitch Accents */
+            --pitch-green: #10b981;
+            --pitch-green-dark: #065f46;
+            --pitch-green-glow: rgba(16, 185, 129, 0.25);
+            --pitch-grass: #059669;
+
+            /* Trophy & Champions League / World Cup Gold */
+            --gold: #f59e0b;
+            --gold-light: #fbbf24;
+            --gold-dark: #b45309;
+            --gold-glow: rgba(245, 158, 11, 0.2);
+
+            /* UEFA European Blue & Silver */
+            --uefa-blue: #3b82f6;
+            --uefa-blue-glow: rgba(59, 130, 246, 0.2);
+
+            /* Panini Crimson / Collector Badges */
+            --crimson: #e11d48;
+            --crimson-hover: #be123c;
+            --purple: #8b5cf6;
+
+            --shadow-sm: 0 2px 6px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.45);
+            --shadow-lg: 0 16px 40px rgba(0,0,0,0.6);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
         }
 
         * { box-sizing: border-box; }
+        
         body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-canvas);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
             margin: 0;
-            padding: 20px 15px;
+            padding: 24px 16px;
+            min-height: 100vh;
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Subtle pitch mowing stripes atmosphere on large screens */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.008) 0px,
+                rgba(255, 255, 255, 0.008) 120px,
+                transparent 120px,
+                transparent 240px
+            );
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
-            max-width: 1080px;
+            max-width: 1100px;
             margin: 0 auto;
-            background: var(--card);
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
+            background: var(--surface);
+            padding: 26px 28px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
             position: relative;
+            z-index: 1;
         }
 
-        /* Top Navigation & Breadcrumbs */
+        /* Top Navigation Bar */
         .top-navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 14px;
-            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 22px;
             flex-wrap: wrap;
             gap: 12px;
         }
@@ -69,14 +122,21 @@
         .brand-container {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .brand-container:hover { opacity: 0.92; }
+
+        .brand-logo-crest {
+            font-size: 1.6rem;
+            filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.4));
         }
 
         .brand-title {
-            color: var(--primary);
+            color: var(--text-main);
             margin: 0;
-            font-size: 1.4rem;
+            font-size: 1.45rem;
             font-weight: 800;
             letter-spacing: -0.5px;
             display: flex;
@@ -85,14 +145,21 @@
             user-select: none;
         }
 
+        .brand-title span.panini-highlight {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .app-version {
-            font-size: 0.7rem;
-            color: #555;
-            font-weight: 600;
+            font-size: 0.72rem;
+            color: #cbd5e1;
+            font-weight: 700;
             vertical-align: middle;
-            background: #e9ecef;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-light);
             padding: 2px 8px;
-            border-radius: 12px;
+            border-radius: 20px;
             letter-spacing: 0.5px;
             display: inline-block;
         }
@@ -103,36 +170,36 @@
             gap: 10px;
         }
 
-        .auth-btn {
-            display: none;
-            padding: 6px 14px;
-            font-size: 0.85rem;
-            background-color: var(--secondary);
-            border-radius: 6px;
-            color: white;
-            cursor: pointer;
-            border: none;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-        .auth-btn:hover { background-color: var(--secondary-hover); }
-
         .btn-admin-login-icon {
-            background: transparent;
-            border: 1px solid #ddd;
-            color: #666;
-            padding: 6px 12px;
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
             font-size: 0.85rem;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s;
         }
         .btn-admin-login-icon:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: #f8fafc;
+            border-color: var(--gold);
+            color: var(--gold-light);
+            background: rgba(245, 158, 11, 0.08);
         }
+
+        .auth-btn {
+            display: none;
+            padding: 7px 15px;
+            font-size: 0.85rem;
+            background-color: var(--crimson);
+            border-radius: var(--radius-sm);
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .auth-btn:hover { background-color: var(--crimson-hover); }
 
         /* Breadcrumbs */
         .breadcrumbs {
@@ -140,57 +207,79 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 8px;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-            padding: 8px 14px;
-            background: #f8fafc;
-            border-radius: 8px;
+            font-size: 0.88rem;
+            margin-bottom: 22px;
+            padding: 10px 16px;
+            background: rgba(18, 30, 49, 0.7);
+            border-radius: var(--radius-md);
             border: 1px solid var(--border);
         }
 
         .breadcrumb-item {
-            color: var(--info);
+            color: #38bdf8;
             cursor: pointer;
             font-weight: 600;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 4px;
+            transition: color 0.2s;
         }
-        .breadcrumb-item:hover { text-decoration: underline; }
-        .breadcrumb-separator { color: #aaa; user-select: none; }
-        .breadcrumb-current { color: #333; font-weight: bold; }
+        .breadcrumb-item:hover { color: #7dd3fc; text-decoration: underline; }
+        .breadcrumb-separator { color: var(--text-dim); user-select: none; font-size: 0.8rem; }
+        .breadcrumb-current { color: var(--text-main); font-weight: 700; }
 
-        /* Navigation Buttons */
+        /* Navigation Button */
         .btn-nav-back {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            background-color: #555;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
+            gap: 8px;
+            background-color: var(--surface-elevated);
+            color: var(--text-main);
+            border: 1px solid var(--border-light);
+            padding: 9px 18px;
+            border-radius: var(--radius-sm);
             font-weight: 600;
-            font-size: 0.9rem;
-            border: none;
+            font-size: 0.88rem;
             cursor: pointer;
-            margin-bottom: 18px;
-            transition: background 0.2s;
+            margin-bottom: 20px;
+            transition: all 0.2s;
         }
-        .btn-nav-back:hover { background-color: #333; }
+        .btn-nav-back:hover {
+            background-color: var(--surface-hover);
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
 
-        /* Landing Page / Category Selection */
+        /* LANDING PAGE: Category Selection */
         .landing-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 34px;
             padding: 10px 0;
         }
 
+        .landing-header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245, 158, 11, 0.12);
+            color: var(--gold-light);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 14px;
+        }
+
         .landing-header h2 {
-            font-size: 1.85rem;
-            color: var(--primary);
-            margin: 0 0 10px 0;
+            font-size: 2rem;
+            color: var(--text-main);
+            margin: 0 0 12px 0;
             font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
         .landing-header p {
@@ -203,100 +292,118 @@
         .category-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
+            gap: 26px;
             margin-bottom: 20px;
         }
 
         .category-card {
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 28px 24px;
-            background: #ffffff;
+            border-radius: var(--radius-lg);
+            padding: 30px 26px;
+            background: var(--surface-card);
+            border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
             transition: all 0.25s ease-in-out;
-            min-height: 280px;
+            min-height: 300px;
+            overflow: hidden;
+        }
+
+        .category-card::after {
+            content: "";
+            position: absolute;
+            top: 0; right: 0; width: 140px; height: 140px;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .category-card.active {
             cursor: pointer;
-            border-color: #cbd5e1;
+            background: linear-gradient(160deg, #132238 0%, #0e1828 100%);
+            border-color: rgba(245, 158, 11, 0.35);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.35);
         }
 
         .category-card.active:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary);
+            border-color: var(--gold);
+            box-shadow: 0 14px 32px rgba(245, 158, 11, 0.15), 0 8px 20px rgba(0,0,0,0.5);
         }
 
         .category-card.disabled {
-            background: #fafbfc;
-            border-style: dashed;
-            border-color: #d1d5db;
+            background: linear-gradient(160deg, #0f1a2a 0%, #0a111c 100%);
+            border: 1px dashed var(--border);
             cursor: not-allowed;
-            opacity: 0.88;
+            opacity: 0.85;
         }
 
         .category-badge {
             position: absolute;
-            top: 18px;
-            right: 18px;
-            padding: 4px 10px;
+            top: 20px;
+            right: 20px;
+            padding: 4px 11px;
             border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            letter-spacing: 0.5px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.6px;
             text-transform: uppercase;
         }
 
         .badge-active {
-            background-color: #e6f4ea;
-            color: #137333;
-            border: 1px solid #b7e1cd;
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
         }
 
         .badge-construction {
-            background-color: #fef3c7;
-            color: #92400e;
-            border: 1px solid #fde68a;
+            background-color: rgba(245, 158, 11, 0.12);
+            color: #fcd34d;
+            border: 1px solid rgba(245, 158, 11, 0.3);
         }
 
-        .category-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            display: inline-block;
+        .category-icon-wrapper {
+            width: 62px;
+            height: 62px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin-bottom: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .category-title {
             font-size: 1.45rem;
             font-weight: 800;
-            color: var(--primary);
-            margin: 0 0 8px 0;
+            color: var(--text-main);
+            margin: 0 0 6px 0;
+            letter-spacing: -0.3px;
         }
 
         .category-subtitle {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            color: var(--info);
+            color: var(--gold-light);
             margin-bottom: 12px;
         }
 
         .category-desc {
             font-size: 0.92rem;
             color: var(--text-muted);
-            line-height: 1.5;
+            line-height: 1.55;
             margin-bottom: 24px;
             flex-grow: 1;
         }
 
         .btn-category-action {
             width: 100%;
-            padding: 12px 18px;
-            font-size: 1rem;
+            padding: 13px 20px;
+            font-size: 0.98rem;
             font-weight: 700;
-            border-radius: 8px;
+            border-radius: var(--radius-md);
             border: none;
             cursor: pointer;
             transition: all 0.2s;
@@ -307,16 +414,19 @@
         }
 
         .btn-category-action.active-btn {
-            background-color: var(--primary);
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
             color: white;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
         }
         .btn-category-action.active-btn:hover {
-            background-color: var(--primary-hover);
+            background: linear-gradient(135deg, #047857 0%, #059669 100%);
+            transform: translateY(-1px);
         }
 
         .btn-category-action.disabled-btn {
-            background-color: #e2e8f0;
-            color: #64748b;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-dim);
+            border: 1px solid var(--border);
             cursor: not-allowed;
         }
 
@@ -326,9 +436,10 @@
         }
 
         .tournaments-header h2 {
-            font-size: 1.6rem;
-            color: var(--primary);
+            font-size: 1.7rem;
+            color: var(--text-main);
             margin: 0 0 6px 0;
+            font-weight: 800;
         }
 
         .tournaments-header p {
@@ -339,44 +450,48 @@
 
         .tournaments-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
             gap: 20px;
         }
 
         .tournament-card {
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 22px;
-            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            background: linear-gradient(160deg, #132238 0%, #0e1828 100%);
             cursor: pointer;
             transition: all 0.2s ease-in-out;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            box-shadow: var(--shadow-sm);
         }
 
         .tournament-card:hover {
             transform: translateY(-4px);
-            border-color: var(--primary);
-            box-shadow: var(--shadow-md);
+            border-color: var(--pitch-green);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
         }
 
         .tournament-year-badge {
-            display: inline-block;
-            background: #eef2f6;
-            color: var(--primary);
-            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(245, 158, 11, 0.12);
+            color: var(--gold-light);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            font-size: 0.8rem;
             font-weight: 800;
             padding: 4px 10px;
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
             margin-bottom: 12px;
             width: fit-content;
         }
 
         .tournament-title {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 800;
-            color: #1e293b;
+            color: var(--text-main);
             margin: 0 0 6px 0;
         }
 
@@ -387,217 +502,638 @@
         }
 
         .btn-open-tournament {
-            padding: 10px 14px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
+            padding: 11px 16px;
+            background: var(--surface-elevated);
+            color: #38bdf8;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
             font-weight: 700;
             cursor: pointer;
             width: 100%;
             text-align: center;
+            transition: all 0.2s;
         }
-        .btn-open-tournament:hover { background: var(--primary-hover); }
+        .tournament-card:hover .btn-open-tournament {
+            background: var(--pitch-grass);
+            color: white;
+            border-color: var(--pitch-green);
+        }
 
-        /* Dashboard & Album Tracker View */
+        /* TOURNAMENT TRACKER: Stadium Dashboard Header */
         .dashboard-header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 16px;
-            margin-bottom: 20px;
+            align-items: center;
+            background: linear-gradient(135deg, #132238 0%, #0d1624 100%);
+            border: 1px solid var(--border-light);
+            padding: 20px 24px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 22px;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 18px;
+            box-shadow: var(--shadow-sm);
         }
 
         .header-title-container {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
 
         .header-title-container h1 {
-            color: var(--primary);
+            color: var(--text-main);
             margin: 0;
-            font-size: 1.55rem;
+            font-size: 1.6rem;
+            font-weight: 800;
             cursor: default;
             user-select: none;
+            letter-spacing: -0.4px;
         }
 
-        .stats { text-align: right; }
-        .stats .album-stat { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
-        .stats .total-stat { font-size: 0.95rem; color: var(--secondary); margin-top: 4px; font-weight: normal; }
-        .stats .cost-stat { font-size: 1rem; color: var(--purple); margin-top: 4px; font-weight: bold; }
+        /* Stadium Scoreboard Stats Display */
+        .stats-scoreboard {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
 
+        .stat-badge {
+            background: rgba(8, 14, 24, 0.7);
+            border: 1px solid var(--border);
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-width: 140px;
+        }
+
+        .stat-badge .stat-label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-dim);
+            margin-bottom: 2px;
+        }
+
+        .stat-badge .stat-val {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .stat-badge.stat-progress .stat-val { color: #34d399; }
+        .stat-badge.stat-total .stat-val { color: #38bdf8; }
+        .stat-badge.stat-cost .stat-val { color: var(--gold-light); }
+
+        /* Controls Bar */
         .controls {
             display: flex;
             gap: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             align-items: center;
         }
 
         .control-group {
             display: flex;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
             overflow: hidden;
+            background: #0b1422;
         }
 
         input {
-            padding: 10px 12px;
+            padding: 10px 14px;
             border: none;
             outline: none;
             text-transform: uppercase;
             font-size: 0.9rem;
+            background: #0b1422;
+            color: var(--text-main);
+            font-weight: 600;
         }
+        input::placeholder { color: var(--text-dim); text-transform: none; }
 
         button {
-            padding: 10px 15px;
-            background-color: var(--primary);
+            padding: 10px 16px;
+            background-color: var(--surface-elevated);
+            color: var(--text-main);
+            border: 1px solid var(--border-light);
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s;
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+        }
+        button:hover {
+            background-color: var(--surface-hover);
+            border-color: #38bdf8;
+        }
+
+        .btn-add-action {
+            background-color: var(--pitch-grass);
             color: white;
             border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-            border-radius: 6px;
         }
-        button:hover { background-color: var(--primary-hover); }
+        .btn-add-action:hover { background-color: var(--pitch-green); }
 
-        .btn-export { background-color: var(--success); }
-        .btn-export:hover { background-color: #21867a; }
-        .btn-export-dup { background-color: var(--warning); color: white; }
-        .btn-export-dup:hover { background-color: #e67700; }
-        .btn-bulk-query { background-color: var(--dark-info); color: white; }
-        .btn-bulk-query:hover { background-color: #112233; }
+        .btn-query-action {
+            background-color: #1e3a5f;
+            color: #7dd3fc;
+            border: none;
+        }
+        .btn-query-action:hover { background-color: #2b5080; }
 
+        .btn-export {
+            background-color: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #34d399;
+        }
+        .btn-export:hover {
+            background-color: rgba(16, 185, 129, 0.25);
+            border-color: #34d399;
+        }
+
+        .btn-export-dup {
+            background-color: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            color: #fbbf24;
+        }
+        .btn-export-dup:hover {
+            background-color: rgba(245, 158, 11, 0.25);
+            border-color: #fbbf24;
+        }
+
+        .btn-bulk-query {
+            background-color: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            color: #38bdf8;
+        }
+        .btn-bulk-query:hover {
+            background-color: rgba(56, 189, 248, 0.25);
+            border-color: #38bdf8;
+        }
+
+        /* Bulk Section & Public History */
         .bulk-section {
             display: flex;
-            gap: 12px;
+            gap: 14px;
             width: 100%;
-            margin-bottom: 20px;
-            padding-top: 15px;
-            border-top: 1px dashed #ddd;
+            margin-bottom: 22px;
+            padding-top: 18px;
+            border-top: 1px dashed var(--border);
             flex-direction: column;
         }
 
         .bulk-input-row { display: flex; gap: 10px; width: 100%; }
         #bulkInput {
             flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
             resize: vertical;
             text-transform: uppercase;
             font-family: monospace;
             font-size: 0.9rem;
+            background: #0b1422;
+            color: var(--text-main);
         }
+        #bulkInput:focus { border-color: #38bdf8; outline: none; }
 
-        .btn-bulk { background-color: var(--info); white-space: nowrap; height: fit-content; }
-        .btn-bulk:hover { background-color: #1d3557; }
+        .btn-bulk {
+            background-color: var(--surface-elevated);
+            color: #38bdf8;
+            border: 1px solid var(--border-light);
+            white-space: nowrap;
+            height: fit-content;
+        }
+        .btn-bulk:hover { background-color: var(--surface-hover); }
 
         .bulk-history-container {
-            margin-top: 5px;
-            background: #fafafa;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 12px;
+            background: rgba(14, 23, 38, 0.7);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
         }
 
         .history-item {
             display: flex;
             flex-direction: column;
-            background: #fff;
-            padding: 10px 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
+            background: #111e30;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
             margin-bottom: 8px;
-            transition: 0.2s;
+            transition: all 0.2s;
         }
-        .history-item:hover { border-color: var(--info); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .history-item:hover { border-color: #38bdf8; }
         .history-main-row { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
         .history-info { flex-grow: 1; }
-        .history-details { font-size: 0.85rem; color: #888; margin-top: 6px; }
+        .history-details { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
         .history-actions { display: flex; gap: 6px; margin-left: 10px; }
 
-        .btn-delivery { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: none; cursor: pointer; color: white; }
-        .btn-delivery.pending { background-color: #999; }
-        .btn-delivery.pending:hover { background-color: #777; }
-        .btn-delivery.delivered { background-color: var(--success); }
+        .btn-delivery {
+            padding: 4px 10px;
+            font-size: 0.78rem;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .btn-delivery.pending {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            border-color: var(--border);
+        }
+        .btn-delivery.delivered {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.35);
+        }
 
-        .btn-undo { background-color: var(--secondary); padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; }
-        .btn-undo:hover { background-color: var(--secondary-hover); }
+        .btn-undo {
+            background-color: rgba(225, 29, 72, 0.15);
+            border: 1px solid rgba(225, 29, 72, 0.35);
+            color: #fb7185;
+            padding: 4px 10px;
+            font-size: 0.78rem;
+            border-radius: 4px;
+        }
+        .btn-undo:hover { background-color: rgba(225, 29, 72, 0.25); }
 
+        /* Seal / Backup Section */
         .seal-section {
             display: flex;
             gap: 15px;
-            padding: 15px;
-            background: #f3f0f8;
-            border-radius: 8px;
-            border: 1px solid #d4c4e9;
-            margin-bottom: 20px;
+            padding: 16px;
+            background: rgba(139, 92, 246, 0.08);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            margin-bottom: 22px;
             align-items: center;
         }
-        .btn-seal { background-color: var(--purple); flex: 1; }
-        .btn-seal:hover { background-color: #4a3469; }
-        .btn-unseal { background-color: #666; flex: 1; }
-        .btn-unseal:hover { background-color: #444; }
+        .btn-seal {
+            background-color: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            color: #c4b5fd;
+            flex: 1;
+        }
+        .btn-seal:hover { background-color: rgba(139, 92, 246, 0.35); }
+        .btn-unseal {
+            background-color: var(--surface-elevated);
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            flex: 1;
+        }
+        .btn-unseal:hover { background-color: var(--surface-hover); color: var(--text-main); }
 
-        .team-navigation { display: flex; justify-content: space-between; margin-bottom: 15px; gap: 15px; width: 100%; }
-        .team-navigation .nav-btn { flex: 1; background-color: var(--info); border-radius: 6px; padding: 10px 15px; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .team-navigation .nav-btn:hover { background-color: #1d3557; }
+        /* Teams Grid & Group Sections */
+        #teamsContainer { display: flex; flex-direction: column; gap: 24px; }
+        
+        .group-section {
+            background: rgba(16, 26, 42, 0.65);
+            border: 1px solid var(--border);
+            padding: 18px 20px;
+            border-radius: var(--radius-lg);
+        }
+
+        .group-title {
+            margin-top: 0;
+            font-size: 1.15rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+            color: var(--text-main);
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .group-title::before {
+            content: "⚽";
+            font-size: 0.95rem;
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 14px;
+        }
+
+        /* Classy Football Team Card */
+        .team-card {
+            border: 1px solid var(--border);
+            padding: 16px 10px;
+            text-align: center;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 120px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .team-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border-color: #38bdf8;
+        }
+
+        .team-card.completed {
+            border-color: var(--pitch-green);
+            box-shadow: 0 0 14px var(--pitch-green-glow);
+        }
+
+        .team-display-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+            margin-bottom: 4px;
+            line-height: 1.25;
+        }
+
+        .team-code-badge {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--gold-light);
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 2px 7px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 0 auto 8px auto;
+            letter-spacing: 0.5px;
+        }
+
+        .team-progress-wrapper {
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .team-progress-track {
+            width: 100%;
+            height: 5px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .team-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .team-count-badge {
+            font-size: 0.78rem;
+            color: #f1f5f9;
+            background: rgba(0,0,0,0.55);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            font-weight: 700;
+        }
+
+        /* STICKERS GRID & AUTHENTIC PANINI SLOTS */
+        .stickers-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+            gap: 14px;
+        }
+
+        /* Unowned / Missing Album Slot */
+        .sticker {
+            aspect-ratio: 3/4.4;
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--radius-sm);
+            font-weight: 800;
+            background: #0d1624;
+            color: var(--text-dim);
+            border: 1px dashed var(--border-light);
+            overflow: hidden;
+            position: relative;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .sticker:hover {
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+        }
+
+        /* Owned / Collected Panini Card */
+        .sticker.owned {
+            background: linear-gradient(155deg, #064e3b 0%, #043628 100%);
+            color: #ffffff;
+            border: 1px solid var(--pitch-green);
+            box-shadow: 0 4px 14px var(--pitch-green-glow);
+        }
+
+        .sticker.owned::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 35%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .sticker-num {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            letter-spacing: -0.5px;
+            font-weight: 800;
+        }
+
+        .sticker:not(.owned) .sticker-num {
+            color: #475569;
+        }
+
+        .sticker.owned .sticker-num {
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .sticker-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.45);
+            width: 100%;
+            height: 28px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .sticker.owned .sticker-controls {
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .sticker-controls button {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.2rem;
+            width: 28px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+        }
+        .sticker-controls button:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: #38bdf8;
+        }
+
+        .sticker-count {
+            font-size: 0.8rem;
+            font-weight: 800;
+            pointer-events: none;
+            color: var(--gold-light);
+        }
+
+        /* Team Navigation Header */
+        .team-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 14px;
+            width: 100%;
+        }
+        .team-navigation .nav-btn {
+            flex: 1;
+            background-color: var(--surface-elevated);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 10px 16px;
+            font-size: 0.92rem;
+            color: #38bdf8;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .team-navigation .nav-btn:hover {
+            background-color: var(--surface-hover);
+            color: #7dd3fc;
+        }
         .team-navigation .spacer { flex: 1; }
 
-        .btn-reset { background-color: #d62828; margin-top: 30px; width: 100%; }
-        .btn-reset:hover { background-color: var(--secondary-hover); }
+        .btn-reset {
+            background-color: rgba(225, 29, 72, 0.15);
+            border: 1px solid rgba(225, 29, 72, 0.4);
+            color: #fb7185;
+            margin-top: 30px;
+            width: 100%;
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+        .btn-reset:hover {
+            background-color: rgba(225, 29, 72, 0.3);
+            border-color: #f43f5e;
+        }
 
-        #teamsContainer { display: flex; flex-direction: column; gap: 20px; }
-        .group-section { background: #fafafa; border: 1px solid #eee; padding: 15px; border-radius: 8px; }
-        .group-title { margin-top: 0; font-size: 1.15rem; border-bottom: 2px solid #ddd; padding-bottom: 6px; margin-bottom: 15px; color: #1e293b; font-weight: 700; }
-        .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
-
-        .team-card { border: 1px solid #ddd; padding: 15px 5px; text-align: center; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; position: relative; }
-        .team-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); border-color: var(--primary); }
-
-        .stickers-grid { display: none; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 12px; }
-        .sticker { aspect-ratio: 3/4.5; display: flex; flex-direction: column; border-radius: 6px; font-weight: bold; background: #eee; color: #999; border: 2px dashed #ccc; overflow: hidden; position: relative; }
-        .sticker.owned { background: var(--primary); color: white; border: 2px solid var(--primary); }
-        .sticker-num { flex-grow: 1; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-
-        .sticker-controls { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.15); width: 100%; height: 30px; }
-        .sticker.owned .sticker-controls { background: rgba(255,255,255,0.2); }
-        .sticker-controls button { background: none; border: none; color: inherit; font-size: 1.3rem; width: 30px; height: 100%; display: flex; align-items: center; justify-content: center; padding: 0; margin: 0; border-radius: 0; }
-        .sticker-controls button:hover { background: rgba(0,0,0,0.2); }
-        .sticker-count { font-size: 0.9rem; pointer-events: none; }
-
-        #loader { text-align: center; font-size: 1.15rem; color: var(--primary); padding: 50px 20px; font-weight: 600; }
+        #loader {
+            text-align: center;
+            font-size: 1.15rem;
+            color: #38bdf8;
+            padding: 60px 20px;
+            font-weight: 600;
+        }
 
         /* Modals */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: white; padding: 25px; border-radius: 10px; text-align: center; width: 340px; box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
-        .modal-content input { width: 90%; margin-bottom: 15px; border: 1px solid #ccc; padding: 10px; border-radius: 6px; text-transform: none; }
-        .seal-slot-btn { width: 100%; margin-bottom: 10px; padding: 15px; background: #f8f9fa; border: 2px solid #ddd; border-radius: 6px; cursor: pointer; text-align: left; font-weight: bold; color: var(--text); display: flex; flex-direction: column; }
-        .seal-slot-btn:hover { border-color: var(--purple); background: #f3f0f8; }
-        .seal-slot-btn:disabled { opacity: 0.5; cursor: not-allowed; border-color: #ddd; background: #eee; }
-        .seal-date { font-size: 0.8rem; color: #666; margin-top: 5px; font-weight: normal; }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #111d2e;
+            border: 1px solid var(--border-light);
+            padding: 26px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            width: 350px;
+            box-shadow: var(--shadow-lg);
+            color: var(--text-main);
+        }
+        .modal-content input {
+            width: 90%;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-light);
+            background: #0b1422;
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            text-transform: none;
+        }
+        .seal-slot-btn {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 14px 16px;
+            background: #15243a;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: left;
+            font-weight: bold;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s;
+        }
+        .seal-slot-btn:hover {
+            border-color: var(--purple);
+            background: rgba(139, 92, 246, 0.15);
+        }
+        .seal-slot-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            border-color: var(--border);
+            background: #0d1624;
+        }
+        .seal-date { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: normal; }
 
         /* Notification Toast */
         #toast {
             visibility: hidden;
             min-width: 280px;
-            background-color: #1e293b;
+            background-color: #1a2a44;
             color: #fff;
+            border: 1px solid #38bdf8;
             text-align: center;
-            border-radius: 8px;
-            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            padding: 14px 22px;
             position: fixed;
             z-index: 1500;
             left: 50%;
             bottom: 30px;
             transform: translateX(-50%);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             font-size: 0.95rem;
+            font-weight: 600;
         }
         #toast.show {
             visibility: visible;
@@ -610,13 +1146,14 @@
             100% { opacity: 0; bottom: 15px; }
         }
 
-        @media (max-width: 640px) {
-            body { padding: 10px 8px; }
-            .container { padding: 16px 12px; }
-            .brand-title { font-size: 1.2rem; }
+        @media (max-width: 768px) {
+            body { padding: 12px 10px; }
+            .container { padding: 18px 14px; }
+            .brand-title { font-size: 1.25rem; }
             .category-grid { grid-template-columns: 1fr; }
-            .stats { text-align: left; }
             .dashboard-header { flex-direction: column; align-items: stretch; }
+            .stats-scoreboard { justify-content: space-between; }
+            .stat-badge { flex: 1; min-width: 100px; align-items: flex-start; }
         }
     </style>
 </head>
@@ -625,12 +1162,13 @@
 <!-- Login Modal -->
 <div id="loginModal" class="modal-overlay">
     <div class="modal-content">
-        <h3 style="margin-top:0;">Admin Login</h3>
-        <input type="email" id="emailInput" placeholder="Email address">
+        <h3 style="margin-top:0; font-weight:800;">🔑 Admin Authentication</h3>
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">Sign in to add stickers, adjust counts, and manage backups.</p>
+        <input type="email" id="emailInput" placeholder="Admin email">
         <input type="password" id="passwordInput" placeholder="Password">
         <div style="display:flex; gap:10px; justify-content:center;">
-            <button onclick="loginUser()" style="background:var(--success); flex:1;">Login</button>
-            <button onclick="document.getElementById('loginModal').style.display='none'" style="background:#666; flex:1;">Cancel</button>
+            <button onclick="loginUser()" style="background:var(--pitch-grass); border:none; color:white; flex:1;">Sign In</button>
+            <button onclick="document.getElementById('loginModal').style.display='none'" style="flex:1;">Cancel</button>
         </div>
     </div>
 </div>
@@ -638,10 +1176,10 @@
 <!-- Seal Modal -->
 <div id="sealModal" class="modal-overlay">
     <div class="modal-content">
-        <h3 id="sealModalTitle" style="margin-top:0; color: var(--purple);">Seal Collection</h3>
-        <p id="sealModalDesc" style="font-size: 0.9rem; margin-bottom: 15px; color:#555;"></p>
+        <h3 id="sealModalTitle" style="margin-top:0; color: #c4b5fd;">🔒 Seal Collection</h3>
+        <p id="sealModalDesc" style="font-size: 0.88rem; margin-bottom: 16px; color:var(--text-muted);"></p>
         <div id="sealSlotsContainer"></div>
-        <button onclick="document.getElementById('sealModal').style.display='none'" style="background:#666; width: 100%; margin-top: 10px;">Cancel</button>
+        <button onclick="document.getElementById('sealModal').style.display='none'" style="width: 100%; margin-top: 10px;">Close</button>
     </div>
 </div>
 
@@ -652,8 +1190,9 @@
     <!-- Top Navigation Bar -->
     <div class="top-navbar">
         <div class="brand-container" onclick="navigateTo('#/')">
+            <span class="brand-logo-crest">🏆</span>
             <h1 class="brand-title">
-                🏆 Panini Tracker <span class="app-version">0.0.2</span>
+                <span class="panini-highlight">Panini</span> Tracker <span class="app-version">0.0.3</span>
             </h1>
         </div>
         <div class="top-actions">
@@ -673,8 +1212,9 @@
     <!-- VIEW 1: Categories Selection (Landing Page) -->
     <div id="categoriesView" style="display:none;">
         <div class="landing-header">
+            <div class="landing-header-badge">⚽ Official Collector's Hub</div>
             <h2>Select Championship Tournament</h2>
-            <p>Choose between FIFA World Cup and UEFA European Championship sticker collections to start tracking your album.</p>
+            <p>Track your official Panini sticker collections, manage duplicate swaps, and monitor completion progress across World Cup and European tournaments.</p>
         </div>
 
         <div class="category-grid">
@@ -682,10 +1222,10 @@
             <div class="category-card active" onclick="navigateTo('#/fifa-world-cup')">
                 <span class="category-badge badge-active">Available</span>
                 <div>
-                    <span class="category-icon">🏆</span>
+                    <div class="category-icon-wrapper" style="color:var(--gold-light);">🏆</div>
                     <h3 class="category-title">FIFA World Cup</h3>
                     <div class="category-subtitle">Official Panini World Cup Albums</div>
-                    <p class="category-desc">Track official Panini FIFA World Cup albums starting with the 2026 tournament. Features full sticker checklists, duplicate swap management, bulk queries, and cloud backup seals.</p>
+                    <p class="category-desc">Track official Panini FIFA World Cup albums starting with the 2026 Canada, Mexico & USA edition. Features full sticker checklists, duplicate swap management, bulk queries, and cloud backup seals.</p>
                 </div>
                 <button class="btn-category-action active-btn" onclick="event.stopPropagation(); navigateTo('#/fifa-world-cup')">
                     Explore World Cup Albums →
@@ -696,7 +1236,7 @@
             <div class="category-card disabled" onclick="showUnderConstructionNotice()">
                 <span class="category-badge badge-construction">🚧 Under Construction</span>
                 <div>
-                    <span class="category-icon">🇪🇺</span>
+                    <div class="category-icon-wrapper" style="color:#60a5fa;">🇪🇺</div>
                     <h3 class="category-title">UEFA European Championship</h3>
                     <div class="category-subtitle">Official Panini UEFA EURO Albums</div>
                     <p class="category-desc">Official Panini UEFA European Championship (EURO) album tracker is currently under development. Historic and future tournament albums will be available here soon.</p>
@@ -727,42 +1267,42 @@
         <div class="dashboard-header">
             <div class="header-title-container">
                 <h1 id="activeTournamentHeaderTitle">🏆 Panini WC 2026 Tracker</h1>
-                <span id="activeTournamentSubtitle" style="color:var(--text-muted); font-size:0.95rem;"></span>
+                <span id="activeTournamentSubtitle" style="color:var(--text-muted); font-size:0.92rem; font-weight:600;"></span>
             </div>
-            <div class="stats" id="statsDisplay"></div>
+            <div class="stats-scoreboard" id="statsDisplay"></div>
         </div>
 
         <div class="controls" id="controlsDiv">
             <div class="control-group" id="addStickerGroup" style="display:none;">
                 <input type="text" id="addInput" placeholder="e.g. TUR3" onkeypress="handleEnter(event, 'add')">
-                <button onclick="addStickerFromInput()">Add Sticker</button>
+                <button class="btn-add-action" onclick="addStickerFromInput()">Add Sticker</button>
             </div>
             <div class="control-group">
                 <input type="text" id="queryInput" placeholder="e.g. FWC10 (or 00)" onkeypress="handleEnter(event, 'query')">
-                <button onclick="querySticker()" style="background-color: #4a4e69;">Query</button>
+                <button class="btn-query-action" onclick="querySticker()">Query</button>
             </div>
-            <button class="btn-bulk-query" onclick="openBulkQueryView()">Bulk Query</button>
-            <button class="btn-export" onclick="exportMissing()">Copy Missing</button>
-            <button class="btn-export-dup" onclick="exportDuplicates()">Copy Duplicates</button>
+            <button class="btn-bulk-query" onclick="openBulkQueryView()">⚡ Bulk Query</button>
+            <button class="btn-export" onclick="exportMissing()">📋 Copy Missing</button>
+            <button class="btn-export-dup" onclick="exportDuplicates()">🔄 Copy Duplicates</button>
         </div>
 
         <!-- Smart Bulk Query Panel -->
-        <div id="bulkQueryContainer" style="display:none; flex-direction: column; gap: 15px; margin-bottom: 20px;">
-            <button class="btn-nav-back" onclick="closeBulkQueryView()">← Back to Groups</button>
-            <h2 style="color: var(--primary); margin: 0;">Smart Bulk Query Panel</h2>
-            <p style="font-size: 0.95rem; margin: 0; color: var(--text-muted);">
+        <div id="bulkQueryContainer" style="display:none; flex-direction: column; gap: 15px; margin-bottom: 24px; background: rgba(14,23,38,0.7); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border);">
+            <button class="btn-nav-back" style="margin-bottom:0;" onclick="closeBulkQueryView()">← Back to Groups</button>
+            <h2 style="color: var(--text-main); margin: 0; font-size:1.4rem;">Smart Bulk Query Panel</h2>
+            <p style="font-size: 0.92rem; margin: 0; color: var(--text-muted);">
                 Paste lists in flexible formats (e.g., "TUR2-5", "MEX: 1, 7", "ALG 4 5"). The system automatically extracts all valid sticker codes.
             </p>
-            <textarea id="bulkQueryInputText" rows="6" style="width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #ccc; font-family: monospace; text-transform: uppercase; resize: vertical; box-sizing: border-box;"></textarea>
-            <button onclick="runBulkQuery()" style="background-color: var(--primary); padding: 12px; font-size: 1.05rem; width: 100%;">Run Query</button>
+            <textarea id="bulkQueryInputText" rows="6" style="width: 100%; padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-light); background: #0b1422; color:var(--text-main); font-family: monospace; text-transform: uppercase; resize: vertical; box-sizing: border-box;"></textarea>
+            <button onclick="runBulkQuery()" style="background-color: var(--pitch-grass); color:white; border:none; padding: 12px; font-size: 1.05rem; width: 100%;">Run Query</button>
 
-            <div id="bulkQueryResults" style="display:none; background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-top: 5px;">
+            <div id="bulkQueryResults" style="display:none; background: #0f1a2a; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 18px; margin-top: 5px;">
                 <div id="missingStickersDisplay" style="margin-bottom: 20px;"></div>
                 <div id="dupesStickersDisplay" style="margin-bottom: 20px;"></div>
 
                 <div class="bulk-query-actions" style="display:flex; gap:10px;">
-                    <button id="addMissingBtn" onclick="addBulkQueryStickers('missing')" style="background-color: var(--success); flex:1; display:none;">Add Missing Only</button>
-                    <button id="addAllBtn" onclick="addBulkQueryStickers('all')" style="background-color: var(--warning); flex:1; color: white; display:none;">Add All (Inc. Duplicates)</button>
+                    <button id="addMissingBtn" onclick="addBulkQueryStickers('missing')" style="background-color: var(--pitch-grass); color:white; border:none; flex:1; display:none;">Add Missing Only</button>
+                    <button id="addAllBtn" onclick="addBulkQueryStickers('all')" style="background-color: var(--gold-dark); border:none; flex:1; color: white; display:none;">Add All (Inc. Duplicates)</button>
                 </div>
             </div>
         </div>
@@ -774,14 +1314,14 @@
                 <button class="btn-bulk" onclick="bulkAddStickers()">Bulk Add (Classic)</button>
             </div>
             <div class="bulk-history-container">
-                <h4 style="margin-top:0; font-size:0.95rem; color:var(--info);">Recent Bulk Additions</h4>
+                <h4 style="margin-top:0; font-size:0.92rem; color:#38bdf8; letter-spacing:0.3px;">📜 RECENT BULK ADDITIONS</h4>
                 <div id="bulkHistoryList"></div>
             </div>
         </div>
 
         <!-- Seal / Backup Section -->
         <div class="seal-section" id="sealSectionDiv" style="display:none;">
-            <button class="btn-seal" onclick="openSealModal('save')">🔒 Seal Collection</button>
+            <button class="btn-seal" onclick="openSealModal('save')">🔒 Seal Collection (Backup)</button>
             <button class="btn-unseal" onclick="openSealModal('load')">🔓 Unseal (Revert to Backup)</button>
         </div>
 
@@ -791,7 +1331,7 @@
         <!-- Single Team Detail View -->
         <div id="teamDetailSection" style="display:none;">
             <button class="btn-nav-back" onclick="navigateToTeamDetailBack()">← Back to Groups</button>
-            <h2 id="currentTeamTitle" style="text-align:center; margin-bottom: 20px;"></h2>
+            <h2 id="currentTeamTitle" style="text-align:center; margin-bottom: 20px; font-weight:800;"></h2>
             <div id="teamNavigation" class="team-navigation"></div>
             <div class="stickers-grid" id="stickersGrid" style="display:grid;"></div>
         </div>
@@ -1150,7 +1690,6 @@
         grid.innerHTML = '';
 
         if (categoryId === 'fifa-world-cup') {
-            // Currently 2026 is available
             const card = document.createElement('div');
             card.className = 'tournament-card';
             card.onclick = () => navigateTo('#/fifa-world-cup/2026');
@@ -1159,15 +1698,15 @@
                     <span class="tournament-year-badge">🏆 2026 EDITION</span>
                     <h3 class="tournament-title">FIFA World Cup 2026</h3>
                     <div class="tournament-sub">Canada, Mexico, USA • 48 Teams • Special FWC Section</div>
-                    <p style="font-size:0.88rem; color:#555; margin-bottom:16px;">
-                        Complete official Panini sticker album tracker with real-time sync, smart bulk queries, and duplicate swaps.
+                    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:18px; line-height:1.5;">
+                        Complete official Panini sticker album tracker with real-time cloud sync, smart bulk queries, and duplicate swaps.
                     </p>
                 </div>
                 <button class="btn-open-tournament">Open 2026 Tracker →</button>
             `;
             grid.appendChild(card);
         } else {
-            grid.innerHTML = `<div style="color:#777; padding:20px;">No tournaments available in this category yet.</div>`;
+            grid.innerHTML = `<div style="color:var(--text-dim); padding:20px;">No tournaments available in this category yet.</div>`;
         }
     }
 
@@ -1251,26 +1790,26 @@
 
         if (currentParsedMissing.length > 0) {
             missingDisplayDiv.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <h3 style="color: var(--secondary); margin:0;">Missing Stickers (${currentParsedMissing.length})</h3>
-                    <button onclick="copyArrayToClipboard('missing')" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #ccc; cursor:pointer; background-color: var(--bg); color: var(--text);">📋 Copy</button>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h3 style="color: #fb7185; margin:0; font-size:1.15rem;">Missing Stickers (${currentParsedMissing.length})</h3>
+                    <button onclick="copyArrayToClipboard('missing')" style="padding: 5px 12px; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--border-light); cursor:pointer; background-color: var(--surface-elevated); color: #38bdf8;">📋 Copy</button>
                 </div>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    ${currentParsedMissing.map(code => `<span style="background: #f8d7da; color: #721c24; padding: 5px 10px; border-radius: 4px; font-weight: bold; border: 1px solid #f5c6cb;">${code}</span>`).join('')}
+                    ${currentParsedMissing.map(code => `<span style="background: rgba(225, 29, 72, 0.15); color: #fda4af; padding: 5px 10px; border-radius: 4px; font-weight: 700; border: 1px solid rgba(225, 29, 72, 0.35); font-size:0.85rem;">${code}</span>`).join('')}
                 </div>
             `;
         } else {
-            missingDisplayDiv.innerHTML = `<h3 style="color: var(--success); margin-top:0;">Great! You already own all stickers in the queried list.</h3>`;
+            missingDisplayDiv.innerHTML = `<h3 style="color: var(--pitch-green); margin-top:0;">Great! You already own all stickers in the queried list.</h3>`;
         }
 
         if (currentParsedDupes.length > 0) {
             dupesDisplayDiv.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; margin-top: 20px;">
-                    <h3 style="color: var(--warning); margin:0;">Duplicates in Query (${currentParsedDupes.length})</h3>
-                    <button onclick="copyArrayToClipboard('dupes')" style="padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: 1px solid #ccc; cursor:pointer; background-color: var(--bg); color: var(--text);">📋 Copy</button>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; margin-top: 20px;">
+                    <h3 style="color: var(--gold-light); margin:0; font-size:1.15rem;">Duplicates in Query (${currentParsedDupes.length})</h3>
+                    <button onclick="copyArrayToClipboard('dupes')" style="padding: 5px 12px; font-size: 0.8rem; border-radius: 4px; border: 1px solid var(--border-light); cursor:pointer; background-color: var(--surface-elevated); color: var(--gold-light);">📋 Copy</button>
                 </div>
                 <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    ${currentParsedDupes.map(code => `<span style="background: #fff3cd; color: #856404; padding: 5px 10px; border-radius: 4px; font-weight: bold; border: 1px solid #ffeeba;">${code}</span>`).join('')}
+                    ${currentParsedDupes.map(code => `<span style="background: rgba(245, 158, 11, 0.15); color: #fde68a; padding: 5px 10px; border-radius: 4px; font-weight: 700; border: 1px solid rgba(245, 158, 11, 0.35); font-size:0.85rem;">${code}</span>`).join('')}
                 </div>
             `;
         } else {
@@ -1364,7 +1903,7 @@
             .slice(0, 10);
 
         if (sortedKeys.length === 0) {
-            container.innerHTML = `<div style="color:#999; font-size:0.85rem; padding: 5px;">No bulk addition history yet.</div>`;
+            container.innerHTML = `<div style="color:var(--text-dim); font-size:0.85rem; padding: 6px;">No bulk addition history yet.</div>`;
             return;
         }
 
@@ -1375,7 +1914,7 @@
             });
 
             let detailsText = Object.entries(item.stickers).map(([code, qty]) => `${code}(x${qty})`).join(', ');
-            let costText = item.cost ? ` | <b style="color:var(--purple);">💰 ${item.cost}</b>` : '';
+            let costText = item.cost ? ` | <b style="color:var(--gold-light);">💰 $${item.cost}</b>` : '';
             const isDelivered = item.delivered || false;
 
             let actionsHtml = '';
@@ -1389,7 +1928,7 @@
                     </div>
                 `;
             } else {
-                actionsHtml = isDelivered ? `<span style="font-size:0.8rem; color:var(--success); margin-left:10px;">✅ Delivered</span>` : `<span style="font-size:0.8rem; color:#999; margin-left:10px;">⏳ Pending</span>`;
+                actionsHtml = isDelivered ? `<span style="font-size:0.8rem; color:var(--pitch-green); margin-left:10px;">✅ Delivered</span>` : `<span style="font-size:0.8rem; color:var(--text-dim); margin-left:10px;">⏳ Pending</span>`;
             }
 
             const div = document.createElement('div');
@@ -1397,15 +1936,15 @@
             div.innerHTML = `
                 <div class="history-main-row">
                     <div class="history-info">
-                        <strong style="user-select: text;">${key}</strong> <span style="color:#666; font-size:0.8rem; margin-left: 5px;">(${dateStr})</span>
+                        <strong style="user-select: text; color:#f1f5f9;">${key}</strong> <span style="color:var(--text-dim); font-size:0.8rem; margin-left: 6px;">(${dateStr})</span>
                         <div class="history-details">
                             Total ${item.total} Items${costText}
-                            <span style="margin-left:8px; color:var(--primary); cursor:pointer; padding: 2px 5px; background: #eef2f5; border-radius: 4px;" onclick="toggleHistoryDetails('${key}')"><b>Details 🔽</b></span>
+                            <span style="margin-left:8px; color:#38bdf8; cursor:pointer; padding: 2px 6px; background: rgba(56, 189, 248, 0.1); border-radius: 4px;" onclick="toggleHistoryDetails('${key}')"><b>Details 🔽</b></span>
                         </div>
                     </div>
                     ${actionsHtml}
                 </div>
-                <div id="history-details-${key}" style="display:none; width: 100%; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee; font-size: 0.85rem; color: #555;">
+                <div id="history-details-${key}" style="display:none; width: 100%; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); font-size: 0.85rem; color: var(--text-muted);">
                     ${detailsText}
                 </div>
             `;
@@ -1520,9 +2059,18 @@
         const statsDiv = document.getElementById('statsDisplay');
         if (statsDiv) {
             statsDiv.innerHTML = `
-                <div class="album-stat">Album Progress: ${uniqueCollected} / ${total} (${percentage}%)</div>
-                <div class="total-stat">Physical Total (Inc. Duplicates): ${totalPhysical} Items</div>
-                <div class="cost-stat">Total Spent: $${grandTotalCost.toFixed(2)}</div>
+                <div class="stat-badge stat-progress">
+                    <span class="stat-label">Album Progress</span>
+                    <span class="stat-val">${uniqueCollected} / ${total} <small style="font-size:0.8rem; font-weight:700;">(${percentage}%)</small></span>
+                </div>
+                <div class="stat-badge stat-total">
+                    <span class="stat-label">Physical Stickers</span>
+                    <span class="stat-val">${totalPhysical} <small style="font-size:0.8rem; font-weight:700;">Items</small></span>
+                </div>
+                <div class="stat-badge stat-cost">
+                    <span class="stat-label">Total Spent</span>
+                    <span class="stat-val">$${grandTotalCost.toFixed(2)}</span>
+                </div>
             `;
         }
     }
@@ -1550,26 +2098,32 @@
 
                 const card = document.createElement('div');
                 card.className = 'team-card';
+                if (collectedInTeam === teamStickers.length) {
+                    card.classList.add('completed');
+                }
                 card.onclick = () => navigateTo(`#/${route.categoryId}/${route.year || '2026'}/team/${team.code}`);
 
-                let overlay = (collectedInTeam === teamStickers.length) ? 'rgba(210, 245, 210, 0.9)' : 'rgba(255, 255, 255, 0.85)';
+                const percent = teamStickers.length === 0 ? 0 : Math.round((collectedInTeam / teamStickers.length) * 100);
+
                 if (team.flags) {
-                    card.style.backgroundImage = `linear-gradient(${overlay}, ${overlay}), url('https://flagcdn.com/w320/${team.flags[0]}.png')`;
+                    card.style.backgroundImage = `linear-gradient(180deg, rgba(14, 23, 38, 0.72) 0%, rgba(9, 14, 23, 0.94) 100%), url('https://flagcdn.com/w320/${team.flags[0]}.png')`;
                     card.style.backgroundPosition = 'center';
                     card.style.backgroundSize = 'cover';
                 } else {
-                    card.style.backgroundImage = `linear-gradient(${overlay}, ${overlay}), repeating-linear-gradient(45deg, #ccc, #ccc 10px, #eee 10px, #eee 20px)`;
+                    card.style.backgroundImage = `linear-gradient(180deg, rgba(14, 23, 38, 0.8) 0%, rgba(9, 14, 23, 0.95) 100%), repeating-linear-gradient(45deg, #162438, #162438 10px, #1a2c44 10px, #1a2c44 20px)`;
                 }
 
-                if (collectedInTeam === teamStickers.length) {
-                    card.style.borderColor = 'var(--success)';
-                    card.style.boxShadow = '0 0 10px rgba(42, 157, 143, 0.5)';
-                }
+                const completionIcon = collectedInTeam === teamStickers.length ? '🏆 ' : '';
 
                 card.innerHTML = `
-                    <div style="font-size: 1.05rem; margin-bottom: 5px; color: var(--primary); text-shadow: 1px 1px 0px rgba(255,255,255,0.8);">${team.name}</div>
-                    <div style="font-size: 1rem; color: #111;"><b>${team.code}</b></div>
-                    <span style="font-size: 0.9rem; background: rgba(255,255,255,0.85); padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 6px; color: #000; border: 1px solid #ccc;">${collectedInTeam} / ${teamStickers.length}</span>
+                    <div class="team-display-name">${completionIcon}${team.name}</div>
+                    <div class="team-code-badge">${team.code}</div>
+                    <div class="team-progress-wrapper">
+                        <div class="team-progress-track">
+                            <div class="team-progress-fill" style="width: ${percent}%;"></div>
+                        </div>
+                        <span class="team-count-badge">${collectedInTeam} / ${teamStickers.length}</span>
+                    </div>
                 `;
                 grid.appendChild(card);
             });
@@ -1588,11 +2142,11 @@
         let flagsHtml = '';
         if (team.flags) {
             team.flags.forEach(f => {
-                flagsHtml += `<img src="https://flagcdn.com/h40/${f}.png" style="height: 28px; margin-right: 10px; vertical-align: middle; border: 1px solid #ccc; border-radius: 4px;">`;
+                flagsHtml += `<img src="https://flagcdn.com/h40/${f}.png" style="height: 30px; margin-right: 12px; vertical-align: middle; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; box-shadow:0 2px 6px rgba(0,0,0,0.4);">`;
             });
         }
 
-        title.innerHTML = `${flagsHtml} <span style="vertical-align: middle;">${team.name} Stickers</span>`;
+        title.innerHTML = `${flagsHtml} <span style="vertical-align: middle; color:var(--text-main);">${team.name} Stickers</span>`;
 
         const currentIndex = flatTeams.findIndex(t => t.code === code);
         const prevTeam = currentIndex > 0 ? flatTeams[currentIndex - 1] : null;
@@ -1633,11 +2187,11 @@
             if (isAdmin) {
                 controlsHtml = `
                     <button onclick="updateStickerCount('${stickerCode}', -1)">-</button>
-                    <span class="sticker-count">${count > 0 ? 'x' + count : ''}</span>
+                    <span class="sticker-count">${count > 1 ? 'x' + count : (count === 1 ? '✓' : '')}</span>
                     <button onclick="updateStickerCount('${stickerCode}', 1)">+</button>
                 `;
             } else {
-                controlsHtml = `<span class="sticker-count" style="margin: 0 auto;">${count > 0 ? 'x' + count : ''}</span>`;
+                controlsHtml = `<span class="sticker-count" style="margin: 0 auto;">${count > 1 ? 'x' + count : (count === 1 ? '✓' : '')}</span>`;
             }
 
             const displayNum = stickerCode === "00" ? "00" : stickerCode.replace(/[^0-9]/g, '');

@@ -1,6 +1,6 @@
 {
   "name": "panini-tracker",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Panini World Cup and UEFA EURO Sticker Album Tracker & Swap Manager",
   "main": "index.html",
   "scripts": {

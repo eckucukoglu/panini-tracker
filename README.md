@@ -1,6 +1,6 @@
 # Panini Sticker Album Tracker (panini-tracker)
 
-**Version:** `0.0.2`
+**Version:** `0.0.3`
 
 A modular, cloud-powered web application built with Firebase Realtime Database and Authentication to track Panini sticker album collections, missing stickers, and duplicate swaps across FIFA World Cup and UEFA European Championship (EURO) tournaments.
 
