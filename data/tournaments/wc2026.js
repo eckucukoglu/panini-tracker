@@ -8,6 +8,10 @@ TOURNAMENTS_CONFIG.tournaments['wc2026'] = {
     title: 'FIFA World Cup 2026',
     subtitle: 'Canada, Mexico, USA',
     dbKey: 'panini2026', // Firebase realtime database prefix (panini2026_collection, etc.)
+    isSequential: false,
+    totalStickers: 980,
+    status: 'active',
+    phase: 'Current Era',
     stickerLimitPerTeam: 20,
     specialTeamCode: 'FWC',
     getStickersForTeam: function(teamCode) {
@@ -15,6 +19,35 @@ TOURNAMENTS_CONFIG.tournaments['wc2026'] = {
             return ['00', ...Array.from({ length: 19 }, (_, k) => `FWC${k + 1}`)];
         }
         return Array.from({ length: this.stickerLimitPerTeam }, (_, k) => `${teamCode}${k + 1}`);
+    },
+    getStickerItem: function(stickerCode) {
+        if (stickerCode === '00') return { code: '00', name: 'Panini 00 Logo' };
+        if (stickerCode.startsWith('FWC')) {
+            const num = parseInt(stickerCode.replace('FWC', ''), 10);
+            const specialNames = {
+                1: 'FIFA World Cup Trophy',
+                2: 'Official Emblem',
+                3: 'Official Mascot',
+                4: 'Official Match Ball',
+                5: 'Estadio Azteca (Mexico City)',
+                6: 'MetLife Stadium (New York/NJ)',
+                7: 'SoFi Stadium (Los Angeles)',
+                8: 'AT&T Stadium (Dallas)',
+                9: 'Hard Rock Stadium (Miami)',
+                10: 'Mercedes-Benz Stadium (Atlanta)',
+                11: 'Lumen Field (Seattle)',
+                12: 'NRG Stadium (Houston)',
+                13: 'Lincoln Financial Field (Philadelphia)',
+                14: 'Gillette Stadium (Boston)',
+                15: 'Levi\'s Stadium (San Francisco)',
+                16: 'Arrowhead Stadium (Kansas City)',
+                17: 'BMO Field (Toronto)',
+                18: 'BC Place (Vancouver)',
+                19: 'Estadio BBVA (Monterrey)'
+            };
+            return { code: stickerCode, name: specialNames[num] || `Special #${num}` };
+        }
+        return null;
     },
     groups: {
         "Special Section": [

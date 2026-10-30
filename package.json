@@ -1,10 +1,11 @@
 {
   "name": "panini-tracker",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Panini World Cup and UEFA EURO Sticker Album Tracker & Swap Manager",
   "main": "index.html",
   "scripts": {
-    "start": "python3 -m http.server 8000"
+    "start": "python3 -m http.server 8000",
+    "test": "node tests/verify_tournaments_and_features.js"
   },
   "repository": {
     "type": "git",

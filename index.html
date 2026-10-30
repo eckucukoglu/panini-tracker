@@ -18,6 +18,11 @@
     <!-- CONFIGURATION & MODULAR DATA -->
     <script src="config.js"></script>
     <script src="data/tournaments-config.js"></script>
+    <script src="data/tournaments/wc1970.js"></script>
+    <script src="data/tournaments/wc1974.js"></script>
+    <script src="data/tournaments/wc1978.js"></script>
+    <script src="data/tournaments/wc1982.js"></script>
+    <script src="data/tournaments/wc1986.js"></script>
     <script src="data/tournaments/wc2026.js"></script>
 
     <style>
@@ -908,8 +913,73 @@
         /* STICKERS GRID & AUTHENTIC PANINI SLOTS */
         .stickers-grid {
             display: none;
-            grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
-            gap: 14px;
+            grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+            gap: 12px;
+        }
+
+        /* Team Detail Filter & Search Bar */
+        .team-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            background: rgba(15, 26, 42, 0.7);
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-light);
+        }
+
+        .team-filter-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            background: var(--surface-card);
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tab:hover {
+            border-color: #38bdf8;
+            color: var(--text-main);
+        }
+
+        .filter-tab.active {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+
+        .team-filter-search {
+            flex-grow: 1;
+            max-width: 320px;
+        }
+
+        .team-filter-search input {
+            width: 100%;
+            padding: 7px 12px;
+            font-size: 0.85rem;
+            background: #090e17;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            color: var(--text-main);
+            box-sizing: border-box;
+        }
+
+        .team-filter-search input:focus {
+            border-color: #38bdf8;
+            outline: none;
         }
 
         /* Unowned / Missing Album Slot */
@@ -917,6 +987,7 @@
             aspect-ratio: 3/4.4;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
             border-radius: var(--radius-sm);
             font-weight: 800;
             background: #0d1624;
@@ -926,6 +997,7 @@
             position: relative;
             transition: all 0.2s ease;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+            user-select: none;
         }
 
         .sticker:hover {
@@ -949,14 +1021,32 @@
             pointer-events: none;
         }
 
-        .sticker-num {
+        .sticker-card-body {
             flex-grow: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 1.25rem;
+            padding: 8px 6px 4px 6px;
+            text-align: center;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .sticker-code-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--gold-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .sticker-num {
+            font-size: 1.15rem;
             letter-spacing: -0.5px;
             font-weight: 800;
+            line-height: 1.1;
         }
 
         .sticker:not(.owned) .sticker-num {
@@ -966,6 +1056,26 @@
         .sticker.owned .sticker-num {
             color: #ffffff;
             text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .sticker-name {
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-top: 4px;
+            line-height: 1.15;
+            max-height: 2.4em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            word-break: break-word;
+        }
+
+        .sticker.owned .sticker-name {
+            color: #e2e8f0;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
         }
 
         .sticker-controls {
@@ -1192,7 +1302,7 @@
         <div class="brand-container" onclick="navigateTo('#/')">
             <span class="brand-logo-crest">🏆</span>
             <h1 class="brand-title">
-                <span class="panini-highlight">Panini</span> Tracker <span class="app-version">0.0.4</span>
+                <span class="panini-highlight">Panini</span> Tracker <span class="app-version">0.0.5</span>
             </h1>
         </div>
         <div class="top-actions">
@@ -1331,8 +1441,22 @@
         <!-- Single Team Detail View -->
         <div id="teamDetailSection" style="display:none;">
             <button class="btn-nav-back" onclick="navigateToTeamDetailBack()">← Back to Groups</button>
-            <h2 id="currentTeamTitle" style="text-align:center; margin-bottom: 20px; font-weight:800;"></h2>
+            <h2 id="currentTeamTitle" style="text-align:center; margin-bottom: 14px; font-weight:800;"></h2>
             <div id="teamNavigation" class="team-navigation"></div>
+
+            <!-- In-Page Sticker Filtering & Search Bar -->
+            <div class="team-filter-bar">
+                <div class="team-filter-buttons">
+                    <button class="filter-tab active" data-filter="all" onclick="setTeamFilter('all')">All</button>
+                    <button class="filter-tab" data-filter="missing" onclick="setTeamFilter('missing')">Missing Only</button>
+                    <button class="filter-tab" data-filter="owned" onclick="setTeamFilter('owned')">Owned Only</button>
+                    <button class="filter-tab" data-filter="dupes" onclick="setTeamFilter('dupes')">Duplicates Only</button>
+                </div>
+                <div class="team-filter-search">
+                    <input type="text" id="teamFilterSearchInput" placeholder="🔍 Filter player, item, or #..." oninput="handleTeamSearchInput()">
+                </div>
+            </div>
+
             <div class="stickers-grid" id="stickersGrid" style="display:grid;"></div>
         </div>
 
@@ -1363,6 +1487,44 @@
     let allStickers = [];
     let teamMap = {};
     let flatTeams = [];
+
+    let currentTeamFilter = 'all';
+    let currentTeamSearch = '';
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function normalizeSearchText(str) {
+        if (!str) return '';
+        return String(str).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function setTeamFilter(filter) {
+        currentTeamFilter = filter;
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            if (tab.getAttribute('data-filter') === filter) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+        const currentCode = document.getElementById('currentTeamTitle').getAttribute('data-code');
+        if (currentCode) renderTeamDetail(currentCode);
+    }
+
+    function handleTeamSearchInput() {
+        const input = document.getElementById('teamFilterSearchInput');
+        currentTeamSearch = input ? normalizeSearchText(input.value.trim()) : '';
+        const currentCode = document.getElementById('currentTeamTitle').getAttribute('data-code');
+        if (currentCode) renderTeamDetail(currentCode);
+    }
 
     // Toast helper
     function showToast(message) {
@@ -1444,10 +1606,51 @@
 
         activeTournament = tournamentDef;
 
-        // Reset data containers
+        // Reset filter & search state
+        currentTeamFilter = 'all';
+        currentTeamSearch = '';
+        const searchInput = document.getElementById('teamFilterSearchInput');
+        if (searchInput) searchInput.value = '';
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            if (tab.getAttribute('data-filter') === 'all') {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+
+        // Set dynamic placeholders based on numbering system
+        const addInput = document.getElementById('addInput');
+        const queryInput = document.getElementById('queryInput');
+        const bulkInput = document.getElementById('bulkInput');
+        if (activeTournament.isSequential) {
+            if (addInput) addInput.placeholder = `e.g. 42 (1 to ${activeTournament.totalStickers})`;
+            if (queryInput) queryInput.placeholder = `e.g. 42 (or Pelé / Maradona)`;
+            if (bulkInput) bulkInput.placeholder = `e.g. 1, 2, 5-10, 42 (1 to ${activeTournament.totalStickers})`;
+        } else {
+            if (addInput) addInput.placeholder = `e.g. TUR3 (or 00)`;
+            if (queryInput) queryInput.placeholder = `e.g. FWC10 (or 00)`;
+            if (bulkInput) bulkInput.placeholder = `e.g. TUR 1 2 3, FWC 1-5, 00`;
+        }
+
+        // Reset data & state containers to prevent cross-tournament state leak
+        collection = {};
+        sealData = {};
+        bulkHistoryData = {};
         allStickers = [];
         teamMap = {};
         flatTeams = [];
+
+        // Detach old listeners if any
+        if (collectionRef) collectionRef.off();
+        if (sealsRef) sealsRef.off();
+        if (bulkHistoryRef) bulkHistoryRef.off();
+
+        if (activeTournament.status === 'in_preparation' || !activeTournament.groups) {
+            document.getElementById('loader').style.display = 'none';
+            updateStats();
+            return true;
+        }
 
         Object.keys(activeTournament.groups).forEach(groupName => {
             activeTournament.groups[groupName].forEach(team => {
@@ -1457,11 +1660,6 @@
                 allStickers.push(...stickers);
             });
         });
-
-        // Detach old listeners if any
-        if (collectionRef) collectionRef.off();
-        if (sealsRef) sealsRef.off();
-        if (bulkHistoryRef) bulkHistoryRef.off();
 
         const dbKey = activeTournament.dbKey || activeTournament.id;
         collectionRef = db.ref(`${dbKey}_collection`);
@@ -1484,20 +1682,22 @@
             let needsDbUpdate = false;
 
             if (isAdmin) {
-                // Code normalization for 2026 legacy aliases if needed
-                Object.keys(collection).forEach(key => {
-                    if (key.startsWith("IBO")) {
-                        let newKey = key.replace("IBO", "IRQ");
-                        collection[newKey] = (collection[newKey] || 0) + collection[key];
-                        delete collection[key];
-                        needsDbUpdate = true;
-                    } else if (key.startsWith("CDJ")) {
-                        let newKey = key.replace("CDJ", "COD");
-                        collection[newKey] = (collection[newKey] || 0) + collection[key];
-                        delete collection[key];
-                        needsDbUpdate = true;
-                    }
-                });
+                // Code normalization ONLY for 2026 legacy aliases if needed
+                if (activeTournament.id === 'wc2026') {
+                    Object.keys(collection).forEach(key => {
+                        if (key.startsWith("IBO")) {
+                            let newKey = key.replace("IBO", "IRQ");
+                            collection[newKey] = (collection[newKey] || 0) + collection[key];
+                            delete collection[key];
+                            needsDbUpdate = true;
+                        } else if (key.startsWith("CDJ")) {
+                            let newKey = key.replace("CDJ", "COD");
+                            collection[newKey] = (collection[newKey] || 0) + collection[key];
+                            delete collection[key];
+                            needsDbUpdate = true;
+                        }
+                    });
+                }
                 Object.keys(collection).forEach(key => {
                     if (!allStickers.includes(key)) {
                         delete collection[key];
@@ -1545,24 +1745,34 @@
 
         const yearOrTournamentId = parts[1];
         let tournamentId = yearOrTournamentId;
-        if (categoryId === 'fifa-world-cup' && yearOrTournamentId === '2026') {
-            tournamentId = 'wc2026';
+        let matchedTournament = null;
+
+        if (typeof TOURNAMENTS_CONFIG !== 'undefined' && TOURNAMENTS_CONFIG.tournaments) {
+            for (const key in TOURNAMENTS_CONFIG.tournaments) {
+                const t = TOURNAMENTS_CONFIG.tournaments[key];
+                if (t.id === yearOrTournamentId || String(t.year) === String(yearOrTournamentId)) {
+                    tournamentId = t.id;
+                    matchedTournament = t;
+                    break;
+                }
+            }
         }
+        const year = matchedTournament ? String(matchedTournament.year) : yearOrTournamentId;
 
         if (parts.length === 2) {
-            return { view: 'tournament', categoryId, tournamentId, year: yearOrTournamentId };
+            return { view: 'tournament', categoryId, tournamentId, year };
         }
 
         if (parts[2] === 'bulk-query') {
-            return { view: 'bulk-query', categoryId, tournamentId, year: yearOrTournamentId };
+            return { view: 'bulk-query', categoryId, tournamentId, year };
         }
 
         if (parts[2] === 'team' && parts[3]) {
-            return { view: 'team', categoryId, tournamentId, year: yearOrTournamentId, teamCode: parts[3].toUpperCase() };
+            return { view: 'team', categoryId, tournamentId, year, teamCode: parts[3].toUpperCase() };
         }
 
         // Fallback
-        return { view: 'tournament', categoryId, tournamentId, year: yearOrTournamentId };
+        return { view: 'tournament', categoryId, tournamentId, year };
     }
 
     function navigateTo(hash) {
@@ -1655,6 +1865,47 @@
         const controlsDiv = document.getElementById('controlsDiv');
         const teamDetailSection = document.getElementById('teamDetailSection');
 
+        if (activeTournament.status === 'in_preparation') {
+            document.getElementById('loader').style.display = 'none';
+            if (controlsDiv) controlsDiv.style.display = 'none';
+            if (bulkSectionDiv) bulkSectionDiv.style.display = 'none';
+            if (bulkQueryContainer) bulkQueryContainer.style.display = 'none';
+            if (teamDetailSection) teamDetailSection.style.display = 'none';
+            if (teamsContainer) {
+                teamsContainer.style.display = 'block';
+                teamsContainer.innerHTML = `
+                    <div style="grid-column: 1 / -1; width: 100%; text-align: center; padding: 48px 24px; background: var(--surface-card); border-radius: var(--radius-lg); border: 1px dashed var(--border-light); margin-top: 10px;">
+                        <div style="font-size: 3rem; margin-bottom: 14px;">⏳</div>
+                        <div style="display:inline-block; padding: 4px 12px; border-radius: 999px; background: rgba(148, 163, 184, 0.15); color: #cbd5e1; font-weight: 700; font-size: 0.85rem; margin-bottom: 12px;">
+                            ${activeTournament.phase || 'UPCOMING DATA PHASE'}
+                        </div>
+                        <h2 style="font-size: 1.6rem; color: var(--text-main); margin-bottom: 8px;">${activeTournament.title} Album Checklist</h2>
+                        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 620px; margin: 0 auto 20px auto; line-height: 1.6;">
+                            ${activeTournament.description || `The official Panini checklist for ${activeTournament.title} (${activeTournament.totalStickers} stickers) is scheduled for data release in ${activeTournament.phase || 'the next phase'}.`}
+                        </p>
+                        <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px;">
+                            <div class="stat-badge" style="background: rgba(15, 23, 42, 0.6);">
+                                <span class="stat-label">Total Stickers</span>
+                                <span class="stat-val" style="color: #38bdf8;">${activeTournament.totalStickers}</span>
+                            </div>
+                            <div class="stat-badge" style="background: rgba(15, 23, 42, 0.6);">
+                                <span class="stat-label">Numbering System</span>
+                                <span class="stat-val" style="color: var(--gold-light); font-size: 1rem;">${activeTournament.isSequential ? '1..' + activeTournament.totalStickers + ' Sequential' : 'Team Code-Based'}</span>
+                            </div>
+                            <div class="stat-badge" style="background: rgba(15, 23, 42, 0.6);">
+                                <span class="stat-label">Release Package</span>
+                                <span class="stat-val" style="color: #34d399; font-size: 1rem;">${activeTournament.phase || 'In Preparation'}</span>
+                            </div>
+                        </div>
+                        <button onclick="navigateTo('#/${route.categoryId}')" class="btn-back" style="display:inline-block; padding: 10px 24px; font-size: 0.95rem; background: var(--surface-elevated); border: 1px solid var(--border-light); color: var(--text-main); border-radius: var(--radius-md); cursor:pointer;">← Explore Available World Cup Albums</button>
+                    </div>
+                `;
+            }
+            const statsDiv = document.getElementById('statsDisplay');
+            if (statsDiv) statsDiv.innerHTML = '';
+            return;
+        }
+
         if (route.view === 'bulk-query') {
             teamsContainer.style.display = 'none';
             bulkSectionDiv.style.display = 'none';
@@ -1689,22 +1940,64 @@
         const grid = document.getElementById('tournamentsGridContainer');
         grid.innerHTML = '';
 
-        if (categoryId === 'fifa-world-cup') {
-            const card = document.createElement('div');
-            card.className = 'tournament-card';
-            card.onclick = () => navigateTo('#/fifa-world-cup/2026');
-            card.innerHTML = `
-                <div>
-                    <span class="tournament-year-badge">🏆 2026 EDITION</span>
-                    <h3 class="tournament-title">FIFA World Cup 2026</h3>
-                    <div class="tournament-sub">Canada, Mexico, USA • 48 Teams • Special FWC Section</div>
-                    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:18px; line-height:1.5;">
-                        Complete official Panini sticker album tracker with real-time cloud sync, smart bulk queries, and duplicate swaps.
-                    </p>
-                </div>
-                <button class="btn-open-tournament">Open 2026 Tracker →</button>
-            `;
-            grid.appendChild(card);
+        const matchingTournaments = Object.values(TOURNAMENTS_CONFIG.tournaments || {})
+            .filter(t => t.categoryId === categoryId)
+            .sort((a, b) => (b.year || 0) - (a.year || 0));
+
+        if (matchingTournaments.length > 0) {
+            matchingTournaments.forEach(tourney => {
+                const card = document.createElement('div');
+                card.className = 'tournament-card';
+                card.onclick = () => navigateTo(`#/${categoryId}/${tourney.year || tourney.id}`);
+
+                const isClassic = (tourney.year >= 1970 && tourney.year <= 1986);
+                const isPrep = tourney.status === 'in_preparation';
+
+                let eraBadge = '';
+                if (isPrep) {
+                    eraBadge = `<span class="tournament-year-badge" style="background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.4);">⏳ ${tourney.phase || 'IN PREPARATION'} (${tourney.year})</span>`;
+                } else if (isClassic) {
+                    eraBadge = `<span class="tournament-year-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--gold-light); border: 1px solid rgba(245, 158, 11, 0.4);">📜 CLASSIC ERA (${tourney.year})</span>`;
+                } else {
+                    eraBadge = `<span class="tournament-year-badge">🏆 ${tourney.year} EDITION</span>`;
+                }
+
+                const systemBadge = tourney.isSequential
+                    ? `<span style="font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 600; margin-left: 8px;">1..${tourney.totalStickers} Contiguous</span>`
+                    : `<span style="font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: #34d399; font-weight: 600; margin-left: 8px;">Team Code-Based</span>`;
+
+                const stickerCountText = tourney.totalStickers ? `${tourney.totalStickers} Stickers` : 'Complete Set';
+
+                let descText = '';
+                let btnText = `Open ${tourney.year} Tracker →`;
+                let btnStyle = '';
+
+                if (isPrep) {
+                    descText = tourney.description || `Official Panini ${tourney.year} World Cup sticker checklist scheduled for upcoming release.`;
+                    btnText = `Preview ${tourney.year} Edition ⏳`;
+                    btnStyle = `background: rgba(255, 255, 255, 0.08); color: var(--text-muted);`;
+                } else if (isClassic) {
+                    descText = `Official Panini ${tourney.year} album checklist with real player names, badges, and complete sequential tracking.`;
+                } else {
+                    descText = 'Complete official Panini sticker album tracker with real-time cloud sync, smart bulk queries, and duplicate swaps.';
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px; margin-bottom:10px;">
+                            ${eraBadge}
+                            ${systemBadge}
+                        </div>
+                        <h3 class="tournament-title">${tourney.title}</h3>
+                        <div class="tournament-sub">${tourney.subtitle || ''} • ${stickerCountText}</div>
+                        <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:18px; line-height:1.5;">
+                            ${descText}
+                        </p>
+                    </div>
+                    <button class="btn-open-tournament" style="${btnStyle}">${btnText}</button>
+                `;
+                grid.appendChild(card);
+            });
         } else {
             grid.innerHTML = `<div style="color:var(--text-dim); padding:20px;">No tournaments available in this category yet.</div>`;
         }
@@ -1725,18 +2018,40 @@
         navigateTo(`#/${route.categoryId}/${route.year || '2026'}`);
     }
 
-    function parseComplexBulkText(text) {
-        const lines = text.toUpperCase().split('\n');
-        const parsedStickers = new Set();
+    function parseComplexBulkText(text, options = {}) {
+        if (!text || !activeTournament) return [];
+        const allowDuplicates = !!options.allowDuplicates;
+
+        let normalized = text.replace(/[\u2010-\u2015\u2212~]/g, '-');
+        normalized = normalized.replace(/([A-Za-z]{2,4})\s+(\d+)/g, '$1$2');
+        normalized = normalized.replace(/([A-Za-z0-9]+)\s*-\s*([A-Za-z0-9]+)/g, '$1-$2');
+
+        const lines = normalized.toUpperCase().split('\n');
+        const parsedList = [];
+        const parsedSet = new Set();
+        const isSequential = !!activeTournament.isSequential;
+
+        function addSticker(code) {
+            if (!allStickers.includes(code)) return;
+            if (allowDuplicates) {
+                parsedList.push(code);
+            } else if (!parsedSet.has(code)) {
+                parsedSet.add(code);
+                parsedList.push(code);
+            }
+        }
 
         lines.forEach(line => {
-            const sanitizedLine = line.replace(/[-:,;]/g, ' ');
-            const tokens = sanitizedLine.split(/\s+/).filter(t => t.trim() !== '');
+            const cleanedLine = line.replace(/[:;,]/g, ' ');
+            const rawTokens = cleanedLine.split(/\s+/).filter(t => t.trim() !== '');
             let currentTeamContext = null;
 
-            tokens.forEach(token => {
+            rawTokens.forEach(rawToken => {
+                let token = rawToken.trim();
+                if (!token) return;
+
                 if (token === '00' || token === 'FWC00') {
-                    parsedStickers.add('00');
+                    addSticker('00');
                     return;
                 }
 
@@ -1745,28 +2060,65 @@
                     return;
                 }
 
-                const match = token.match(/^([A-Z]{3})?(\d+)$/);
-                if (match) {
-                    const teamPart = match[1];
-                    const numPart = match[2];
-
-                    if (teamPart && teamMap[teamPart]) {
-                        currentTeamContext = teamPart;
-                    }
-
-                    if (currentTeamContext) {
-                        let potentialCode = currentTeamContext + numPart;
-                        if (potentialCode === 'FWC00') potentialCode = '00';
-
-                        if (allStickers.includes(potentialCode)) {
-                            parsedStickers.add(potentialCode);
+                // Range with prefix: e.g. "TUR2-5" or "TUR2-TUR5"
+                const prefixRangeMatch = token.match(/^([A-Z]{2,4})(\d+)-(?:[A-Z]{2,4})?(\d+)$/);
+                if (prefixRangeMatch) {
+                    const prefix = prefixRangeMatch[1];
+                    const start = parseInt(prefixRangeMatch[2], 10);
+                    const end = parseInt(prefixRangeMatch[3], 10);
+                    if (teamMap[prefix] && start <= end && (end - start) <= 100) {
+                        for (let n = start; n <= end; n++) {
+                            addSticker(prefix + n);
                         }
+                        currentTeamContext = prefix;
+                        return;
                     }
+                }
+
+                // Numeric range: e.g. "10-15"
+                const numRangeMatch = token.match(/^(\d+)-(\d+)$/);
+                if (numRangeMatch) {
+                    const start = parseInt(numRangeMatch[1], 10);
+                    const end = parseInt(numRangeMatch[2], 10);
+                    if (start <= end && (end - start) <= 100) {
+                        for (let n = start; n <= end; n++) {
+                            if (isSequential) {
+                                addSticker(String(n));
+                            } else if (currentTeamContext) {
+                                addSticker(currentTeamContext + n);
+                            }
+                        }
+                        return;
+                    }
+                }
+
+                // Prefix + number: e.g. "TUR3", "FWC12"
+                const prefixNumMatch = token.match(/^([A-Z]{2,4})(\d+)$/);
+                if (prefixNumMatch) {
+                    const prefix = prefixNumMatch[1];
+                    const num = prefixNumMatch[2];
+                    if (teamMap[prefix]) {
+                        currentTeamContext = prefix;
+                        addSticker(prefix + num);
+                        return;
+                    }
+                }
+
+                // Pure number: e.g. "42", "7"
+                const pureNumMatch = token.match(/^(\d+)$/);
+                if (pureNumMatch) {
+                    const n = pureNumMatch[1];
+                    if (isSequential) {
+                        addSticker(String(parseInt(n, 10)));
+                    } else if (currentTeamContext) {
+                        addSticker(currentTeamContext + parseInt(n, 10));
+                    }
+                    return;
                 }
             });
         });
 
-        return Array.from(parsedStickers);
+        return parsedList;
     }
 
     function runBulkQuery() {
@@ -2045,10 +2397,18 @@
 
     // ================= STATS & RENDERING =================
     function updateStats() {
-        const uniqueCollected = Object.keys(collection).length;
+        if (!activeTournament || activeTournament.status === 'in_preparation') {
+            const statsDiv = document.getElementById('statsDisplay');
+            if (statsDiv) statsDiv.innerHTML = '';
+            return;
+        }
+
+        const uniqueCollected = allStickers.filter(code => (collection[code] || 0) > 0).length;
         const total = allStickers.length;
         let totalPhysical = 0;
-        for (let code in collection) { totalPhysical += collection[code]; }
+        allStickers.forEach(code => {
+            if (collection[code]) totalPhysical += collection[code];
+        });
         const percentage = total === 0 ? 0 : ((uniqueCollected / total) * 100).toFixed(1);
 
         let grandTotalCost = 0;
@@ -2174,8 +2534,49 @@
 
         let teamStickers = activeTournament.getStickersForTeam(code);
 
-        for (let i = 0; i < teamStickers.length; i++) {
-            const stickerCode = teamStickers[i];
+        // Filter stickers by currentTeamFilter and currentTeamSearch
+        let filteredStickers = teamStickers.filter(stickerCode => {
+            const count = collection[stickerCode] || 0;
+            const isOwned = count > 0;
+            const isDupe = count > 1;
+
+            if (currentTeamFilter === 'missing' && isOwned) return false;
+            if (currentTeamFilter === 'owned' && !isOwned) return false;
+            if (currentTeamFilter === 'dupes' && !isDupe) return false;
+
+            if (currentTeamSearch) {
+                const item = (typeof activeTournament.getStickerItem === 'function')
+                    ? activeTournament.getStickerItem(stickerCode)
+                    : null;
+                const itemName = item && item.name ? normalizeSearchText(item.name) : '';
+                const codeStr = String(stickerCode).toLowerCase();
+                const numStr = stickerCode.replace(/[^0-9]/g, '');
+
+                const searchMatch = codeStr.includes(currentTeamSearch) ||
+                    numStr.includes(currentTeamSearch) ||
+                    itemName.includes(currentTeamSearch);
+
+                if (!searchMatch) return false;
+            }
+
+            return true;
+        });
+
+        if (filteredStickers.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: var(--text-dim); background: var(--surface-card); border-radius: var(--radius-md); border: 1px dashed var(--border);">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">🔍</div>
+                    <div style="font-size: 1rem; font-weight: 600; color: var(--text-muted);">No stickers match your filter or search.</div>
+                    <div style="font-size: 0.85rem; margin-top: 4px;">Try clearing search keywords or switching filter tabs.</div>
+                </div>
+            `;
+            return;
+        }
+
+        const isSequential = !!activeTournament.isSequential;
+
+        for (let i = 0; i < filteredStickers.length; i++) {
+            const stickerCode = filteredStickers[i];
             const isOwned = collection[stickerCode] > 0;
             const count = collection[stickerCode] || 0;
 
@@ -2194,9 +2595,26 @@
                 controlsHtml = `<span class="sticker-count" style="margin: 0 auto;">${count > 1 ? 'x' + count : (count === 1 ? '✓' : '')}</span>`;
             }
 
-            const displayNum = stickerCode === "00" ? "00" : stickerCode.replace(/[^0-9]/g, '');
+            const item = (typeof activeTournament.getStickerItem === 'function')
+                ? activeTournament.getStickerItem(stickerCode)
+                : null;
+            const itemName = item && item.name ? escapeHtml(item.name) : '';
 
-            div.innerHTML = `<div class="sticker-num">${displayNum}</div><div class="sticker-controls">${controlsHtml}</div>`;
+            const displayNum = stickerCode === "00" ? "00" : (isSequential ? stickerCode : stickerCode.replace(/[^0-9]/g, ''));
+            const codeBadge = !isSequential && stickerCode !== "00"
+                ? `<span class="sticker-code-tag">${stickerCode}</span>`
+                : '';
+
+            const nameHtml = itemName ? `<div class="sticker-name" title="${itemName}">${itemName}</div>` : '';
+
+            div.innerHTML = `
+                <div class="sticker-card-body">
+                    ${codeBadge}
+                    <div class="sticker-num">${displayNum}</div>
+                    ${nameHtml}
+                </div>
+                <div class="sticker-controls">${controlsHtml}</div>
+            `;
             grid.appendChild(div);
         }
     }
@@ -2216,15 +2634,28 @@
     function addStickerFromInput() {
         if (!isAdmin) return;
         const input = document.getElementById('addInput');
-        const code = input.value.trim().toUpperCase();
-        if (!code) return;
+        const raw = input.value.trim();
+        if (!raw) return;
+
+        let code = raw.toUpperCase().replace(/\s+/g, '');
+        // In sequential tournament, if user types "042", normalize to "42"
+        if (activeTournament && activeTournament.isSequential && /^\d+$/.test(code)) {
+            code = String(parseInt(code, 10));
+        }
+
         if (!allStickers.includes(code)) {
-            alert(`Error: Sticker code "${code}" does not exist in this tournament album.`);
+            alert(`Error: Sticker "${raw}" does not exist in ${activeTournament.title}.`);
             input.value = '';
             return;
         }
+
+        const item = (typeof activeTournament.getStickerItem === 'function')
+            ? activeTournament.getStickerItem(code)
+            : null;
+        const nameDesc = item && item.name ? ` (${item.name})` : '';
+
         if (collection[code]) {
-            if (confirm(`Warning: You already own ${code}! Add +1 as a duplicate?`)) {
+            if (confirm(`Warning: You already own #${code}${nameDesc}! Add +1 as a duplicate?`)) {
                 updateStickerCount(code, 1);
             }
         } else {
@@ -2240,26 +2671,25 @@
         const rawText = inputElement.value;
         if (!rawText.trim()) return;
 
-        const rawCodes = rawText.split(/[\s,]+/);
-        let addedCount = 0;
-        let invalidCodes = [];
-        let addedInThisSession = {};
+        // Use smart parser with allowDuplicates: true to preserve repeated codes (e.g. 42, 42)
+        const parsedCodes = parseComplexBulkText(rawText, { allowDuplicates: true });
+
+        if (parsedCodes.length === 0) {
+            alert("No valid sticker codes were detected in your input.");
+            return;
+        }
 
         let costInput = prompt("Enter the cost for this transaction (leave blank if zero):", "0");
         if (costInput === null) return;
         let parsedCost = parseFloat(costInput.replace(',', '.')) || 0;
 
-        rawCodes.forEach(rawCode => {
-            const code = rawCode.trim().toUpperCase();
-            if (code) {
-                if (allStickers.includes(code)) {
-                    collection[code] = (collection[code] || 0) + 1;
-                    addedInThisSession[code] = (addedInThisSession[code] || 0) + 1;
-                    addedCount++;
-                } else {
-                    invalidCodes.push(code);
-                }
-            }
+        let addedCount = 0;
+        let addedInThisSession = {};
+
+        parsedCodes.forEach(code => {
+            collection[code] = (collection[code] || 0) + 1;
+            addedInThisSession[code] = (addedInThisSession[code] || 0) + 1;
+            addedCount++;
         });
 
         if (addedCount > 0) {
@@ -2276,34 +2706,81 @@
         }
 
         let message = `Success! ${addedCount} stickers added.`;
-        if (invalidCodes.length > 0) {
-            const sampleInvalid = invalidCodes.slice(0, 5).join(", ");
-            const moreIndicator = invalidCodes.length > 5 ? `... (+${invalidCodes.length - 5})` : "";
-            message += `\n\n⚠️ ${invalidCodes.length} invalid codes were skipped: (${sampleInvalid}${moreIndicator})`;
-        }
         alert(message);
         inputElement.value = '';
     }
 
     function querySticker() {
         const input = document.getElementById('queryInput');
-        const code = input.value.trim().toUpperCase();
-        if (!code) return;
-        if (!allStickers.includes(code)) {
-            alert(`Error: Sticker code "${code}" does not exist in this tournament album.`);
+        const queryRaw = input.value.trim();
+        if (!queryRaw) return;
+
+        let queryCode = queryRaw.toUpperCase().replace(/\s+/g, '');
+        if (activeTournament && activeTournament.isSequential && /^\d+$/.test(queryCode)) {
+            queryCode = String(parseInt(queryCode, 10));
+        }
+
+        // 1. Exact code match
+        if (allStickers.includes(queryCode)) {
+            const code = queryCode;
+            const item = (typeof activeTournament.getStickerItem === 'function')
+                ? activeTournament.getStickerItem(code)
+                : null;
+            const nameInfo = item && item.name ? ` - "${item.name}"` : '';
+            const count = collection[code] || 0;
+
+            if (count > 1) {
+                alert(`ℹ️ Status: #${code}${nameInfo}\n\nEXISTS in your collection! You have ${count - 1} DUPLICATE(S) available for swap.`);
+            } else if (count === 1) {
+                alert(`✅ Status: #${code}${nameInfo}\n\nEXISTS in your collection! (1 owned, 0 duplicates)`);
+            } else {
+                alert(`❌ Status: #${code}${nameInfo}\n\nis MISSING from your collection.`);
+            }
+            input.value = '';
             return;
         }
-        if (collection[code]) {
-            let dupes = collection[code] - 1;
-            if (dupes > 0) {
-                alert(`ℹ️ Status: ${code} EXISTS. You have ${dupes} DUPLICATES available for swap.`);
-            } else {
-                alert(`✅ Status: ${code} EXISTS. You have exactly 1.`);
+
+        // 2. Search by player or item name across active tournament (accent-insensitive)
+        if (typeof activeTournament.getStickerItem === 'function') {
+            const matches = [];
+            const qNorm = normalizeSearchText(queryRaw);
+            for (let i = 0; i < allStickers.length; i++) {
+                const code = allStickers[i];
+                const item = activeTournament.getStickerItem(code);
+                if (item && item.name && normalizeSearchText(item.name).includes(qNorm)) {
+                    matches.push({ code, name: item.name });
+                }
             }
-        } else {
-            alert(`❌ Status: ${code} is MISSING!`);
+
+            if (matches.length === 1) {
+                const m = matches[0];
+                const count = collection[m.code] || 0;
+                if (count > 1) {
+                    alert(`ℹ️ Found: #${m.code} - "${m.name}"\n\nEXISTS in your collection! You have ${count - 1} DUPLICATE(S) for swap.`);
+                } else if (count === 1) {
+                    alert(`✅ Found: #${m.code} - "${m.name}"\n\nEXISTS in your collection! (1 owned, 0 duplicates)`);
+                } else {
+                    alert(`❌ Found: #${m.code} - "${m.name}"\n\nis MISSING from your collection.`);
+                }
+                input.value = '';
+                return;
+            } else if (matches.length > 1) {
+                let summary = `Found ${matches.length} matching stickers for "${queryRaw}":\n\n`;
+                matches.slice(0, 10).forEach(m => {
+                    const count = collection[m.code] || 0;
+                    const statusStr = count > 1 ? `✅ Owned (x${count})` : (count === 1 ? `✅ Owned` : `❌ Missing`);
+                    summary += `• #${m.code} - ${m.name}: ${statusStr}\n`;
+                });
+                if (matches.length > 10) {
+                    summary += `\n...and ${matches.length - 10} more. Refine your query.`;
+                }
+                alert(summary);
+                input.value = '';
+                return;
+            }
         }
-        input.value = '';
+
+        alert(`Sticker or player "${queryRaw}" not found in ${activeTournament.title}.`);
     }
 
     function exportMissing() {
@@ -2320,17 +2797,32 @@
     }
 
     function exportDuplicates() {
-        let duplicates = [];
+        let duplicateCodes = [];
         for (let code in collection) {
             if (collection[code] > 1) {
-                let extraCount = collection[code] - 1;
-                duplicates.push(`${code} (+${extraCount})`);
+                duplicateCodes.push(code);
             }
         }
-        if (duplicates.length === 0) {
+        if (duplicateCodes.length === 0) {
             alert("You currently have no duplicate stickers for swap.");
             return;
         }
+
+        // Sort duplicates in album order
+        duplicateCodes.sort((a, b) => {
+            const numA = parseInt(a, 10);
+            const numB = parseInt(b, 10);
+            if (!isNaN(numA) && !isNaN(numB) && activeTournament && activeTournament.isSequential) {
+                return numA - numB;
+            }
+            return allStickers.indexOf(a) - allStickers.indexOf(b);
+        });
+
+        const duplicates = duplicateCodes.map(code => {
+            const extraCount = collection[code] - 1;
+            return `${code} (+${extraCount})`;
+        });
+
         navigator.clipboard.writeText(duplicates.join(", ")).then(() => {
             alert(`Total ${duplicates.length} duplicate sticker types copied to clipboard!`);
         }).catch(() => {
