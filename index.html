@@ -36,54 +36,66 @@
 
     <style>
         :root {
-            /* Prestigious Football & Stadium Twilight Palette (Eye-Friendly) */
-            --bg-canvas: #090e17;
-            --bg-gradient: radial-gradient(circle at 50% -10%, #172844 0%, #0c1524 45%, #080d16 100%);
-            --surface: #101b2b;
-            --surface-elevated: #15243a;
-            --surface-card: #121e31;
-            --surface-hover: #1b2f4c;
-            --border: #1e3352;
-            --border-light: #28446c;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --text-dim: #64748b;
-
-            /* Football Turf & Pitch Accents */
+            /* Football Stadium Night Atmosphere */
+            --pitch-dark: #050b14;
+            --pitch-turf-1: #091524;
+            --pitch-turf-2: #0d1e34;
             --pitch-green: #10b981;
-            --pitch-green-dark: #065f46;
-            --pitch-green-glow: rgba(16, 185, 129, 0.25);
+            --pitch-green-glow: rgba(16, 185, 129, 0.35);
             --pitch-grass: #059669;
+            --pitch-grass-light: #34d399;
+            --pitch-lines: rgba(255, 255, 255, 0.08);
 
-            /* Trophy & Champions League / World Cup Gold */
+            /* Champions & Panini Gold */
             --gold: #f59e0b;
             --gold-light: #fbbf24;
             --gold-dark: #b45309;
-            --gold-glow: rgba(245, 158, 11, 0.2);
+            --gold-glow: rgba(245, 158, 11, 0.35);
 
-            /* UEFA European Blue & Silver */
-            --uefa-blue: #3b82f6;
-            --uefa-blue-glow: rgba(59, 130, 246, 0.2);
-
-            /* Panini Crimson / Collector Badges */
+            /* Crimson & Accents */
             --crimson: #e11d48;
             --crimson-hover: #be123c;
+            --crimson-glow: rgba(225, 29, 72, 0.3);
+            --cyan: #38bdf8;
+            --cyan-glow: rgba(56, 189, 248, 0.25);
             --purple: #8b5cf6;
 
-            --shadow-sm: 0 2px 6px rgba(0,0,0,0.3);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.45);
-            --shadow-lg: 0 16px 40px rgba(0,0,0,0.6);
+            /* Surface & Elev */
+            --surface-glass: rgba(12, 22, 38, 0.88);
+            --surface-elevated: #14243b;
+            --surface-card: #101c2e;
+            --surface-hover: #1a2f4c;
+            --border: rgba(45, 75, 118, 0.55);
+            --border-light: rgba(65, 105, 160, 0.45);
+
+            /* Typography */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+
+            /* Active Tournament Theme Variables (Defaults to Global Football) */
+            --tourney-primary: #10b981;
+            --tourney-secondary: #059669;
+            --tourney-accent: #f59e0b;
+            --tourney-bg: #07101e;
+            --tourney-glow: rgba(16, 185, 129, 0.35);
+            --tourney-gradient: radial-gradient(circle at 50% -10%, #172a48 0%, #0c1626 45%, #050b14 100%);
+            --tourney-border: rgba(16, 185, 129, 0.4);
+
+            --shadow-sm: 0 3px 8px rgba(0,0,0,0.35);
+            --shadow-md: 0 10px 28px rgba(0,0,0,0.5);
+            --shadow-lg: 0 20px 48px rgba(0,0,0,0.65);
             --radius-sm: 6px;
             --radius-md: 10px;
-            --radius-lg: 14px;
+            --radius-lg: 16px;
         }
 
         * { box-sizing: border-box; }
-        
+
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-canvas);
-            background-image: var(--bg-gradient);
+            background: var(--pitch-dark);
+            background-image: var(--tourney-gradient);
             background-attachment: fixed;
             color: var(--text-main);
             margin: 0;
@@ -91,34 +103,403 @@
             min-height: 100vh;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
+            position: relative;
+            transition: background 0.4s ease;
         }
 
-        /* Subtle pitch mowing stripes atmosphere on large screens */
+        /* Stadium Pitch Mowed Grass Stripes */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: repeating-linear-gradient(
                 90deg,
-                rgba(255, 255, 255, 0.008) 0px,
-                rgba(255, 255, 255, 0.008) 120px,
-                transparent 120px,
-                transparent 240px
+                rgba(255, 255, 255, 0.012) 0px,
+                rgba(255, 255, 255, 0.012) 90px,
+                transparent 90px,
+                transparent 180px
             );
             pointer-events: none;
             z-index: 0;
         }
 
+        /* Stadium Floodlight Cones */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 15% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 45%),
+                        radial-gradient(circle at 85% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 45%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
         .container {
-            max-width: 1100px;
+            max-width: 1160px;
             margin: 0 auto;
-            background: var(--surface);
-            padding: 26px 28px;
+            background: rgba(10, 18, 32, 0.85);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            padding: 28px 32px;
             border-radius: var(--radius-lg);
             border: 1px solid var(--border);
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow-lg), 0 0 32px var(--tourney-glow);
             position: relative;
             z-index: 1;
+            transition: box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        /* Subtle tactical pitch center line across container top */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 10%; right: 10%; height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.18) 50%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* ================= AUTHENTIC THEME DEFINITIONS FOR ALL 15 PANINI WORLD CUP EDITIONS ================= */
+        /* 1. Mexico 70: Lance Wyman Concentric Arcs & Aztec Sunburst */
+        body.theme-wc1970 {
+            --tourney-primary: #f59e0b;
+            --tourney-secondary: #059669;
+            --tourney-accent: #dc2626;
+            --tourney-bg: #1a0f02;
+            --tourney-glow: rgba(245, 158, 11, 0.4);
+            --tourney-border: rgba(245, 158, 11, 0.5);
+            background-color: #120901;
+            background-image: 
+                radial-gradient(circle at 50% 12%, rgba(245, 158, 11, 0.28) 0%, transparent 65%),
+                radial-gradient(circle at 10% 40%, rgba(5, 150, 105, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 90% 40%, rgba(220, 38, 38, 0.16) 0%, transparent 50%),
+                linear-gradient(180deg, #1f1103 0%, #0c0601 100%);
+        }
+        body.theme-wc1970::before {
+            background-image: 
+                repeating-radial-gradient(circle at 50% 15%, rgba(245, 158, 11, 0.09) 0px, rgba(245, 158, 11, 0.09) 18px, transparent 18px, transparent 36px),
+                repeating-linear-gradient(90deg, rgba(5, 150, 105, 0.03) 0px, rgba(5, 150, 105, 0.03) 60px, transparent 60px, transparent 120px);
+            opacity: 0.85;
+        }
+
+        /* 2. München 74: Munich Olympic Cobalt Blue & Tensile Cable-Net Grid */
+        body.theme-wc1974 {
+            --tourney-primary: #38bdf8;
+            --tourney-secondary: #1d4ed8;
+            --tourney-accent: #f97316;
+            --tourney-bg: #040c1e;
+            --tourney-glow: rgba(56, 189, 248, 0.4);
+            --tourney-border: rgba(56, 189, 248, 0.5);
+            background-color: #020814;
+            background-image: 
+                radial-gradient(circle at 50% 10%, rgba(29, 78, 216, 0.32) 0%, transparent 65%),
+                radial-gradient(circle at 80% 30%, rgba(56, 189, 248, 0.2) 0%, transparent 45%),
+                linear-gradient(180deg, #071536 0%, #020712 100%);
+        }
+        body.theme-wc1974::before {
+            background-image: 
+                linear-gradient(45deg, rgba(56, 189, 248, 0.07) 1px, transparent 1px),
+                linear-gradient(-45deg, rgba(56, 189, 248, 0.07) 1px, transparent 1px);
+            background-size: 36px 36px;
+            opacity: 0.8;
+        }
+
+        /* 3. Argentina 78: Albiceleste Twilight, Ticker-Tape Confetti & Sun of May */
+        body.theme-wc1978 {
+            --tourney-primary: #38bdf8;
+            --tourney-secondary: #0284c7;
+            --tourney-accent: #fbbf24;
+            --tourney-bg: #031122;
+            --tourney-glow: rgba(56, 189, 248, 0.4);
+            --tourney-border: rgba(125, 211, 252, 0.5);
+            background-color: #020b17;
+            background-image: 
+                radial-gradient(circle at 50% 15%, rgba(251, 191, 36, 0.25) 0%, transparent 55%),
+                radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.35) 0%, transparent 70%),
+                linear-gradient(180deg, #061c36 0%, #020b17 100%);
+        }
+        body.theme-wc1978::before {
+            background-image: 
+                radial-gradient(2px 8px at 20% 30%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(3px 12px at 45% 20%, rgba(125, 211, 252, 0.45), transparent),
+                radial-gradient(2px 9px at 70% 40%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(3px 10px at 85% 60%, rgba(125, 211, 252, 0.4), transparent),
+                radial-gradient(2px 11px at 30% 75%, rgba(255, 255, 255, 0.35), transparent),
+                repeating-linear-gradient(90deg, rgba(2, 132, 199, 0.06) 0px, rgba(2, 132, 199, 0.06) 40px, transparent 40px, transparent 80px);
+            background-size: 260px 260px, 320px 320px, 280px 280px, 340px 340px, 290px 290px, auto;
+            opacity: 0.9;
+        }
+
+        /* 4. España 82: Spanish Crimson & Dynamic Multi-Color Rainbow Speed Trails */
+        body.theme-wc1982 {
+            --tourney-primary: #ef4444;
+            --tourney-secondary: #f59e0b;
+            --tourney-accent: #3b82f6;
+            --tourney-bg: #120204;
+            --tourney-glow: rgba(239, 68, 68, 0.4);
+            --tourney-border: rgba(239, 68, 68, 0.5);
+            background-color: #120204;
+            background-image: 
+                radial-gradient(circle at 75% 20%, rgba(239, 68, 68, 0.35) 0%, transparent 60%),
+                radial-gradient(circle at 20% 80%, rgba(245, 158, 11, 0.25) 0%, transparent 55%),
+                linear-gradient(180deg, #2b060b 0%, #0d0103 100%);
+        }
+        body.theme-wc1982::before {
+            background-image: 
+                repeating-linear-gradient(
+                    -35deg,
+                    rgba(239, 68, 68, 0.14) 0px,
+                    rgba(249, 115, 22, 0.14) 8px,
+                    rgba(234, 179, 8, 0.14) 16px,
+                    rgba(34, 197, 94, 0.14) 24px,
+                    rgba(6, 182, 212, 0.14) 32px,
+                    rgba(37, 99, 235, 0.14) 40px,
+                    rgba(124, 58, 237, 0.14) 48px,
+                    transparent 48px,
+                    transparent 120px
+                );
+            opacity: 0.85;
+        }
+
+        /* 5. Mexico 86: Aztec Jade Emerald, Step-Fret Greca & Dual Terrestrial Globes */
+        body.theme-wc1986 {
+            --tourney-primary: #10b981;
+            --tourney-secondary: #059669;
+            --tourney-accent: #f59e0b;
+            --tourney-bg: #021a12;
+            --tourney-glow: rgba(16, 185, 129, 0.4);
+            --tourney-border: rgba(16, 185, 129, 0.5);
+            background-color: #01110c;
+            background-image: 
+                radial-gradient(circle at 50% 15%, rgba(16, 185, 129, 0.3) 0%, transparent 65%),
+                radial-gradient(circle at 80% 50%, rgba(245, 158, 11, 0.22) 0%, transparent 50%),
+                linear-gradient(180deg, #032d1f 0%, #01100b 100%);
+        }
+        body.theme-wc1986::before {
+            background-image: 
+                repeating-linear-gradient(0deg, rgba(16, 185, 129, 0.06) 0px, rgba(16, 185, 129, 0.06) 2px, transparent 2px, transparent 24px),
+                repeating-linear-gradient(90deg, rgba(16, 185, 129, 0.06) 0px, rgba(16, 185, 129, 0.06) 2px, transparent 2px, transparent 24px);
+            opacity: 0.85;
+        }
+
+        /* 6. Italia 90: Mediterranean Azzurro Night & 3D Isometric Green Pitch Grid */
+        body.theme-wc1990 {
+            --tourney-primary: #3b82f6;
+            --tourney-secondary: #22c55e;
+            --tourney-accent: #ef4444;
+            --tourney-bg: #05102a;
+            --tourney-glow: rgba(59, 130, 246, 0.4);
+            --tourney-border: rgba(59, 130, 246, 0.5);
+            background-color: #020717;
+            background-image: 
+                radial-gradient(circle at 50% 10%, rgba(59, 130, 246, 0.32) 0%, transparent 65%),
+                linear-gradient(180deg, #081a42 0%, #02081c 100%);
+        }
+        body.theme-wc1990::before {
+            background-image: 
+                linear-gradient(0deg, rgba(34, 197, 94, 0.14) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+            background-size: 32px 32px;
+            opacity: 0.85;
+        }
+
+        /* 7. USA 94: Americana Motion Stripes & Holographic Silver Starfield */
+        body.theme-wc1994 {
+            --tourney-primary: #ef4444;
+            --tourney-secondary: #3b82f6;
+            --tourney-accent: #f8fafc;
+            --tourney-bg: #060e22;
+            --tourney-glow: rgba(239, 68, 68, 0.4);
+            --tourney-border: rgba(239, 68, 68, 0.5);
+            background-color: #030714;
+            background-image: 
+                radial-gradient(circle at 75% 20%, rgba(239, 68, 68, 0.3) 0%, transparent 60%),
+                radial-gradient(circle at 25% 40%, rgba(59, 130, 246, 0.3) 0%, transparent 60%),
+                linear-gradient(180deg, #091738 0%, #030818 100%);
+        }
+        body.theme-wc1994::before {
+            background-image: 
+                radial-gradient(2px 2px at 25% 25%, #ffffff, transparent),
+                radial-gradient(2px 2px at 75% 35%, #ffffff, transparent),
+                radial-gradient(3px 3px at 45% 65%, rgba(255, 255, 255, 0.85), transparent),
+                radial-gradient(2px 2px at 85% 80%, rgba(255, 255, 255, 0.7), transparent),
+                repeating-linear-gradient(-45deg, rgba(239, 68, 68, 0.08) 0px, rgba(239, 68, 68, 0.08) 24px, rgba(59, 130, 246, 0.08) 24px, rgba(59, 130, 246, 0.08) 48px);
+            background-size: 200px 200px, 250px 250px, 300px 300px, 220px 220px, auto;
+            opacity: 0.9;
+        }
+
+        /* 8. France 98: Planetary Sunrise Horizon & Dynamic Tricolore Sweeps */
+        body.theme-wc1998 {
+            --tourney-primary: #3b82f6;
+            --tourney-secondary: #ef4444;
+            --tourney-accent: #f59e0b;
+            --tourney-bg: #06112c;
+            --tourney-glow: rgba(59, 130, 246, 0.4);
+            --tourney-border: rgba(59, 130, 246, 0.5);
+            background-color: #020716;
+            background-image: 
+                radial-gradient(ellipse at 50% 100%, rgba(59, 130, 246, 0.5) 0%, rgba(29, 78, 216, 0.3) 45%, transparent 75%),
+                radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.25) 0%, transparent 50%),
+                linear-gradient(180deg, #091a45 0%, #03091c 100%);
+        }
+        body.theme-wc1998::before {
+            background-image: 
+                radial-gradient(ellipse at 50% 95%, rgba(245, 158, 11, 0.18) 0%, transparent 60%),
+                repeating-radial-gradient(circle at 50% 95%, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 30px, transparent 30px, transparent 60px);
+            opacity: 0.85;
+        }
+
+        /* 9. Korea/Japan 2002: Pearlescent Champagne Gold & Calligraphy Infinity Loop */
+        body.theme-wc2002 {
+            --tourney-primary: #eab308;
+            --tourney-secondary: #e11d48;
+            --tourney-accent: #2563eb;
+            --tourney-bg: #171206;
+            --tourney-glow: rgba(234, 179, 8, 0.4);
+            --tourney-border: rgba(234, 179, 8, 0.5);
+            background-color: #0f0a02;
+            background-image: 
+                radial-gradient(circle at 70% 25%, rgba(234, 179, 8, 0.35) 0%, transparent 65%),
+                radial-gradient(circle at 25% 65%, rgba(225, 29, 72, 0.25) 0%, transparent 55%),
+                linear-gradient(180deg, #241a08 0%, #0a0701 100%);
+        }
+        body.theme-wc2002::before {
+            background-image: 
+                radial-gradient(circle at 50% 30%, rgba(234, 179, 8, 0.1) 0px, rgba(234, 179, 8, 0.1) 40px, transparent 40px, transparent 80px),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, transparent 100%);
+            opacity: 0.85;
+        }
+
+        /* 10. Germany 2006: Allianz Arena Illuminated Rhombic Diamond Cushions */
+        body.theme-wc2006 {
+            --tourney-primary: #38bdf8;
+            --tourney-secondary: #22c55e;
+            --tourney-accent: #eab308;
+            --tourney-bg: #051428;
+            --tourney-glow: rgba(56, 189, 248, 0.4);
+            --tourney-border: rgba(56, 189, 248, 0.5);
+            background-color: #020a17;
+            background-image: 
+                radial-gradient(circle at 50% 15%, rgba(56, 189, 248, 0.32) 0%, transparent 65%),
+                radial-gradient(circle at 80% 50%, rgba(34, 197, 94, 0.25) 0%, transparent 50%),
+                linear-gradient(180deg, #092040 0%, #030c1c 100%);
+        }
+        body.theme-wc2006::before {
+            background-image: 
+                linear-gradient(60deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px),
+                linear-gradient(-60deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px);
+            background-size: 32px 55px;
+            opacity: 0.85;
+        }
+
+        /* 11. South Africa 2010: African Dusk Sunset & Ndebele Tribal Chevron Borders */
+        body.theme-wc2010 {
+            --tourney-primary: #f59e0b;
+            --tourney-secondary: #16a34a;
+            --tourney-accent: #dc2626;
+            --tourney-bg: #1c0d03;
+            --tourney-glow: rgba(245, 158, 11, 0.4);
+            --tourney-border: rgba(245, 158, 11, 0.5);
+            background-color: #120701;
+            background-image: 
+                radial-gradient(circle at 50% 12%, rgba(245, 158, 11, 0.35) 0%, transparent 65%),
+                radial-gradient(circle at 15% 45%, rgba(220, 38, 38, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 85% 65%, rgba(22, 163, 74, 0.25) 0%, transparent 50%),
+                linear-gradient(180deg, #301404 0%, #0e0500 100%);
+        }
+        body.theme-wc2010::before {
+            background-image: 
+                repeating-linear-gradient(45deg, rgba(245, 158, 11, 0.08) 0px, rgba(245, 158, 11, 0.08) 12px, transparent 12px, transparent 24px),
+                repeating-linear-gradient(-45deg, rgba(220, 38, 38, 0.08) 0px, rgba(220, 38, 38, 0.08) 12px, transparent 12px, transparent 24px);
+            opacity: 0.85;
+        }
+
+        /* 12. Brasil 2014: Copacabana Promenade Sinuous Waves & Tropical Samba Sun */
+        body.theme-wc2014 {
+            --tourney-primary: #10b981;
+            --tourney-secondary: #facc15;
+            --tourney-accent: #0284c7;
+            --tourney-bg: #011b11;
+            --tourney-glow: rgba(16, 185, 129, 0.4);
+            --tourney-border: rgba(16, 185, 129, 0.5);
+            background-color: #01100a;
+            background-image: 
+                radial-gradient(circle at 75% 25%, rgba(250, 204, 21, 0.32) 0%, transparent 60%),
+                radial-gradient(circle at 25% 65%, rgba(16, 185, 129, 0.32) 0%, transparent 60%),
+                linear-gradient(180deg, #033320 0%, #01120b 100%);
+        }
+        body.theme-wc2014::before {
+            background-image: 
+                repeating-radial-gradient(ellipse at 50% 50%, rgba(250, 204, 21, 0.08) 0px, rgba(250, 204, 21, 0.08) 20px, transparent 20px, transparent 40px);
+            opacity: 0.85;
+        }
+
+        /* 13. Russia 2018: Imperial Ruby Crimson & Russian Khokhloma Golden Scrollwork */
+        body.theme-wc2018 {
+            --tourney-primary: #f43f5e;
+            --tourney-secondary: #eab308;
+            --tourney-accent: #38bdf8;
+            --tourney-bg: #160309;
+            --tourney-glow: rgba(244, 63, 94, 0.4);
+            --tourney-border: rgba(234, 179, 8, 0.5);
+            background-color: #0e0105;
+            background-image: 
+                radial-gradient(circle at 50% 15%, rgba(244, 63, 94, 0.35) 0%, transparent 65%),
+                radial-gradient(circle at 80% 40%, rgba(234, 179, 8, 0.25) 0%, transparent 50%),
+                linear-gradient(180deg, #2b0410 0%, #0c0104 100%);
+        }
+        body.theme-wc2018::before {
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, rgba(234, 179, 8, 0.7), transparent),
+                radial-gradient(3px 3px at 60% 20%, rgba(234, 179, 8, 0.9), transparent),
+                radial-gradient(2px 2px at 80% 60%, rgba(234, 179, 8, 0.6), transparent),
+                radial-gradient(2px 2px at 35% 75%, rgba(255, 255, 255, 0.7), transparent),
+                linear-gradient(45deg, rgba(234, 179, 8, 0.05) 1px, transparent 1px);
+            background-size: 180px 180px, 220px 220px, 200px 200px, 240px 240px, 30px 30px;
+            opacity: 0.9;
+        }
+
+        /* 14. Qatar 2022: Al-Adaam Royal Maroon, Arabesque Star Lattice & Infinity Loop */
+        body.theme-wc2022 {
+            --tourney-primary: #881337;
+            --tourney-secondary: #d4af37;
+            --tourney-accent: #ffffff;
+            --tourney-bg: #180208;
+            --tourney-glow: rgba(136, 19, 55, 0.4);
+            --tourney-border: rgba(212, 175, 55, 0.5);
+            background-color: #100105;
+            background-image: 
+                radial-gradient(circle at 50% 15%, rgba(136, 19, 55, 0.4) 0%, transparent 65%),
+                radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.25) 0%, transparent 50%),
+                linear-gradient(180deg, #2e040f 0%, #0d0104 100%);
+        }
+        body.theme-wc2022::before {
+            background-image: 
+                repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.07) 0px, rgba(212, 175, 55, 0.07) 1px, transparent 1px, transparent 20px),
+                repeating-linear-gradient(-45deg, rgba(212, 175, 55, 0.07) 0px, rgba(212, 175, 55, 0.07) 1px, transparent 1px, transparent 20px);
+            opacity: 0.85;
+        }
+
+        /* 15. World Cup 2026: Cyber Stadium Night, Electric Neon Turf & Laser Floodlights */
+        body.theme-wc2026 {
+            --tourney-primary: #00ff87;
+            --tourney-secondary: #06b6d4;
+            --tourney-accent: #facc15;
+            --tourney-bg: #02080f;
+            --tourney-glow: rgba(0, 255, 135, 0.4);
+            --tourney-border: rgba(0, 255, 135, 0.5);
+            background-color: #010408;
+            background-image: 
+                radial-gradient(circle at 50% 10%, rgba(0, 255, 135, 0.32) 0%, transparent 65%),
+                radial-gradient(circle at 85% 35%, rgba(6, 182, 212, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 15% 65%, rgba(250, 204, 21, 0.18) 0%, transparent 50%),
+                linear-gradient(180deg, #061922 0%, #010408 100%);
+        }
+        body.theme-wc2026::before {
+            background-image: 
+                linear-gradient(0deg, rgba(0, 255, 135, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.9;
         }
 
         /* Top Navigation Bar */
@@ -127,7 +508,7 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 16px;
+            padding-bottom: 18px;
             margin-bottom: 22px;
             flex-wrap: wrap;
             gap: 12px;
@@ -138,24 +519,27 @@
             align-items: center;
             gap: 12px;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: transform 0.2s ease, opacity 0.2s ease;
         }
-        .brand-container:hover { opacity: 0.92; }
+        .brand-container:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
 
         .brand-logo-crest {
-            font-size: 1.6rem;
-            filter: drop-shadow(0 2px 6px rgba(245, 158, 11, 0.4));
+            font-size: 1.7rem;
+            filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.45));
         }
 
         .brand-title {
             color: var(--text-main);
             margin: 0;
-            font-size: 1.45rem;
+            font-size: 1.5rem;
             font-weight: 800;
             letter-spacing: -0.5px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             user-select: none;
         }
 
@@ -163,6 +547,7 @@
             background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-family: inherit;
         }
 
         .app-version {
@@ -188,22 +573,22 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-light);
             color: var(--text-muted);
-            padding: 7px 14px;
+            padding: 8px 16px;
             border-radius: var(--radius-sm);
             font-size: 0.85rem;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
+            font-weight: 700;
+            transition: all 0.2s ease;
         }
         .btn-admin-login-icon:hover {
             border-color: var(--gold);
             color: var(--gold-light);
-            background: rgba(245, 158, 11, 0.08);
+            background: rgba(245, 158, 11, 0.12);
         }
 
         .auth-btn {
             display: none;
-            padding: 7px 15px;
+            padding: 8px 16px;
             font-size: 0.85rem;
             background-color: var(--crimson);
             border-radius: var(--radius-sm);
@@ -211,39 +596,39 @@
             cursor: pointer;
             border: none;
             font-weight: bold;
-            transition: background 0.2s;
+            transition: background 0.2s ease;
         }
         .auth-btn:hover { background-color: var(--crimson-hover); }
 
-        /* Breadcrumbs */
+        /* Matchday Broadcast Breadcrumbs */
         .breadcrumbs {
             display: flex;
             align-items: center;
             flex-wrap: wrap;
             gap: 8px;
             font-size: 0.88rem;
-            margin-bottom: 22px;
-            padding: 10px 16px;
-            background: rgba(18, 30, 49, 0.7);
+            margin-bottom: 24px;
+            padding: 10px 18px;
+            background: rgba(14, 25, 42, 0.75);
             border-radius: var(--radius-md);
             border: 1px solid var(--border);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .breadcrumb-item {
             color: #38bdf8;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             transition: color 0.2s;
         }
         .breadcrumb-item:hover { color: #7dd3fc; text-decoration: underline; }
         .breadcrumb-separator { color: var(--text-dim); user-select: none; font-size: 0.8rem; }
-        .breadcrumb-current { color: var(--text-main); font-weight: 700; }
+        .breadcrumb-current { color: var(--text-main); font-weight: 800; }
 
-        /* Navigation Button */
         .btn-nav-back {
             display: inline-flex;
             align-items: center;
@@ -253,16 +638,17 @@
             border: 1px solid var(--border-light);
             padding: 9px 18px;
             border-radius: var(--radius-sm);
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.88rem;
             cursor: pointer;
             margin-bottom: 20px;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
         .btn-nav-back:hover {
             background-color: var(--surface-hover);
             border-color: #38bdf8;
             color: #38bdf8;
+            transform: translateX(-2px);
         }
 
         /* LANDING PAGE: Category Selection */
@@ -276,20 +662,20 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(245, 158, 11, 0.12);
+            background: rgba(245, 158, 11, 0.15);
             color: var(--gold-light);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            padding: 4px 12px;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 4px 14px;
             border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 700;
+            font-size: 0.8rem;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.6px;
             margin-bottom: 14px;
         }
 
         .landing-header h2 {
-            font-size: 2rem;
+            font-size: 2.1rem;
             color: var(--text-main);
             margin: 0 0 12px 0;
             font-weight: 800;
@@ -307,7 +693,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 26px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .category-card {
@@ -320,21 +706,13 @@
             justify-content: space-between;
             position: relative;
             transition: all 0.25s ease-in-out;
-            min-height: 300px;
+            min-height: 310px;
             overflow: hidden;
-        }
-
-        .category-card::after {
-            content: "";
-            position: absolute;
-            top: 0; right: 0; width: 140px; height: 140px;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
-            pointer-events: none;
         }
 
         .category-card.active {
             cursor: pointer;
-            background: linear-gradient(160deg, #132238 0%, #0e1828 100%);
+            background: linear-gradient(160deg, #13243c 0%, #0c1626 100%);
             border-color: rgba(245, 158, 11, 0.35);
             box-shadow: 0 8px 24px rgba(0,0,0,0.35);
         }
@@ -342,14 +720,14 @@
         .category-card.active:hover {
             transform: translateY(-5px);
             border-color: var(--gold);
-            box-shadow: 0 14px 32px rgba(245, 158, 11, 0.15), 0 8px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 14px 32px rgba(245, 158, 11, 0.18), 0 8px 20px rgba(0,0,0,0.5);
         }
 
         .category-card.disabled {
-            background: linear-gradient(160deg, #0f1a2a 0%, #0a111c 100%);
+            background: linear-gradient(160deg, #0e1724 0%, #080d14 100%);
             border: 1px dashed var(--border);
             cursor: not-allowed;
-            opacity: 0.85;
+            opacity: 0.8;
         }
 
         .category-badge {
@@ -377,13 +755,13 @@
         }
 
         .category-icon-wrapper {
-            width: 62px;
-            height: 62px;
+            width: 64px;
+            height: 64px;
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
+            font-size: 2.3rem;
             margin-bottom: 18px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -399,7 +777,7 @@
 
         .category-subtitle {
             font-size: 0.9rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--gold-light);
             margin-bottom: 12px;
         }
@@ -416,11 +794,11 @@
             width: 100%;
             padding: 13px 20px;
             font-size: 0.98rem;
-            font-weight: 700;
+            font-weight: 800;
             border-radius: var(--radius-md);
             border: none;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -444,143 +822,796 @@
             cursor: not-allowed;
         }
 
-        /* Tournaments List View */
-        .tournaments-header {
-            margin-bottom: 24px;
-        }
-
+        /* Tournaments Shelf Header & Shelf Summary */
+        .tournaments-header { margin-bottom: 22px; }
         .tournaments-header h2 {
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             color: var(--text-main);
             margin: 0 0 6px 0;
             font-weight: 800;
         }
-
         .tournaments-header p {
             color: var(--text-muted);
             margin: 0;
             font-size: 0.95rem;
         }
 
-        .tournaments-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-            gap: 20px;
+        .shelf-summary-bar {
+            background: linear-gradient(135deg, #13243d 0%, #0d1727 100%);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 16px 22px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: var(--shadow-sm);
         }
 
-        .tournament-card {
+        .shelf-stats-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .shelf-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(8, 14, 24, 0.6);
+            border: 1px solid var(--border);
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .shelf-stat-item strong {
+            color: var(--text-main);
+            font-size: 1.02rem;
+        }
+
+        .shelf-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .shelf-filter-btn {
+            background: var(--surface-card);
             border: 1px solid var(--border-light);
-            border-left: 6px solid #1e3a5f;
-            border-radius: var(--radius-md);
-            padding: 24px;
-            background: linear-gradient(160deg, #132238 0%, #0e1828 100%);
+            color: var(--text-muted);
+            padding: 7px 13px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
+        }
+        .shelf-filter-btn:hover {
+            border-color: var(--gold);
+            color: var(--text-main);
+        }
+        .shelf-filter-btn.active {
+            background: rgba(245, 158, 11, 0.16);
+            border-color: var(--gold);
+            color: var(--gold-light);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.22);
+        }
+
+        /* Tournaments Grid */
+        .tournaments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* Panini Tournament Album Card on Shelf */
+        .tournament-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--surface-card);
+            cursor: pointer;
+            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             box-shadow: var(--shadow-sm);
             position: relative;
             overflow: hidden;
         }
 
         .tournament-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-6px);
             border-color: #38bdf8;
-            border-left-color: #38bdf8;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 15px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 0 20px var(--tourney-glow);
         }
 
         .tournament-card.is-owned-album {
-            border-left-color: #10b981;
+            border-color: rgba(16, 185, 129, 0.6);
         }
 
         .tournament-card.is-full-album {
             border-color: var(--gold);
-            border-left-color: var(--gold);
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
-            background: linear-gradient(160deg, #18283f 0%, #111a28 100%);
+            box-shadow: 0 6px 24px rgba(245, 158, 11, 0.25);
         }
-
         .tournament-card.is-full-album:hover {
-            box-shadow: 0 12px 32px rgba(245, 158, 11, 0.4), 0 0 20px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 16px 40px rgba(245, 158, 11, 0.4), 0 0 25px rgba(245, 158, 11, 0.3);
         }
 
-        .album-crown-seal {
+        /* ================= AUTHENTIC PANINI ALBUM COVER ART BANNERS (FOR CARDS & HERO) ================= */
+        .card-cover-art-banner {
+            height: 155px;
+            padding: 14px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Tactile album spine on left edge */
+        .card-cover-art-banner::after {
+            content: "";
             position: absolute;
-            top: 14px;
-            right: 14px;
-            font-size: 0.72rem;
-            font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 4px;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.3) 100%);
-            color: #fbbf24;
-            border: 1px solid rgba(245, 158, 11, 0.6);
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+            top: 0; left: 0; bottom: 0;
+            width: 6px;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(255, 255, 255, 0.25) 50%, rgba(0, 0, 0, 0.4) 100%);
+            z-index: 3;
             pointer-events: none;
         }
 
-        .album-crown-seal.owned {
-            background: rgba(16, 185, 129, 0.2);
+        .cover-art-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cover-art-panini-tag {
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 3px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.5);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .cover-art-flag-wrap {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cover-art-flag-img {
+            height: 20px;
+            width: auto;
+            border-radius: 2px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.6);
+        }
+
+        .cover-art-main {
+            position: relative;
+            z-index: 2;
+            margin-top: 4px;
+        }
+
+        .cover-art-title {
+            font-size: 1.55rem;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.3px;
+            line-height: 1.1;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .cover-art-sub {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+            margin-top: 2px;
+        }
+
+        .cover-art-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+            margin-top: auto;
+        }
+
+        .cover-art-year-chip {
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 2px 9px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .cover-art-edition-chip {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.35);
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
+        /* 1. 1970 Mexico: Lance Wyman Concentric Arcs & Aztec Sunburst */
+        .cover-wc1970, .cover-hero-wc1970 {
+            background: 
+                radial-gradient(circle at 82% 40%, rgba(245, 158, 11, 0.45) 0%, transparent 45%),
+                radial-gradient(circle at 18% 70%, rgba(5, 150, 105, 0.35) 0%, transparent 50%),
+                repeating-radial-gradient(circle at 82% 40%, rgba(255, 255, 255, 0.08) 0px, rgba(255, 255, 255, 0.08) 12px, transparent 12px, transparent 24px),
+                linear-gradient(135deg, #78350f 0%, #451a03 40%, #1c0a00 100%);
+            border-top: 4px solid #f59e0b;
+        }
+        .cover-wc1970 .cover-art-title, .cover-hero-wc1970 .cover-hero-main-title {
+            color: #fef3c7;
+            letter-spacing: 1.5px;
+        }
+
+        /* 2. 1974 München: Olympic Cobalt Blue, Munich Cable Grid & 3 Rolling Ball Swooshes */
+        .cover-wc1974, .cover-hero-wc1974 {
+            background: 
+                radial-gradient(circle at 75% 35%, rgba(56, 189, 248, 0.4) 0%, transparent 50%),
+                linear-gradient(45deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+                linear-gradient(-45deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+                linear-gradient(135deg, #1e40af 0%, #172554 45%, #030712 100%);
+            background-size: auto, 28px 28px, 28px 28px, auto;
+            border-top: 4px solid #38bdf8;
+        }
+        .cover-wc1974 .cover-art-title, .cover-hero-wc1974 .cover-hero-main-title {
+            color: #e0f2fe;
+        }
+
+        /* 3. 1978 Argentina: Albiceleste Stadium Confetti Blizzard & Sun of May Gold */
+        .cover-wc1978, .cover-hero-wc1978 {
+            background: 
+                radial-gradient(circle at 80% 30%, rgba(251, 191, 36, 0.45) 0%, transparent 40%),
+                radial-gradient(circle at 20% 80%, rgba(125, 211, 252, 0.35) 0%, transparent 50%),
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0px, rgba(255, 255, 255, 0.07) 18px, transparent 18px, transparent 36px),
+                linear-gradient(135deg, #0369a1 0%, #075985 30%, #0c4a6e 60%, #082f49 100%);
+            border-top: 4px solid #7dd3fc;
+        }
+        .cover-wc1978 .cover-art-title, .cover-hero-wc1978 .cover-hero-main-title {
+            color: #f0f9ff;
+        }
+
+        /* 4. 1982 España: Sweeping Multi-Color Rainbow Speed Streak Trails Across Spanish Red */
+        .cover-wc1982, .cover-hero-wc1982 {
+            background: 
+                radial-gradient(circle at 85% 30%, #ffffff 0%, rgba(255, 255, 255, 0.95) 8px, rgba(254, 240, 138, 0.7) 16px, transparent 26px),
+                linear-gradient(
+                    118deg,
+                    transparent 25%,
+                    rgba(239, 68, 68, 0.95) 28%,
+                    rgba(249, 115, 22, 0.95) 32%,
+                    rgba(234, 179, 8, 0.95) 36%,
+                    rgba(34, 197, 94, 0.95) 40%,
+                    rgba(6, 182, 212, 0.95) 44%,
+                    rgba(37, 99, 235, 0.95) 48%,
+                    rgba(124, 58, 237, 0.95) 52%,
+                    transparent 56%
+                ),
+                linear-gradient(135deg, #991b1b 0%, #7f1d1d 40%, #450a0a 80%, #1e1b4b 100%);
+            border-top: 4px solid #ef4444;
+        }
+        .cover-wc1982 .cover-art-title, .cover-hero-wc1982 .cover-hero-main-title {
+            color: #fef2f2;
+            font-style: italic;
+        }
+
+        /* 5. 1986 Mexico: Aztec Jade Emerald, Step-Fret Greca Borders & Sombrero Gold */
+        .cover-wc1986, .cover-hero-wc1986 {
+            background: 
+                radial-gradient(circle at 75% 45%, rgba(245, 158, 11, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 25% 45%, rgba(16, 185, 129, 0.45) 0%, transparent 45%),
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0px, rgba(255, 255, 255, 0.07) 14px, transparent 14px, transparent 28px),
+                linear-gradient(135deg, #047857 0%, #065f46 45%, #022c22 100%);
+            border-top: 4px solid #10b981;
+        }
+        .cover-wc1986 .cover-art-title, .cover-hero-wc1986 .cover-hero-main-title {
+            color: #d1fae5;
+            letter-spacing: 1px;
+        }
+
+        /* 6. 1990 Italia: Azzurro Night Sky, 3D Isometric Green Pitch Grid & Tricolore Ciao */
+        .cover-wc1990, .cover-hero-wc1990 {
+            background: 
+                radial-gradient(circle at 80% 30%, rgba(239, 68, 68, 0.35) 0%, transparent 35%),
+                radial-gradient(circle at 20% 70%, rgba(34, 197, 94, 0.4) 0%, transparent 40%),
+                linear-gradient(0deg, rgba(34, 197, 94, 0.18) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.18) 1px, transparent 1px),
+                linear-gradient(135deg, #1e3a8a 0%, #172554 50%, #052e16 100%);
+            background-size: auto, auto, 24px 24px, 24px 24px, auto;
+            border-top: 4px solid #22c55e;
+        }
+        .cover-wc1990 .cover-art-title, .cover-hero-wc1990 .cover-hero-main-title {
+            color: #f8fafc;
+            letter-spacing: 2px;
+        }
+
+        /* 7. 1994 USA: Star-Spangled Americana Waving Motion Stripes & Holographic Foil */
+        .cover-wc1994, .cover-hero-wc1994 {
+            background: 
+                radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.35) 0%, transparent 35%),
+                repeating-linear-gradient(
+                    -45deg,
+                    #1e3a8a 0px,
+                    #1e3a8a 22px,
+                    rgba(255, 255, 255, 0.95) 22px,
+                    rgba(255, 255, 255, 0.95) 26px,
+                    #b91c1c 26px,
+                    #b91c1c 48px,
+                    rgba(255, 255, 255, 0.95) 48px,
+                    rgba(255, 255, 255, 0.95) 52px
+                );
+            border-top: 4px solid #b91c1c;
+        }
+        .cover-wc1994 .cover-art-title, .cover-hero-wc1994 .cover-hero-main-title {
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+            font-weight: 900;
+        }
+
+        /* 8. 1998 France: Planetary Earth Horizon Sunrise & Dynamic Tricolore Sweeps */
+        .cover-wc1998, .cover-hero-wc1998 {
+            background: 
+                radial-gradient(circle at 50% 75%, rgba(245, 158, 11, 0.55) 0%, transparent 30%),
+                radial-gradient(ellipse at 50% 115%, #38bdf8 0%, #1d4ed8 45%, #0f172a 80%),
+                linear-gradient(135deg, #1e3a8a 0%, #0f172a 60%, #450a0a 100%);
+            border-top: 4px solid #3b82f6;
+        }
+        .cover-wc1998 .cover-art-title, .cover-hero-wc1998 .cover-hero-main-title {
+            color: #ffffff;
+        }
+
+        /* 9. 2002 Korea/Japan: Pearlescent Champagne Gold & Swirling Calligraphy Brush Infinity Loop */
+        .cover-wc2002, .cover-hero-wc2002 {
+            background: 
+                radial-gradient(circle at 75% 35%, rgba(225, 29, 72, 0.45) 0%, transparent 35%),
+                radial-gradient(circle at 25% 65%, rgba(37, 99, 235, 0.4) 0%, transparent 40%),
+                radial-gradient(circle at 65% 45%, rgba(254, 240, 138, 0.55) 0%, transparent 50%),
+                linear-gradient(135deg, #a16207 0%, #713f12 40%, #291804 100%);
+            border-top: 4px solid #eab308;
+        }
+        .cover-wc2002 .cover-art-title, .cover-hero-wc2002 .cover-hero-main-title {
+            color: #fef9c3;
+        }
+
+        /* 10. 2006 Germany: Allianz Arena Illuminated EFTE Diamond Cushions & Celebrating Faces */
+        .cover-wc2006, .cover-hero-wc2006 {
+            background: 
+                radial-gradient(circle at 80% 30%, rgba(34, 197, 94, 0.45) 0%, transparent 40%),
+                radial-gradient(circle at 20% 70%, rgba(56, 189, 248, 0.5) 0%, transparent 40%),
+                linear-gradient(60deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+                linear-gradient(-60deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+                linear-gradient(135deg, #0284c7 0%, #075985 45%, #0f172a 80%, #14532d 100%);
+            background-size: auto, auto, 24px 42px, 24px 42px, auto;
+            border-top: 4px solid #38bdf8;
+        }
+        .cover-wc2006 .cover-art-title, .cover-hero-wc2006 .cover-hero-main-title {
+            color: #ffffff;
+        }
+
+        /* 11. 2010 South Africa: African Sunset Glow, Ndebele Tribal Chevrons & Bicycle Kick */
+        .cover-wc2010, .cover-hero-wc2010 {
+            background: 
+                radial-gradient(circle at 75% 35%, rgba(254, 240, 138, 0.65) 0%, rgba(245, 158, 11, 0.55) 25%, transparent 55%),
+                repeating-linear-gradient(45deg, rgba(234, 179, 8, 0.15) 0px, rgba(234, 179, 8, 0.15) 10px, transparent 10px, transparent 20px),
+                repeating-linear-gradient(-45deg, rgba(220, 38, 38, 0.15) 0px, rgba(220, 38, 38, 0.15) 10px, transparent 10px, transparent 20px),
+                linear-gradient(135deg, #b45309 0%, #78350f 35%, #15803d 70%, #1c1917 100%);
+            border-top: 4px solid #f59e0b;
+        }
+        .cover-wc2010 .cover-art-title, .cover-hero-wc2010 .cover-hero-main-title {
+            color: #fef3c7;
+        }
+
+        /* 12. 2014 Brasil: Copacabana Promenade Sinuous Waves & Tropical Samba Sun */
+        .cover-wc2014, .cover-hero-wc2014 {
+            background: 
+                radial-gradient(circle at 75% 30%, rgba(250, 204, 21, 0.6) 0%, transparent 45%),
+                radial-gradient(circle at 20% 75%, rgba(2, 132, 199, 0.45) 0%, transparent 45%),
+                repeating-radial-gradient(circle at 50% 120%, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 16px, transparent 16px, transparent 32px),
+                linear-gradient(135deg, #059669 0%, #047857 40%, #064e3b 70%, #022c22 100%);
+            border-top: 4px solid #facc15;
+        }
+        .cover-wc2014 .cover-art-title, .cover-hero-wc2014 .cover-hero-main-title {
+            color: #fef08a;
+        }
+
+        /* 13. 2018 Russia: Imperial Ruby Crimson, Khokhloma Tsar Gold Scrollwork & Cosmonaut Stars */
+        .cover-wc2018, .cover-hero-wc2018 {
+            background: 
+                radial-gradient(circle at 75% 35%, rgba(234, 179, 8, 0.55) 0%, transparent 40%),
+                radial-gradient(circle at 20% 70%, rgba(56, 189, 248, 0.35) 0%, transparent 45%),
+                linear-gradient(45deg, rgba(234, 179, 8, 0.1) 1px, transparent 1px),
+                linear-gradient(-45deg, rgba(234, 179, 8, 0.1) 1px, transparent 1px),
+                linear-gradient(135deg, #9f1239 0%, #881337 40%, #4c0519 75%, #180207 100%);
+            background-size: auto, auto, 24px 24px, 24px 24px, auto;
+            border-top: 4px solid #eab308;
+        }
+        .cover-wc2018 .cover-art-title, .cover-hero-wc2018 .cover-hero-main-title {
+            color: #fef08a;
+            letter-spacing: 1px;
+        }
+
+        /* 14. 2022 Qatar: Al-Adaam Royal Maroon, Arabesque Star Lattice & 3D Infinity Loop */
+        .cover-wc2022, .cover-hero-wc2022 {
+            background: 
+                radial-gradient(circle at 75% 35%, rgba(212, 175, 55, 0.5) 0%, transparent 40%),
+                radial-gradient(circle at 25% 70%, rgba(255, 255, 255, 0.25) 0%, transparent 40%),
+                repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.1) 0px, rgba(212, 175, 55, 0.1) 1px, transparent 1px, transparent 16px),
+                repeating-linear-gradient(-45deg, rgba(212, 175, 55, 0.1) 0px, rgba(212, 175, 55, 0.1) 1px, transparent 1px, transparent 16px),
+                linear-gradient(135deg, #700c25 0%, #58081a 40%, #33040e 75%, #140105 100%);
+            border-top: 4px solid #d4af37;
+        }
+        .cover-wc2022 .cover-art-title, .cover-hero-wc2022 .cover-hero-main-title {
+            color: #fffbeb;
+        }
+
+        /* 15. World Cup 2026: High-Tech Cyber Stadium Night, Electric Neon Turf & Laser Floodlights */
+        .cover-wc2026, .cover-hero-wc2026 {
+            background: 
+                radial-gradient(circle at 75% 30%, rgba(0, 255, 135, 0.5) 0%, transparent 45%),
+                radial-gradient(circle at 25% 70%, rgba(6, 182, 212, 0.45) 0%, transparent 45%),
+                linear-gradient(0deg, rgba(0, 255, 135, 0.15) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(6, 182, 212, 0.15) 1px, transparent 1px),
+                linear-gradient(135deg, #064e3b 0%, #083344 45%, #02110f 100%);
+            background-size: auto, auto, 28px 28px, 28px 28px, auto;
+            border-top: 4px solid #00ff87;
+        }
+        .cover-wc2026 .cover-art-title, .cover-hero-wc2026 .cover-hero-main-title {
+            color: #00ff87;
+            text-shadow: 0 0 12px rgba(0, 255, 135, 0.6);
+        }
+
+        /* Card Content Body */
+        .card-body-content {
+            padding: 20px 22px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .card-meta-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .tournament-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0 0 6px 0;
+            letter-spacing: -0.3px;
+        }
+
+        .tournament-sub {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .tournament-desc-text {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .system-badge {
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        .system-badge.seq {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        .system-badge.code {
+            background: rgba(16, 185, 129, 0.15);
             color: #34d399;
-            border-color: rgba(16, 185, 129, 0.5);
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
         .tournament-year-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(245, 158, 11, 0.12);
-            color: var(--gold-light);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 800;
-            padding: 4px 10px;
+            padding: 3px 9px;
             border-radius: var(--radius-sm);
-            margin-bottom: 12px;
-            width: fit-content;
+        }
+        .era-classic {
+            background: rgba(245, 158, 11, 0.18);
+            color: var(--gold-light);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+        .era-golden {
+            background: rgba(56, 189, 248, 0.18);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+        }
+        .era-modern {
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+        .era-prep {
+            background: rgba(148, 163, 184, 0.18);
+            color: #cbd5e1;
+            border: 1px solid rgba(148, 163, 184, 0.4);
         }
 
-        .tournament-title {
-            font-size: 1.3rem;
+        .album-crown-seal {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 0.72rem;
             font-weight: 800;
-            color: var(--text-main);
-            margin: 0 0 6px 0;
+            padding: 3px 9px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(217, 119, 6, 0.4) 100%);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.7);
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            z-index: 5;
+        }
+        .album-crown-seal.owned {
+            background: rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.7);
         }
 
-        .tournament-sub {
-            font-size: 0.88rem;
-            color: var(--text-muted);
-            margin-bottom: 18px;
+        .card-ownership-bar {
+            display: flex;
+            gap: 8px;
+            margin: 10px 0 14px 0;
+            flex-wrap: wrap;
+        }
+
+        .pill-ownership {
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-dim);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .pill-ownership:hover {
+            transform: scale(1.03);
+            border-color: var(--border-light);
+            color: var(--text-main);
+        }
+        .pill-ownership.owned {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+        }
+        .pill-ownership.full.owned {
+            background: rgba(245, 158, 11, 0.25);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.6);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
         }
 
         .btn-open-tournament {
-            padding: 11px 16px;
+            padding: 12px 16px;
             background: var(--surface-elevated);
             color: #38bdf8;
             border: 1px solid var(--border-light);
             border-radius: var(--radius-sm);
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             width: 100%;
             text-align: center;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
+            font-size: 0.92rem;
         }
         .tournament-card:hover .btn-open-tournament {
             background: var(--pitch-grass);
             color: white;
             border-color: var(--pitch-green);
+            box-shadow: 0 4px 14px var(--pitch-green-glow);
         }
+
+        /* ================= ACTIVE TOURNAMENT COVER HERO BANNER ================= */
+        .tournament-cover-hero {
+            border-radius: var(--radius-lg);
+            padding: 28px 34px;
+            margin-bottom: 22px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--tourney-border);
+            box-shadow: var(--shadow-md), 0 0 32px var(--tourney-glow);
+            transition: all 0.3s ease;
+        }
+
+        /* Tactile physical album spine on left edge */
+        .tournament-cover-hero::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 8px;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(0, 0, 0, 0.4) 100%);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .cover-hero-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .cover-hero-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .cover-hero-badges {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .cover-hero-panini-seal {
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.65);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.5);
+            letter-spacing: 0.8px;
+        }
+
+        .cover-hero-era-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 3px 9px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+        }
+
+        .cover-hero-year-badge {
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 3px 9px;
+            border-radius: 4px;
+            background: var(--tourney-primary);
+            color: #040810;
+        }
+
+        .cover-hero-flag-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .cover-hero-flag-img {
+            height: 20px;
+            width: auto;
+            border-radius: 2px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        }
+
+        .cover-hero-host-name {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+
+        .cover-hero-main-title {
+            font-size: 2.3rem;
+            font-weight: 900;
+            margin: 0;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+        }
+
+        .cover-hero-subtitle {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+        }
+
+        .cover-hero-tagline {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.75);
+            font-style: italic;
+        }
+
+        .cover-hero-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .cover-hero-pill {
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.45);
+            color: #f1f5f9;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* Specific Cover Hero Atmospheric Glow & Depth */
+        .cover-hero-wc1970 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(245, 158, 11, 0.35); }
+        .cover-hero-wc1974 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(56, 189, 248, 0.35); }
+        .cover-hero-wc1978 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(125, 211, 252, 0.35); }
+        .cover-hero-wc1982 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(239, 68, 68, 0.35); }
+        .cover-hero-wc1986 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(16, 185, 129, 0.35); }
+        .cover-hero-wc1990 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(59, 130, 246, 0.35); }
+        .cover-hero-wc1994 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(239, 68, 68, 0.35); }
+        .cover-hero-wc1998 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(59, 130, 246, 0.35); }
+        .cover-hero-wc2002 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(234, 179, 8, 0.35); }
+        .cover-hero-wc2006 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(56, 189, 248, 0.35); }
+        .cover-hero-wc2010 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(245, 158, 11, 0.35); }
+        .cover-hero-wc2014 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(16, 185, 129, 0.35); }
+        .cover-hero-wc2018 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(234, 179, 8, 0.35); }
+        .cover-hero-wc2022 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(212, 175, 55, 0.35); }
+        .cover-hero-wc2026 { box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 35px rgba(0, 255, 135, 0.35); }
 
         /* TOURNAMENT TRACKER: Stadium Dashboard Header */
         .dashboard-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(135deg, #132238 0%, #0d1624 100%);
+            background: rgba(14, 25, 42, 0.8);
             border: 1px solid var(--border-light);
             padding: 20px 24px;
             border-radius: var(--radius-lg);
@@ -614,7 +1645,7 @@
         }
 
         .stat-badge {
-            background: rgba(8, 14, 24, 0.7);
+            background: rgba(6, 12, 22, 0.75);
             border: 1px solid var(--border);
             padding: 10px 16px;
             border-radius: var(--radius-md);
@@ -622,6 +1653,7 @@
             flex-direction: column;
             align-items: flex-end;
             min-width: 140px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
         }
 
         .stat-badge .stat-label {
@@ -637,41 +1669,164 @@
             font-size: 1.15rem;
             font-weight: 800;
             color: var(--text-main);
+            font-family: inherit;
         }
 
         .stat-badge.stat-progress .stat-val { color: #34d399; }
         .stat-badge.stat-total .stat-val { color: #38bdf8; }
         .stat-badge.stat-cost .stat-val { color: var(--gold-light); }
 
-        /* Scoreboard Physical Album Badge */
         .stat-badge.stat-album {
             transition: all 0.2s ease;
             user-select: none;
-            border-color: rgba(56, 189, 248, 0.3);
+            border-color: rgba(56, 189, 248, 0.35);
         }
         .stat-badge.stat-album:hover {
             transform: translateY(-2px);
             border-color: #38bdf8;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.4);
         }
         .stat-badge.stat-album.stat-owned {
             border-color: rgba(16, 185, 129, 0.6);
-            background: rgba(6, 78, 59, 0.25);
+            background: rgba(6, 78, 59, 0.3);
         }
-        .stat-badge.stat-album.stat-owned .stat-val {
-            color: #34d399;
-        }
+        .stat-badge.stat-album.stat-owned .stat-val { color: #34d399; }
+
         .stat-badge.stat-album.stat-gold {
             border-color: rgba(245, 158, 11, 0.6);
-            background: rgba(180, 83, 9, 0.22);
-            box-shadow: 0 0 14px rgba(245, 158, 11, 0.25);
+            background: rgba(180, 83, 9, 0.28);
+            box-shadow: 0 0 16px rgba(245, 158, 11, 0.3);
         }
         .stat-badge.stat-album.stat-gold .stat-val {
             color: var(--gold-light);
-            text-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
         }
-        .stat-badge.stat-album.stat-missing .stat-val {
-            color: var(--text-dim);
+        .stat-badge.stat-album.stat-missing .stat-val { color: var(--text-dim); }
+
+        /* COLLECTOR PHYSICAL ALBUM VAULT */
+        .album-vault-card {
+            background: linear-gradient(135deg, rgba(19, 34, 56, 0.92) 0%, rgba(13, 22, 36, 0.95) 100%);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
+            margin-bottom: 22px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .vault-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 12px;
+        }
+
+        .vault-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .vault-title-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--gold-light);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            text-transform: uppercase;
+        }
+
+        .vault-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+        }
+
+        .vault-status-box {
+            background: rgba(8, 14, 24, 0.65);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .vault-status-box.active-owned {
+            border-color: var(--pitch-green);
+            background: linear-gradient(135deg, rgba(6, 95, 70, 0.3) 0%, rgba(9, 14, 23, 0.85) 100%);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.18);
+        }
+
+        .vault-status-box.active-full {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(9, 14, 23, 0.85) 100%);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
+        }
+
+        .vault-box-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .vault-box-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .vault-box-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .btn-vault-toggle {
+            padding: 9px 18px;
+            font-size: 0.86rem;
+            font-weight: 800;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+            background: var(--surface-card);
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .btn-vault-toggle:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            transform: translateY(-1px);
+        }
+
+        .btn-vault-toggle.is-active-album {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            border-color: #34d399;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-vault-toggle.is-active-full {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            border-color: #fbbf24;
+            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
         }
 
         /* Controls Bar */
@@ -688,7 +1843,7 @@
             border: 1px solid var(--border-light);
             border-radius: var(--radius-sm);
             overflow: hidden;
-            background: #0b1422;
+            background: #081120;
         }
 
         input {
@@ -697,7 +1852,7 @@
             outline: none;
             text-transform: uppercase;
             font-size: 0.9rem;
-            background: #0b1422;
+            background: #081120;
             color: var(--text-main);
             font-weight: 600;
         }
@@ -710,7 +1865,7 @@
             border: 1px solid var(--border-light);
             cursor: pointer;
             font-weight: 700;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             border-radius: var(--radius-sm);
             font-size: 0.88rem;
         }
@@ -727,11 +1882,11 @@
         .btn-add-action:hover { background-color: var(--pitch-green); }
 
         .btn-query-action {
-            background-color: #1e3a5f;
+            background-color: #1a365d;
             color: #7dd3fc;
             border: none;
         }
-        .btn-query-action:hover { background-color: #2b5080; }
+        .btn-query-action:hover { background-color: #2a4365; }
 
         .btn-export {
             background-color: rgba(16, 185, 129, 0.15);
@@ -763,7 +1918,7 @@
             border-color: #38bdf8;
         }
 
-        /* Bulk Section & Public History */
+        /* Bulk Section & History */
         .bulk-section {
             display: flex;
             gap: 14px;
@@ -784,7 +1939,7 @@
             text-transform: uppercase;
             font-family: monospace;
             font-size: 0.9rem;
-            background: #0b1422;
+            background: #081120;
             color: var(--text-main);
         }
         #bulkInput:focus { border-color: #38bdf8; outline: none; }
@@ -799,16 +1954,16 @@
         .btn-bulk:hover { background-color: var(--surface-hover); }
 
         .bulk-history-container {
-            background: rgba(14, 23, 38, 0.7);
+            background: rgba(12, 22, 36, 0.75);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 14px 16px;
+            padding: 14px 18px;
         }
 
         .history-item {
             display: flex;
             flex-direction: column;
-            background: #111e30;
+            background: #0e1a2b;
             padding: 12px 14px;
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
@@ -878,12 +2033,13 @@
 
         /* Teams Grid & Group Sections */
         #teamsContainer { display: flex; flex-direction: column; gap: 24px; }
-        
+
         .group-section {
-            background: rgba(16, 26, 42, 0.65);
+            background: rgba(14, 24, 38, 0.7);
             border: 1px solid var(--border);
-            padding: 18px 20px;
+            padding: 18px 22px;
             border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
         }
 
         .group-title {
@@ -910,7 +2066,7 @@
             gap: 14px;
         }
 
-        /* Classy Football Team Card */
+        /* Football Pitch Team Card */
         .team-card {
             border: 1px solid var(--border);
             padding: 16px 10px;
@@ -924,26 +2080,24 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 120px;
+            min-height: 122px;
             box-shadow: var(--shadow-sm);
         }
-
         .team-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.5);
             border-color: #38bdf8;
         }
-
         .team-card.completed {
             border-color: var(--pitch-green);
-            box-shadow: 0 0 14px var(--pitch-green-glow);
+            box-shadow: 0 0 16px var(--pitch-green-glow);
         }
 
         .team-display-name {
             font-size: 0.95rem;
-            font-weight: 700;
+            font-weight: 800;
             color: #ffffff;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.9);
             margin-bottom: 4px;
             line-height: 1.25;
         }
@@ -952,7 +2106,7 @@
             font-size: 0.78rem;
             font-weight: 800;
             color: var(--gold-light);
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.65);
             border: 1px solid rgba(255, 255, 255, 0.15);
             padding: 2px 7px;
             border-radius: 4px;
@@ -968,8 +2122,8 @@
 
         .team-progress-track {
             width: 100%;
-            height: 5px;
-            background: rgba(0,0,0,0.5);
+            height: 6px;
+            background: rgba(0,0,0,0.55);
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 5px;
@@ -985,121 +2139,58 @@
         .team-count-badge {
             font-size: 0.78rem;
             color: #f1f5f9;
-            background: rgba(0,0,0,0.55);
-            padding: 2px 6px;
+            background: rgba(0,0,0,0.6);
+            padding: 2px 7px;
             border-radius: 4px;
             display: inline-block;
             font-weight: 700;
         }
 
-        /* STICKERS GRID & AUTHENTIC PANINI SLOTS */
+        /* ================= TACTILE PHYSICAL PANINI STICKER SLOTS ================= */
         .stickers-grid {
             display: none;
-            grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+            gap: 14px;
         }
 
-        /* Team Detail Filter & Search Bar */
-        .team-filter-bar {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            background: rgba(15, 26, 42, 0.7);
-            padding: 10px 14px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-light);
-        }
-
-        .team-filter-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .filter-tab {
-            background: var(--surface-card);
-            border: 1px solid var(--border-light);
-            color: var(--text-muted);
-            padding: 6px 14px;
-            border-radius: var(--radius-sm);
-            font-size: 0.84rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .filter-tab:hover {
-            border-color: #38bdf8;
-            color: var(--text-main);
-        }
-
-        .filter-tab.active {
-            background: rgba(56, 189, 248, 0.15);
-            border-color: #38bdf8;
-            color: #38bdf8;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
-        }
-
-        .team-filter-search {
-            flex-grow: 1;
-            max-width: 320px;
-        }
-
-        .team-filter-search input {
-            width: 100%;
-            padding: 7px 12px;
-            font-size: 0.85rem;
-            background: #090e17;
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-sm);
-            color: var(--text-main);
-            box-sizing: border-box;
-        }
-
-        .team-filter-search input:focus {
-            border-color: #38bdf8;
-            outline: none;
-        }
-
-        /* Unowned / Missing Album Slot */
+        /* Unowned / Missing Sticker Slot in Album */
         .sticker {
-            aspect-ratio: 3/4.4;
+            aspect-ratio: 3/4.2;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             border-radius: var(--radius-sm);
             font-weight: 800;
-            background: #0d1624;
+            background: #081120;
             color: var(--text-dim);
-            border: 1px dashed var(--border-light);
+            border: 2px dashed rgba(65, 105, 160, 0.4);
             overflow: hidden;
             position: relative;
-            transition: all 0.2s ease;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+            transition: all 0.22s ease;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.6), 0 2px 6px rgba(0,0,0,0.3);
             user-select: none;
         }
 
         .sticker:hover {
             border-color: #38bdf8;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.5), 0 0 12px rgba(56, 189, 248, 0.25);
         }
 
-        /* Owned / Collected Panini Card */
+        /* Owned / Pasted Physical Panini Sticker with White Peel Border */
         .sticker.owned {
-            background: linear-gradient(155deg, #064e3b 0%, #043628 100%);
+            background: linear-gradient(155deg, #065f46 0%, #033425 100%);
             color: #ffffff;
-            border: 1px solid var(--pitch-green);
-            box-shadow: 0 4px 14px var(--pitch-green-glow);
+            border: 3px solid #ffffff;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55), 0 0 16px var(--pitch-green-glow);
         }
 
+        /* Adhesive Paper Glare Sheen */
         .sticker.owned::before {
             content: "";
             position: absolute;
-            top: 0; left: 0; right: 0; height: 35%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 100%);
+            top: 0; left: 0; right: 0; height: 42%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%);
             pointer-events: none;
         }
 
@@ -1116,8 +2207,8 @@
         }
 
         .sticker-code-tag {
-            font-size: 0.65rem;
-            font-weight: 700;
+            font-size: 0.68rem;
+            font-weight: 800;
             color: var(--gold-light);
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -1125,19 +2216,16 @@
         }
 
         .sticker-num {
-            font-size: 1.15rem;
+            font-size: 1.25rem;
             letter-spacing: -0.5px;
             font-weight: 800;
             line-height: 1.1;
         }
 
-        .sticker:not(.owned) .sticker-num {
-            color: #475569;
-        }
-
+        .sticker:not(.owned) .sticker-num { color: #64748b; }
         .sticker.owned .sticker-num {
             color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+            text-shadow: 0 2px 6px rgba(0,0,0,0.7);
         }
 
         .sticker-name {
@@ -1164,14 +2252,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0, 0, 0, 0.5);
             width: 100%;
             height: 28px;
             border-top: 1px solid rgba(255,255,255,0.06);
         }
 
         .sticker.owned .sticker-controls {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.45);
             border-top: 1px solid rgba(16, 185, 129, 0.3);
         }
 
@@ -1201,7 +2289,120 @@
             color: var(--gold-light);
         }
 
-        /* Team Navigation Header */
+        /* SHINY / FOIL PANINI STICKERS */
+        .sticker.is-shiny {
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, #091220 50%, rgba(56, 189, 248, 0.12) 100%);
+            box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.18);
+        }
+
+        .sticker.is-shiny .shiny-tag {
+            position: absolute;
+            top: 3px;
+            right: 4px;
+            font-size: 0.58rem;
+            font-weight: 800;
+            color: var(--gold-light);
+            background: rgba(245, 158, 11, 0.25);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            padding: 1px 4px;
+            border-radius: 3px;
+            letter-spacing: 0.4px;
+            pointer-events: none;
+            box-shadow: 0 0 6px rgba(245, 158, 11, 0.25);
+        }
+
+        .sticker.is-shiny.owned {
+            background: linear-gradient(135deg, #065f46 0%, #0c382e 20%, #1e3a5f 45%, #6d28d9 70%, #065f46 100%);
+            background-size: 300% 300%;
+            animation: holoRainbow 4s ease infinite;
+            border: 3px solid #fef08a;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5), 0 0 20px rgba(245, 158, 11, 0.4), inset 0 0 14px rgba(255, 255, 255, 0.4);
+            position: relative;
+        }
+
+        .sticker.is-shiny.owned::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            animation: foilGlint 3.5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes foilGlint {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes holoRainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Team Filter Bar & Navigation */
+        .team-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            background: rgba(14, 24, 38, 0.75);
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-light);
+        }
+
+        .team-filter-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            background: var(--surface-card);
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .filter-tab:hover {
+            border-color: #38bdf8;
+            color: var(--text-main);
+        }
+        .filter-tab.active {
+            background: rgba(56, 189, 248, 0.16);
+            border-color: #38bdf8;
+            color: #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+
+        .team-filter-search {
+            flex-grow: 1;
+            max-width: 320px;
+        }
+        .team-filter-search input {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            background: #081120;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            color: var(--text-main);
+            box-sizing: border-box;
+        }
+        .team-filter-search input:focus {
+            border-color: #38bdf8;
+            outline: none;
+        }
+
         .team-navigation {
             display: flex;
             justify-content: space-between;
@@ -1247,7 +2448,7 @@
             font-size: 1.15rem;
             color: #38bdf8;
             padding: 60px 20px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         /* Modals */
@@ -1255,19 +2456,19 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
             align-items: center;
             justify-content: center;
             z-index: 1000;
         }
         .modal-content {
-            background: #111d2e;
+            background: #0f1c2d;
             border: 1px solid var(--border-light);
             padding: 26px;
             border-radius: var(--radius-lg);
             text-align: center;
-            width: 350px;
+            width: 360px;
             box-shadow: var(--shadow-lg);
             color: var(--text-main);
         }
@@ -1275,7 +2476,7 @@
             width: 90%;
             margin-bottom: 15px;
             border: 1px solid var(--border-light);
-            background: #0b1422;
+            background: #081120;
             color: var(--text-main);
             padding: 10px;
             border-radius: var(--radius-sm);
@@ -1285,7 +2486,7 @@
             width: 100%;
             margin-bottom: 10px;
             padding: 14px 16px;
-            background: #15243a;
+            background: #14243b;
             border: 1px solid var(--border-light);
             border-radius: var(--radius-sm);
             cursor: pointer;
@@ -1304,7 +2505,7 @@
             opacity: 0.4;
             cursor: not-allowed;
             border-color: var(--border);
-            background: #0d1624;
+            background: #091220;
         }
         .seal-date { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-weight: normal; }
 
@@ -1312,7 +2513,7 @@
         #toast {
             visibility: hidden;
             min-width: 280px;
-            background-color: #1a2a44;
+            background-color: #162438;
             color: #fff;
             border: 1px solid #38bdf8;
             text-align: center;
@@ -1323,9 +2524,9 @@
             left: 50%;
             bottom: 30px;
             transform: translateX(-50%);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             font-size: 0.95rem;
-            font-weight: 600;
+            font-weight: 700;
         }
         #toast.show {
             visibility: visible;
@@ -1338,296 +2539,6 @@
             100% { opacity: 0; bottom: 15px; }
         }
 
-        /* SHINY / FOIL PANINI STICKERS (Badges, Trophies, Mascots, Legends) */
-        .sticker.is-shiny {
-            border: 1px solid rgba(245, 158, 11, 0.45);
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, #0d1624 50%, rgba(56, 189, 248, 0.1) 100%);
-            box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.15);
-        }
-
-        .sticker.is-shiny .shiny-tag {
-            position: absolute;
-            top: 3px;
-            right: 4px;
-            font-size: 0.58rem;
-            font-weight: 800;
-            color: var(--gold-light);
-            background: rgba(245, 158, 11, 0.25);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            padding: 1px 4px;
-            border-radius: 3px;
-            letter-spacing: 0.4px;
-            pointer-events: none;
-            box-shadow: 0 0 6px rgba(245, 158, 11, 0.2);
-        }
-
-        .sticker.is-shiny.owned {
-            background: linear-gradient(135deg, #065f46 0%, #0c382e 20%, #1e3a5f 45%, #6d28d9 70%, #065f46 100%);
-            background-size: 300% 300%;
-            animation: holoRainbow 4s ease infinite;
-            border: 1px solid var(--gold);
-            box-shadow: 0 0 18px rgba(245, 158, 11, 0.4), inset 0 0 14px rgba(255, 255, 255, 0.3);
-            position: relative;
-        }
-
-        .sticker.is-shiny.owned::after {
-            content: "";
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
-            animation: foilGlint 3.5s infinite;
-            pointer-events: none;
-        }
-
-        @keyframes foilGlint {
-            0% { left: -100%; }
-            20% { left: 100%; }
-            100% { left: 100%; }
-        }
-
-        @keyframes holoRainbow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* COLLECTOR PHYSICAL ALBUM VAULT */
-        .album-vault-card {
-            background: linear-gradient(135deg, rgba(19, 34, 56, 0.9) 0%, rgba(13, 22, 36, 0.95) 100%);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-lg);
-            padding: 18px 22px;
-            margin-bottom: 22px;
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .vault-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding-bottom: 10px;
-        }
-
-        .vault-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.12rem;
-            font-weight: 800;
-            color: var(--text-main);
-            margin: 0;
-        }
-
-        .vault-title-badge {
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 4px;
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--gold-light);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            text-transform: uppercase;
-        }
-
-        .vault-actions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 14px;
-        }
-
-        .vault-status-box {
-            background: rgba(9, 14, 23, 0.6);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
-            transition: all 0.2s ease;
-        }
-
-        .vault-status-box.active-owned {
-            border-color: var(--pitch-green);
-            background: linear-gradient(135deg, rgba(6, 95, 70, 0.25) 0%, rgba(9, 14, 23, 0.8) 100%);
-            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
-        }
-
-        .vault-status-box.active-full {
-            border-color: var(--gold);
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(9, 14, 23, 0.8) 100%);
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2);
-        }
-
-        .vault-box-info {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .vault-box-title {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .vault-box-desc {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-        }
-
-        .btn-vault-toggle {
-            padding: 8px 16px;
-            font-size: 0.86rem;
-            font-weight: 800;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            border: 1px solid var(--border-light);
-            background: var(--surface-card);
-            color: var(--text-main);
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .btn-vault-toggle:hover {
-            border-color: #38bdf8;
-            color: #38bdf8;
-            transform: translateY(-1px);
-        }
-
-        .btn-vault-toggle.is-active-album {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-            color: white;
-            border-color: #34d399;
-            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
-        }
-
-        .btn-vault-toggle.is-active-full {
-            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
-            color: white;
-            border-color: #fbbf24;
-            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
-        }
-
-        /* Tournaments List Shelf Summary */
-        .shelf-summary-bar {
-            background: linear-gradient(135deg, #132238 0%, #0d1624 100%);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-lg);
-            padding: 16px 20px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .shelf-stats-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .shelf-stat-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(8, 14, 24, 0.6);
-            border: 1px solid var(--border);
-            padding: 6px 12px;
-            border-radius: var(--radius-sm);
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .shelf-stat-item strong {
-            color: var(--text-main);
-            font-size: 1rem;
-        }
-
-        .shelf-filters {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .shelf-filter-btn {
-            background: var(--surface-card);
-            border: 1px solid var(--border-light);
-            color: var(--text-muted);
-            padding: 6px 12px;
-            border-radius: var(--radius-sm);
-            font-size: 0.82rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .shelf-filter-btn:hover {
-            border-color: var(--gold);
-            color: var(--text-main);
-        }
-
-        .shelf-filter-btn.active {
-            background: rgba(245, 158, 11, 0.15);
-            border-color: var(--gold);
-            color: var(--gold-light);
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
-        }
-
-        /* Tournament Card Ownership Badges */
-        .card-ownership-bar {
-            display: flex;
-            gap: 8px;
-            margin: 10px 0 14px 0;
-            flex-wrap: wrap;
-        }
-
-        .pill-ownership {
-            font-size: 0.74rem;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 999px;
-            background: rgba(148, 163, 184, 0.1);
-            color: var(--text-dim);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .pill-ownership:hover {
-            transform: scale(1.03);
-            border-color: var(--border-light);
-            color: var(--text-muted);
-        }
-
-        .pill-ownership.owned {
-            background: rgba(16, 185, 129, 0.18);
-            color: #34d399;
-            border-color: rgba(16, 185, 129, 0.45);
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
-        }
-
-        .pill-ownership.full.owned {
-            background: rgba(245, 158, 11, 0.22);
-            color: #fbbf24;
-            border-color: rgba(245, 158, 11, 0.55);
-            box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
-        }
-
         @media (max-width: 768px) {
             body { padding: 12px 10px; }
             .container { padding: 18px 14px; }
@@ -1636,6 +2547,7 @@
             .dashboard-header { flex-direction: column; align-items: stretch; }
             .stats-scoreboard { justify-content: space-between; }
             .stat-badge { flex: 1; min-width: 100px; align-items: flex-start; }
+            .cover-hero-main-title { font-size: 1.7rem; }
         }
     </style>
 </head>
@@ -1674,7 +2586,7 @@
         <div class="brand-container" onclick="navigateTo('#/')">
             <span class="brand-logo-crest">🏆</span>
             <h1 class="brand-title">
-                <span class="panini-highlight">Panini</span> Tracker <span class="app-version">0.0.7</span>
+                <span class="panini-highlight">Panini</span> Tracker <span class="app-version">0.0.8</span>
             </h1>
         </div>
         <div class="top-actions">
@@ -1746,6 +2658,9 @@
     <!-- VIEW 3: Active Tournament Tracker Dashboard -->
     <div id="tournamentTrackerView" style="display:none;">
         <button class="btn-nav-back" id="backToTournamentsBtn" onclick="navigateTo('#/fifa-world-cup')">← Back to Tournaments</button>
+
+        <!-- Tournament Panini Album Cover Showcase Hero Banner -->
+        <div id="tournamentCoverHero" class="tournament-cover-hero" style="display:none;"></div>
 
         <div class="dashboard-header">
             <div class="header-title-container">
@@ -2158,6 +3073,216 @@
         }
     }
 
+    
+    // ================= TOURNAMENT COVER IDENTITY REGISTRY =================
+    const TOURNAMENT_COVER_DATA = {
+        'wc1970': {
+            year: 1970,
+            host: 'Mexico',
+            hostFlag: 'mx',
+            coverTitle: 'MEXICO 70',
+            coverSubtitle: 'CAMPEONATO MUNDIAL DE FUTBOL',
+            era: 'Classic Era (1970–1986)',
+            iconicFeature: 'Lance Wyman Concentric Rings & Telstar Football',
+            tagline: 'The First Ever Official Panini World Cup Sticker Album'
+        },
+        'wc1974': {
+            year: 1974,
+            host: 'West Germany',
+            hostFlag: 'de',
+            coverTitle: 'MÜNCHEN 74',
+            coverSubtitle: 'WELTMEISTERSCHAFT • COUPE DU MONDE',
+            era: 'Classic Era (1970–1986)',
+            iconicFeature: '3-Swoosh Rolling Ball & Olympiastadion Tensile Grid',
+            tagline: 'Tip & Tap Mascot Era • Munich Olympic Geometry'
+        },
+        'wc1978': {
+            year: 1978,
+            host: 'Argentina',
+            hostFlag: 'ar',
+            coverTitle: 'ARGENTINA 78',
+            coverSubtitle: 'XI CAMPEONATO MUNDIAL DE FUTBOL',
+            era: 'Classic Era (1970–1986)',
+            iconicFeature: 'Dual Hoisted Arms & Monumental Stadium Confetti',
+            tagline: 'Albiceleste Ticker-Tape Storm & Radiant Sun of May'
+        },
+        'wc1982': {
+            year: 1982,
+            host: 'Spain',
+            hostFlag: 'es',
+            coverTitle: 'ESPAÑA 82',
+            coverSubtitle: 'CAMPEONATO MUNDIAL DE FUTBOL',
+            era: 'Classic Era (1970–1986)',
+            iconicFeature: 'Dynamic Multicolor Speed Trail Behind Flying Ball',
+            tagline: 'Naranjito Mascot • Rainbow Ball Speed Streaks'
+        },
+        'wc1986': {
+            year: 1986,
+            host: 'Mexico',
+            hostFlag: 'mx',
+            coverTitle: 'MEXICO 86',
+            coverSubtitle: 'XIII COPA MUNDIAL DE LA FIFA',
+            era: 'Classic Era (1970–1986)',
+            iconicFeature: 'Azteca Step-Fret Greca & Dual Terrestrial Globes',
+            tagline: 'Pique Mascot • Aztec Jade Emerald & Sombrero Gold'
+        },
+        'wc1990': {
+            year: 1990,
+            host: 'Italy',
+            hostFlag: 'it',
+            coverTitle: 'ITALIA 90',
+            coverSubtitle: 'CAMPIONATO MONDIALE DI CALCIO',
+            era: 'Golden Era (1990–2006)',
+            iconicFeature: '3D Isometric Pitch Grid & Tricolore Ciao Mascot',
+            tagline: 'Avant-Garde Pitch Perspective & Italian Azzurro Night'
+        },
+        'wc1994': {
+            year: 1994,
+            host: 'United States',
+            hostFlag: 'us',
+            coverTitle: 'USA 94',
+            coverSubtitle: 'FIFTEENTH FIFA WORLD CUP',
+            era: 'Golden Era (1990–2006)',
+            iconicFeature: 'Americana Motion Stripes & Holographic Foil Stars',
+            tagline: 'Striker the World Pup • Laser Foil Holograms'
+        },
+        'wc1998': {
+            year: 1998,
+            host: 'France',
+            hostFlag: 'fr',
+            coverTitle: 'FRANCE 98',
+            coverSubtitle: 'COUPE DU MONDE DE LA FIFA',
+            era: 'Golden Era (1990–2006)',
+            iconicFeature: 'Rising Planet Soccer Horizon & Tricolore Sweeps',
+            tagline: 'Footix Mascot Era • Planetary Earth Horizon & Gold Trophy'
+        },
+        'wc2002': {
+            year: 2002,
+            host: 'Korea & Japan',
+            hostFlag: 'kr',
+            coverTitle: 'KOREA JAPAN 2002',
+            coverSubtitle: '2002 FIFA WORLD CUP KOREA/JAPAN',
+            era: 'Golden Era (1990–2006)',
+            iconicFeature: 'Calligraphic Circular Brush Infinity Loop & Gold Luster',
+            tagline: 'Y2K Pearlescent Gold • Dual Hosts & Spheriks'
+        },
+        'wc2006': {
+            year: 2006,
+            host: 'Germany',
+            hostFlag: 'de',
+            coverTitle: 'GERMANY 2006',
+            coverSubtitle: 'A TIME TO MAKE FRIENDS • FIFA WM 2006',
+            era: 'Golden Era (1990–2006)',
+            iconicFeature: 'Allianz Illuminated Cushion Facade & Celebrating Faces',
+            tagline: 'Celebrating Faces Circular Emblem • Modernist German Stadiums'
+        },
+        'wc2010': {
+            year: 2010,
+            host: 'South Africa',
+            hostFlag: 'za',
+            coverTitle: 'SOUTH AFRICA 2010',
+            coverSubtitle: '2010 FIFA WORLD CUP SOUTH AFRICA',
+            era: 'Modern Era (2010–2022)',
+            iconicFeature: 'Ndebele Tribal Beadwork Chevrons & Sunset Bicycle Kick',
+            tagline: 'Zakumi Leopard • African Dusk Sunset Glow & Vuvuzela Energy'
+        },
+        'wc2014': {
+            year: 2014,
+            host: 'Brazil',
+            hostFlag: 'br',
+            coverTitle: 'BRASIL 2014',
+            coverSubtitle: 'COPA DO MUNDO DA FIFA BRASIL 2014',
+            era: 'Modern Era (2010–2022)',
+            iconicFeature: 'Copacabana Sinuous Wave Sidewalks & Trophy Hands',
+            tagline: 'Joga Bonito • Tropical Samba Emerald & Canary Sunburst'
+        },
+        'wc2018': {
+            year: 2018,
+            host: 'Russia',
+            hostFlag: 'ru',
+            coverTitle: 'RUSSIA 2018',
+            coverSubtitle: '2018 FIFA WORLD CUP RUSSIA',
+            era: 'Modern Era (2010–2022)',
+            iconicFeature: 'Magic Ball Lift-off, Khokhloma Tsar Gold & Folk Stars',
+            tagline: 'Imperial Russian Ruby Crimson • Cosmonaut Stars & Lacquer Gold'
+        },
+        'wc2022': {
+            year: 2022,
+            host: 'Qatar',
+            hostFlag: 'qa',
+            coverTitle: 'QATAR 2022',
+            coverSubtitle: 'FIFA WORLD CUP QATAR 2022',
+            era: 'Modern Era (2010–2022)',
+            iconicFeature: 'Continuous 3D Infinity Shawl & Arabesque Star Lattices',
+            tagline: "Al-Adaam Royal Maroon • Desert Sand Gold & La'eeb"
+        },
+        'wc2026': {
+            year: 2026,
+            host: 'Canada, Mexico, USA',
+            hostFlag: 'ca',
+            coverTitle: 'FIFA WORLD CUP 26',
+            coverSubtitle: 'CANADA • MEXICO • USA 2026',
+            era: 'Current Era',
+            iconicFeature: 'Electric Neon Stadium Turf, Laser Spotlights & Giant 26',
+            tagline: 'Tri-Nation Cyber Pitch Spectacle • Neon Green & Cyan'
+        }
+    };
+
+    if (typeof window !== 'undefined') window.TOURNAMENT_COVER_DATA = TOURNAMENT_COVER_DATA;
+    if (typeof global !== 'undefined') global.TOURNAMENT_COVER_DATA = TOURNAMENT_COVER_DATA;
+
+    function applyTournamentTheme(tournament) {
+        if (!tournament) {
+            document.body.className = '';
+            return;
+        }
+        document.body.className = 'theme-' + tournament.id;
+    }
+
+    function renderTournamentCoverHero() {
+        const hero = document.getElementById('tournamentCoverHero');
+        if (!hero || !activeTournament) return;
+        const coverInfo = TOURNAMENT_COVER_DATA[activeTournament.id] || {
+            coverTitle: activeTournament.title,
+            coverSubtitle: activeTournament.subtitle,
+            era: 'World Cup Edition',
+            tagline: activeTournament.subtitle,
+            iconicFeature: 'Official Checklist',
+            host: 'Host Country',
+            hostFlag: '🏆',
+            year: activeTournament.year
+        };
+
+        const flagImg = coverInfo.hostFlag && coverInfo.hostFlag.length === 2
+            ? `<img src="https://flagcdn.com/w40/${coverInfo.hostFlag}.png" class="cover-hero-flag-img" alt="${coverInfo.host}">`
+            : `<span style="font-size:1.4rem;">🏆</span>`;
+
+        hero.className = `tournament-cover-hero cover-hero-${activeTournament.id}`;
+        hero.style.display = 'block';
+        hero.innerHTML = `
+            <div class="cover-hero-content">
+                <div class="cover-hero-top-row">
+                    <div class="cover-hero-badges">
+                        <span class="cover-hero-panini-seal">★ PANINI ORIGINAL ALBUM ★</span>
+                        <span class="cover-hero-era-badge">${coverInfo.era}</span>
+                        <span class="cover-hero-year-badge">${coverInfo.year} EDITION</span>
+                    </div>
+                    <div class="cover-hero-flag-badge">${flagImg} <span class="cover-hero-host-name">${coverInfo.host}</span></div>
+                </div>
+                <div style="margin-top:4px;">
+                    <h1 class="cover-hero-main-title">${coverInfo.coverTitle}</h1>
+                    <div class="cover-hero-subtitle">${coverInfo.coverSubtitle}</div>
+                    <div class="cover-hero-tagline">${coverInfo.tagline}</div>
+                </div>
+                <div class="cover-hero-pills">
+                    <span class="cover-hero-pill">📖 ${activeTournament.subtitle}</span>
+                    <span class="cover-hero-pill">🎨 ${coverInfo.iconicFeature}</span>
+                    <span class="cover-hero-pill">🔢 ${activeTournament.totalStickers} Official Stickers</span>
+                </div>
+            </div>
+        `;
+    }
+
     // ================= TOURNAMENT LOADER =================
     function initTournament(tournamentId) {
         const tournamentDef = TOURNAMENTS_CONFIG.tournaments[tournamentId];
@@ -2406,12 +3531,14 @@
 
         if (route.view === 'categories') {
             document.getElementById('loader').style.display = 'none';
+            applyTournamentTheme(null);
             categoriesView.style.display = 'block';
             return;
         }
 
         if (route.view === 'tournaments') {
             document.getElementById('loader').style.display = 'none';
+            applyTournamentTheme(null);
             renderTournamentsList(route.categoryId);
             tournamentsListView.style.display = 'block';
             return;
@@ -2427,6 +3554,9 @@
                 return;
             }
         }
+
+        applyTournamentTheme(activeTournament);
+        renderTournamentCoverHero();
 
         tournamentTrackerView.style.display = 'block';
         document.getElementById('activeTournamentHeaderTitle').innerText = activeTournament.title + ' Tracker';
@@ -2482,7 +3612,9 @@
             return;
         }
 
+        const coverHero = document.getElementById('tournamentCoverHero');
         if (route.view === 'bulk-query') {
+            if (coverHero) coverHero.style.display = 'none';
             if (vaultCard) vaultCard.style.display = 'none';
             teamsContainer.style.display = 'none';
             bulkSectionDiv.style.display = 'none';
@@ -2490,6 +3622,7 @@
             teamDetailSection.style.display = 'none';
             bulkQueryContainer.style.display = 'flex';
         } else if (route.view === 'team') {
+            if (coverHero) coverHero.style.display = 'none';
             if (vaultCard) vaultCard.style.display = 'none';
             teamsContainer.style.display = 'none';
             bulkSectionDiv.style.display = 'none';
@@ -2499,6 +3632,7 @@
             renderTeamDetail(route.teamCode);
         } else {
             // Main tournament dashboard
+            if (coverHero) coverHero.style.display = 'block';
             if (vaultCard) {
                 vaultCard.style.display = 'flex';
                 renderAlbumOwnershipVault();
@@ -2597,19 +3731,29 @@
                 const isPrep = tourney.status === 'in_preparation';
                 const own = getAlbumOwnership(tourney.id);
 
+                const coverInfo = TOURNAMENT_COVER_DATA[tourney.id] || {
+                    coverTitle: tourney.title,
+                    coverSubtitle: tourney.subtitle,
+                    era: isClassic ? 'Classic Era' : (isGolden ? 'Golden Era' : 'Modern Era'),
+                    tagline: tourney.subtitle,
+                    iconicFeature: 'Official Checklist',
+                    host: 'Host',
+                    hostFlag: '🏆'
+                };
+
                 const card = document.createElement('div');
                 card.className = 'tournament-card' + (own.hasFullAlbum ? ' is-full-album' : (own.hasAlbum ? ' is-owned-album' : ''));
                 card.onclick = () => navigateTo(`#/${categoryId}/${tourney.year || tourney.id}`);
 
                 let eraBadge = '';
                 if (isPrep) {
-                    eraBadge = `<span class="tournament-year-badge" style="background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.4);">⏳ ${tourney.phase || 'IN PREPARATION'} (${tourney.year})</span>`;
+                    eraBadge = `<span class="tournament-year-badge era-prep">⏳ ${tourney.phase || 'IN PREPARATION'} (${tourney.year})</span>`;
                 } else if (isClassic) {
-                    eraBadge = `<span class="tournament-year-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--gold-light); border: 1px solid rgba(245, 158, 11, 0.4);">📜 CLASSIC ERA (${tourney.year})</span>`;
+                    eraBadge = `<span class="tournament-year-badge era-classic">📜 CLASSIC ERA (${tourney.year})</span>`;
                 } else if (isGolden) {
-                    eraBadge = `<span class="tournament-year-badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4);">⚡ GOLDEN ERA (${tourney.year})</span>`;
+                    eraBadge = `<span class="tournament-year-badge era-golden">⚡ GOLDEN ERA (${tourney.year})</span>`;
                 } else {
-                    eraBadge = `<span class="tournament-year-badge">🏆 ${tourney.year} EDITION</span>`;
+                    eraBadge = `<span class="tournament-year-badge era-modern">🏆 ${tourney.year} EDITION</span>`;
                 }
 
                 let sealHtml = '';
@@ -2620,22 +3764,43 @@
                 }
 
                 const systemBadge = tourney.isSequential
-                    ? `<span style="font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 600; margin-left: 8px;">1..${tourney.totalStickers} Contiguous</span>`
-                    : `<span style="font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: #34d399; font-weight: 600; margin-left: 8px;">Team Code-Based</span>`;
+                    ? `<span class="system-badge seq">1..${tourney.totalStickers} Contiguous</span>`
+                    : `<span class="system-badge code">Team Code-Based</span>`;
 
                 const stickerCountText = tourney.totalStickers ? `${tourney.totalStickers} Stickers` : 'Complete Set';
                 const descText = tourney.description || `Official Panini ${tourney.year} album checklist with real player names, badges, and complete sequential tracking.`;
                 const btnText = `Open ${tourney.year} Tracker →`;
 
+                const flagImg = coverInfo.hostFlag && coverInfo.hostFlag.length === 2
+                    ? `<img src="https://flagcdn.com/w40/${coverInfo.hostFlag}.png" class="cover-art-flag-img" alt="${coverInfo.host}">`
+                    : `<span style="font-size:1.1rem;">🏆</span>`;
+
                 card.innerHTML = `
-                    ${sealHtml}
-                    <div>
-                        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px; margin-bottom:10px;">
+                    <!-- Panini Cover Art Header Banner -->
+                    <div class="card-cover-art-banner cover-${tourney.id}">
+                        ${sealHtml}
+                        <div class="cover-art-header-row">
+                            <span class="cover-art-panini-tag">PANINI ORIGINAL</span>
+                            <div class="cover-art-flag-wrap">${flagImg}</div>
+                        </div>
+                        <div class="cover-art-main">
+                            <div class="cover-art-title">${coverInfo.coverTitle}</div>
+                            <div class="cover-art-sub">${coverInfo.coverSubtitle}</div>
+                        </div>
+                        <div class="cover-art-footer">
+                            <span class="cover-art-year-chip">${tourney.year}</span>
+                            <span class="cover-art-edition-chip">${stickerCountText}</span>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="card-body-content">
+                        <div class="card-meta-row">
                             ${eraBadge}
                             ${systemBadge}
                         </div>
                         <h3 class="tournament-title">${tourney.title}</h3>
-                        <div class="tournament-sub">${tourney.subtitle || ''} • ${stickerCountText}</div>
+                        <div class="tournament-sub">${tourney.subtitle || ''}</div>
                         
                         <!-- Physical Album Ownership Quick Toggles -->
                         <div class="card-ownership-bar" onclick="event.stopPropagation()">
@@ -2647,11 +3812,11 @@
                             </button>
                         </div>
 
-                        <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:18px; line-height:1.5;">
+                        <p class="tournament-desc-text">
                             ${descText}
                         </p>
+                        <button class="btn-open-tournament">${btnText}</button>
                     </div>
-                    <button class="btn-open-tournament">${btnText}</button>
                 `;
                 grid.appendChild(card);
             });

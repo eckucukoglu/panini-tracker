@@ -6,25 +6,25 @@ const assert = require('assert');
 console.log('=== RUNNING PANINI WORLD CUP TRACKER VERIFICATION ===\n');
 
 // 1. Version Synchronization Check
-console.log('--- 1. Testing SemVer Synchronization (0.0.7) ---');
+console.log('--- 1. Testing SemVer Synchronization (0.0.8) ---');
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
 const readme = fs.readFileSync(path.join(__dirname, '../README.md'), 'utf8');
 const indexHtml = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
 
 const pkgVer = pkg.version;
 console.log(`package.json version: ${pkgVer}`);
-assert.strictEqual(pkgVer, '0.0.7', 'package.json version must be 0.0.7');
+assert.strictEqual(pkgVer, '0.0.8', 'package.json version must be 0.0.8');
 
 const readmeVerMatch = readme.match(/\*\*Version:\*\*\s*`([^`]+)`/);
 assert(readmeVerMatch, 'README.md must have **Version:** `X.Y.Z`');
 console.log(`README.md version: ${readmeVerMatch[1]}`);
-assert.strictEqual(readmeVerMatch[1], '0.0.7', 'README.md version must be 0.0.7');
+assert.strictEqual(readmeVerMatch[1], '0.0.8', 'README.md version must be 0.0.8');
 
 const indexVerMatch = indexHtml.match(/<span class="app-version">([^<]+)<\/span>/);
 assert(indexVerMatch, 'index.html must have <span class="app-version">');
 console.log(`index.html version: ${indexVerMatch[1]}`);
-assert.strictEqual(indexVerMatch[1], '0.0.7', 'index.html version must be 0.0.7');
-console.log('✅ Version synchronization verified: All files on 0.0.7\n');
+assert.strictEqual(indexVerMatch[1], '0.0.8', 'index.html version must be 0.0.8');
+console.log('✅ Version synchronization verified: All files on 0.0.8\n');
 
 // 2. Load and verify all 15 Panini World Cup tournaments
 console.log('--- 2. Testing Tournament Registries & Authentic Sticker Checklists ---');

@@ -1,6 +1,6 @@
 # Panini Sticker Album Tracker (panini-tracker)
 
-**Version:** `0.0.7`
+**Version:** `0.0.8`
 
 A modular, cloud-powered web application built with Firebase Realtime Database and Authentication to track Panini sticker album collections, missing stickers, and duplicate swaps across FIFA World Cup and UEFA European Championship (EURO) tournaments.
 
@@ -10,6 +10,9 @@ A modular, cloud-powered web application built with Firebase Realtime Database a
 
 ## Features
 
+- 🎨 **Authentic Panini Album Cover Themes (1970–2026)**: Comprehensive design overhaul recreating the iconic front cover art, palettes, typography, and motifs for all 15 Panini World Cup editions (from Mexico 70 sunburst & concentric rings to Italia 90 3D wireframe grid, Espana 82 rainbow speed trails, and WC 2026 cyber pitch neon).
+- ⚽ **Immersive Football Atmosphere**: Stadium pitch grass mowing stripes, floodlight beams, tactical touchline lines, and high-contrast digital LED scoreboard stats display.
+- ✨ **Tactile Physical Panini Sticker Cards**: Realistic sticker proportions with white peel border, animated rainbow holographic prism refraction sheen on foils/badges, and embossed album slots.
 - 🏆 **Championship Hub**: Seamless navigation between **FIFA World Cup** and **UEFA European Championship** (EURO) tournaments.
 - 📜 **Complete World Cup Coverage (1970–2026)**: All 15 official Panini World Cup album editions fully implemented with 100% authentic checklists, real player names, official badges, stadiums, mascots, and trophies:
   - **Phase 1 (1970–1986 Classic Era)**:
