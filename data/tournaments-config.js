@@ -94,9 +94,9 @@ const TOURNAMENTS_CONFIG = {
             dbKey: 'panini1990',
             isSequential: true,
             totalStickers: 448,
-            status: 'in_preparation',
+            status: 'active',
             phase: 'Phase 2 (1990–2006)',
-            description: 'The iconic Italia 90 Panini album featuring 24 national teams, stadium postcards, and classic mascots. Official checklist scheduled for Phase 2.'
+            description: 'The iconic Italia 90 Panini album featuring 24 national teams, stadium postcards, and classic mascots.'
         },
         'wc1994': {
             id: 'wc1994',
@@ -107,9 +107,9 @@ const TOURNAMENTS_CONFIG = {
             dbKey: 'panini1994',
             isSequential: true,
             totalStickers: 444,
-            status: 'in_preparation',
+            status: 'active',
             phase: 'Phase 2 (1990–2006)',
-            description: 'Official Panini World Cup USA 94 album with 24 teams, holographic badges, and Striker the mascot. Official checklist scheduled for Phase 2.'
+            description: 'Official Panini World Cup USA 94 album with 24 teams, holographic badges, and Striker the mascot.'
         },
         'wc1998': {
             id: 'wc1998',
@@ -120,9 +120,9 @@ const TOURNAMENTS_CONFIG = {
             dbKey: 'panini1998',
             isSequential: true,
             totalStickers: 561,
-            status: 'in_preparation',
+            status: 'active',
             phase: 'Phase 2 (1990–2006)',
-            description: 'The first 32-nation World Cup album with 561 stickers, Footix mascot, and 8 tournament groups. Official checklist scheduled for Phase 2.'
+            description: 'The first 32-nation World Cup album with 561 stickers, Footix mascot, and 8 tournament groups.'
         },
         'wc2002': {
             id: 'wc2002',
@@ -133,9 +133,9 @@ const TOURNAMENTS_CONFIG = {
             dbKey: 'panini2002',
             isSequential: true,
             totalStickers: 576,
-            status: 'in_preparation',
+            status: 'active',
             phase: 'Phase 2 (1990–2006)',
-            description: 'Panini 2002 FIFA World Cup Korea/Japan album with dual host venues and 576 stickers. Official checklist scheduled for Phase 2.'
+            description: 'Panini 2002 FIFA World Cup Korea/Japan album with dual host venues and 576 stickers.'
         },
         'wc2006': {
             id: 'wc2006',
@@ -146,9 +146,9 @@ const TOURNAMENTS_CONFIG = {
             dbKey: 'panini2006',
             isSequential: true,
             totalStickers: 596,
-            status: 'in_preparation',
+            status: 'active',
             phase: 'Phase 2 (1990–2006)',
-            description: 'Official Panini FIFA World Cup Germany 2006 album featuring Goleo VI and 596 stickers. Official checklist scheduled for Phase 2.'
+            description: 'Official Panini FIFA World Cup Germany 2006 album featuring Goleo VI and 596 stickers.'
         },
         'wc2010': {
             id: 'wc2010',
@@ -159,9 +159,9 @@ const TOURNAMENTS_CONFIG = {
             dbKey: 'panini2010',
             isSequential: true,
             totalStickers: 640,
-            status: 'in_preparation',
+            status: 'active',
             phase: 'Phase 3 (2010–2022)',
-            description: 'Panini South Africa 2010 album with 640 stickers, Zakumi mascot, and glitter badges. Official checklist scheduled for Phase 3.'
+            description: 'Panini South Africa 2010 album with 640 stickers, Zakumi mascot, and glitter badges.'
         },
         'wc2014': {
             id: 'wc2014',
@@ -172,9 +172,9 @@ const TOURNAMENTS_CONFIG = {
             dbKey: 'panini2014',
             isSequential: true,
             totalStickers: 640,
-            status: 'in_preparation',
+            status: 'active',
             phase: 'Phase 3 (2010–2022)',
-            description: 'Panini FIFA World Cup Brasil 2014 album with 640 stickers and Fuleco the Armadillo. Official checklist scheduled for Phase 3.'
+            description: 'Panini FIFA World Cup Brasil 2014 album with 640 stickers and Fuleco the Armadillo.'
         },
         'wc2018': {
             id: 'wc2018',
@@ -185,9 +185,9 @@ const TOURNAMENTS_CONFIG = {
             dbKey: 'panini2018',
             isSequential: true,
             totalStickers: 682,
-            status: 'in_preparation',
+            status: 'active',
             phase: 'Phase 3 (2010–2022)',
-            description: 'Panini FIFA World Cup Russia 2018 album with 682 stickers, Zabivaka mascot, and foil legends. Official checklist scheduled for Phase 3.'
+            description: 'Panini FIFA World Cup Russia 2018 album with 682 stickers, Zabivaka mascot, and foil legends.'
         },
         'wc2022': {
             id: 'wc2022',
@@ -198,9 +198,9 @@ const TOURNAMENTS_CONFIG = {
             dbKey: 'panini2022',
             isSequential: false,
             totalStickers: 670,
-            status: 'in_preparation',
+            status: 'active',
             phase: 'Phase 3 (2010–2022)',
-            description: 'Panini FIFA World Cup Qatar 2022 album with team code numbering (e.g. ARG1-20, FWC1-29) and extra stickers. Official checklist scheduled for Phase 3.'
+            description: 'Panini FIFA World Cup Qatar 2022 album with team code numbering (e.g. ARG1-20, FWC1-29) and museum specials.'
         },
         'wc2026': {
             id: 'wc2026',

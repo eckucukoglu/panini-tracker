@@ -23,6 +23,15 @@
     <script src="data/tournaments/wc1978.js"></script>
     <script src="data/tournaments/wc1982.js"></script>
     <script src="data/tournaments/wc1986.js"></script>
+    <script src="data/tournaments/wc1990.js"></script>
+    <script src="data/tournaments/wc1994.js"></script>
+    <script src="data/tournaments/wc1998.js"></script>
+    <script src="data/tournaments/wc2002.js"></script>
+    <script src="data/tournaments/wc2006.js"></script>
+    <script src="data/tournaments/wc2010.js"></script>
+    <script src="data/tournaments/wc2014.js"></script>
+    <script src="data/tournaments/wc2018.js"></script>
+    <script src="data/tournaments/wc2022.js"></script>
     <script src="data/tournaments/wc2026.js"></script>
 
     <style>
@@ -1256,6 +1265,278 @@
             100% { opacity: 0; bottom: 15px; }
         }
 
+        /* SHINY / FOIL PANINI STICKERS (Badges, Trophies, Mascots, Legends) */
+        .sticker.is-shiny {
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, #0d1624 50%, rgba(56, 189, 248, 0.08) 100%);
+            box-shadow: inset 0 0 10px rgba(245, 158, 11, 0.1);
+        }
+
+        .sticker.is-shiny .shiny-tag {
+            position: absolute;
+            top: 3px;
+            right: 4px;
+            font-size: 0.58rem;
+            font-weight: 800;
+            color: var(--gold-light);
+            background: rgba(245, 158, 11, 0.2);
+            padding: 1px 4px;
+            border-radius: 3px;
+            letter-spacing: 0.4px;
+            pointer-events: none;
+        }
+
+        .sticker.is-shiny.owned {
+            background: linear-gradient(135deg, #065f46 0%, #0c382e 25%, #1e3a5f 50%, #4c1d95 75%, #065f46 100%);
+            background-size: 300% 300%;
+            animation: holoRainbow 4s ease infinite;
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 16px rgba(245, 158, 11, 0.35), inset 0 0 12px rgba(255, 255, 255, 0.25);
+        }
+
+        @keyframes holoRainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* COLLECTOR PHYSICAL ALBUM VAULT */
+        .album-vault-card {
+            background: linear-gradient(135deg, rgba(19, 34, 56, 0.9) 0%, rgba(13, 22, 36, 0.95) 100%);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 18px 22px;
+            margin-bottom: 22px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .vault-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 10px;
+        }
+
+        .vault-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
+        }
+
+        .vault-title-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--gold-light);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            text-transform: uppercase;
+        }
+
+        .vault-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 14px;
+        }
+
+        .vault-status-box {
+            background: rgba(9, 14, 23, 0.6);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .vault-status-box.active-owned {
+            border-color: var(--pitch-green);
+            background: linear-gradient(135deg, rgba(6, 95, 70, 0.25) 0%, rgba(9, 14, 23, 0.8) 100%);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15);
+        }
+
+        .vault-status-box.active-full {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(9, 14, 23, 0.8) 100%);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2);
+        }
+
+        .vault-box-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .vault-box-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .vault-box-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .btn-vault-toggle {
+            padding: 8px 16px;
+            font-size: 0.86rem;
+            font-weight: 800;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+            background: var(--surface-card);
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-vault-toggle:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            transform: translateY(-1px);
+        }
+
+        .btn-vault-toggle.is-active-album {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            border-color: #34d399;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-vault-toggle.is-active-full {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            border-color: #fbbf24;
+            box-shadow: 0 2px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Tournaments List Shelf Summary */
+        .shelf-summary-bar {
+            background: linear-gradient(135deg, #132238 0%, #0d1624 100%);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .shelf-stats-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .shelf-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(8, 14, 24, 0.6);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .shelf-stat-item strong {
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+
+        .shelf-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .shelf-filter-btn {
+            background: var(--surface-card);
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .shelf-filter-btn:hover {
+            border-color: var(--gold);
+            color: var(--text-main);
+        }
+
+        .shelf-filter-btn.active {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: var(--gold);
+            color: var(--gold-light);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+        }
+
+        /* Tournament Card Ownership Badges */
+        .card-ownership-bar {
+            display: flex;
+            gap: 8px;
+            margin: 10px 0 14px 0;
+            flex-wrap: wrap;
+        }
+
+        .pill-ownership {
+            font-size: 0.74rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-dim);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pill-ownership:hover {
+            transform: scale(1.03);
+            border-color: var(--border-light);
+            color: var(--text-muted);
+        }
+
+        .pill-ownership.owned {
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.45);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .pill-ownership.full.owned {
+            background: rgba(245, 158, 11, 0.22);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.55);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+        }
+
         @media (max-width: 768px) {
             body { padding: 12px 10px; }
             .container { padding: 18px 14px; }
@@ -1302,7 +1583,7 @@
         <div class="brand-container" onclick="navigateTo('#/')">
             <span class="brand-logo-crest">🏆</span>
             <h1 class="brand-title">
-                <span class="panini-highlight">Panini</span> Tracker <span class="app-version">0.0.5</span>
+                <span class="panini-highlight">Panini</span> Tracker <span class="app-version">0.0.6</span>
             </h1>
         </div>
         <div class="top-actions">
@@ -1365,6 +1646,7 @@
             <h2 id="tournamentsCategoryTitle">FIFA World Cup Albums</h2>
             <p id="tournamentsCategorySubtitle">Select an album edition to manage and track your sticker collection.</p>
         </div>
+        <div id="tournamentsShelfSummary"></div>
         <div class="tournaments-grid" id="tournamentsGridContainer">
             <!-- Populated dynamically via JS -->
         </div>
@@ -1376,11 +1658,14 @@
 
         <div class="dashboard-header">
             <div class="header-title-container">
-                <h1 id="activeTournamentHeaderTitle">🏆 Panini WC 2026 Tracker</h1>
+                <h1 id="activeTournamentHeaderTitle">🏆 Panini WC Tracker</h1>
                 <span id="activeTournamentSubtitle" style="color:var(--text-muted); font-size:0.92rem; font-weight:600;"></span>
             </div>
             <div class="stats-scoreboard" id="statsDisplay"></div>
         </div>
+
+        <!-- Collector Physical Copy Vault Card -->
+        <div id="albumOwnershipVaultCard" class="album-vault-card"></div>
 
         <div class="controls" id="controlsDiv">
             <div class="control-group" id="addStickerGroup" style="display:none;">
@@ -1479,10 +1764,13 @@
     let collectionRef = null;
     let sealsRef = null;
     let bulkHistoryRef = null;
+    let ownershipRef = null;
 
     let collection = {};
     let sealData = {};
     let bulkHistoryData = {};
+    let albumOwnershipData = {};
+    let currentShelfFilter = 'all';
 
     let allStickers = [];
     let teamMap = {};
@@ -1490,6 +1778,181 @@
 
     let currentTeamFilter = 'all';
     let currentTeamSearch = '';
+
+    // ================= ALBUM OWNERSHIP & FULL ALBUM VAULT =================
+    function initAlbumOwnership() {
+        try {
+            const allCached = localStorage.getItem('panini_album_ownership');
+            if (allCached) {
+                albumOwnershipData = JSON.parse(allCached) || {};
+            }
+        } catch(e) {}
+
+        if (typeof TOURNAMENTS_CONFIG !== 'undefined' && TOURNAMENTS_CONFIG.tournaments) {
+            Object.keys(TOURNAMENTS_CONFIG.tournaments).forEach(id => {
+                if (!albumOwnershipData[id]) {
+                    try {
+                        const item = localStorage.getItem(`panini_ownership_${id}`);
+                        if (item) albumOwnershipData[id] = JSON.parse(item);
+                    } catch(e) {}
+                }
+            });
+        }
+
+        try {
+            if (db) {
+                db.ref('album_ownership').on('value', snapshot => {
+                    const val = snapshot.val();
+                    if (val) {
+                        albumOwnershipData = Object.assign({}, albumOwnershipData, val);
+                        try {
+                            localStorage.setItem('panini_album_ownership', JSON.stringify(albumOwnershipData));
+                        } catch(e) {}
+                        renderAlbumOwnershipVault();
+                        const route = parseRoute();
+                        if (route.view === 'tournaments') renderTournamentsList(route.categoryId);
+                    }
+                });
+            }
+        } catch(e) {}
+    }
+
+    function getAlbumOwnership(tournamentId) {
+        if (!albumOwnershipData[tournamentId]) {
+            try {
+                const cached = localStorage.getItem(`panini_ownership_${tournamentId}`);
+                if (cached) {
+                    albumOwnershipData[tournamentId] = JSON.parse(cached);
+                }
+            } catch(e) {}
+        }
+        return albumOwnershipData[tournamentId] || { hasAlbum: false, hasFullAlbum: false };
+    }
+
+    function toggleAlbumOwnership(tournamentId, type, event) {
+        if (event) event.stopPropagation();
+        const current = getAlbumOwnership(tournamentId);
+        const updated = {
+            hasAlbum: current.hasAlbum || false,
+            hasFullAlbum: current.hasFullAlbum || false,
+            updatedAt: new Date().toISOString()
+        };
+
+        if (type === 'album') {
+            updated.hasAlbum = !updated.hasAlbum;
+            if (!updated.hasAlbum) updated.hasFullAlbum = false;
+        } else if (type === 'fullAlbum') {
+            updated.hasFullAlbum = !updated.hasFullAlbum;
+            if (updated.hasFullAlbum) updated.hasAlbum = true;
+        }
+
+        albumOwnershipData[tournamentId] = updated;
+
+        try {
+            localStorage.setItem(`panini_ownership_${tournamentId}`, JSON.stringify(updated));
+            localStorage.setItem('panini_album_ownership', JSON.stringify(albumOwnershipData));
+        } catch(e) {}
+
+        try {
+            if (db) {
+                const tDef = TOURNAMENTS_CONFIG.tournaments[tournamentId];
+                const dbKey = tDef ? (tDef.dbKey || tournamentId) : tournamentId;
+                db.ref(`${dbKey}_album_ownership`).set(updated);
+                db.ref(`album_ownership/${tournamentId}`).set(updated);
+            }
+        } catch(e) {
+            console.warn("Could not save ownership to Firebase:", e);
+        }
+
+        const tourney = TOURNAMENTS_CONFIG.tournaments[tournamentId];
+        const tourneyTitle = tourney ? tourney.title : tournamentId;
+        if (type === 'fullAlbum') {
+            showToast(updated.hasFullAlbum ? `🏆 ${tourneyTitle}: Dolu Albüm (Full Album) Recorded!` : `ℹ️ ${tourneyTitle}: Full Album removed`);
+        } else {
+            showToast(updated.hasAlbum ? `📖 ${tourneyTitle}: Physical Album Recorded!` : `ℹ️ ${tourneyTitle}: Physical Album removed`);
+        }
+
+        renderAlbumOwnershipVault();
+        const route = parseRoute();
+        if (route.view === 'tournaments') {
+            renderTournamentsList(route.categoryId);
+        }
+    }
+
+    function renderAlbumOwnershipVault() {
+        const vaultCard = document.getElementById('albumOwnershipVaultCard');
+        if (!vaultCard || !activeTournament) return;
+
+        const own = getAlbumOwnership(activeTournament.id);
+        const hasAlbum = !!own.hasAlbum;
+        const hasFullAlbum = !!own.hasFullAlbum;
+
+        vaultCard.innerHTML = `
+            <div class="vault-header">
+                <div class="vault-title">
+                    <span>📖 Physical Album Collection Vault</span>
+                    <span class="vault-title-badge">${activeTournament.title}</span>
+                </div>
+                <div style="font-size:0.85rem; color:var(--text-muted);">
+                    Fiziksel Albüm ve Dolu Albüm Sahiplik Kaydı
+                </div>
+            </div>
+            <div class="vault-actions-grid">
+                <!-- 1. Physical Album Copy (Boş / Yarım Albüm) -->
+                <div class="vault-status-box ${hasAlbum ? 'active-owned' : ''}">
+                    <div class="vault-box-info">
+                        <div class="vault-box-title">
+                            <span>📖 Physical Album</span>
+                            <span style="font-size:0.75rem; padding:2px 7px; border-radius:4px; font-weight:800; background:${hasAlbum ? 'rgba(16,185,129,0.2)' : 'rgba(148,163,184,0.15)'}; color:${hasAlbum ? '#34d399' : 'var(--text-dim)'};">
+                                ${hasAlbum ? 'OWNED ✓' : 'NOT OWNED'}
+                            </span>
+                        </div>
+                        <div class="vault-box-desc">Physical album in your collector archive (empty or in-progress)</div>
+                    </div>
+                    <button class="btn-vault-toggle ${hasAlbum ? 'is-active-album' : ''}" onclick="toggleAlbumOwnership('${activeTournament.id}', 'album')">
+                        ${hasAlbum ? 'Albüm Var ✓' : '+ Albüm Ekle'}
+                    </button>
+                </div>
+
+                <!-- 2. Full Completed Physical Album (Dolu Albüm) -->
+                <div class="vault-status-box ${hasFullAlbum ? 'active-full' : ''}">
+                    <div class="vault-box-info">
+                        <div class="vault-box-title">
+                            <span>🏆 Full Album (Dolu Albüm)</span>
+                            <span style="font-size:0.75rem; padding:2px 7px; border-radius:4px; font-weight:800; background:${hasFullAlbum ? 'rgba(245,158,11,0.25)' : 'rgba(148,163,184,0.15)'}; color:${hasFullAlbum ? '#fbbf24' : 'var(--text-dim)'};">
+                                ${hasFullAlbum ? '✨ COMPLETED 100%' : 'NOT COMPLETED'}
+                            </span>
+                        </div>
+                        <div class="vault-box-desc">100% full, complete original physical sticker album</div>
+                    </div>
+                    <button class="btn-vault-toggle ${hasFullAlbum ? 'is-active-full' : ''}" onclick="toggleAlbumOwnership('${activeTournament.id}', 'fullAlbum')">
+                        ${hasFullAlbum ? '✨ Dolu Albüm Var ✓' : '+ Dolu Albüm İşaretle'}
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function isStickerShiny(tournament, code) {
+        if (!tournament) return false;
+        if (code === '00' || code === '0') return true;
+        if (code.startsWith('FWC')) return true;
+        if (!tournament.isSequential && code.endsWith('1')) return true;
+        if (tournament.isSequential) {
+            const num = parseInt(code, 10);
+            if (num <= 35) return true;
+            if (tournament.year === 2018 && num >= 673 && num <= 682) return true;
+            if (tournament.year === 2006 && num === 596) return true;
+            const item = tournament.getStickerItem ? tournament.getStickerItem(code) : null;
+            if (item && item.name) {
+                const n = item.name.toLowerCase();
+                if (n.includes('badge') || n.includes('emblem') || n.includes('trophy') || n.includes('mascot') || n.includes('stadium') || n.includes('legend') || n.includes('poster')) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     function escapeHtml(str) {
         if (!str) return '';
@@ -1645,6 +2108,9 @@
         if (collectionRef) collectionRef.off();
         if (sealsRef) sealsRef.off();
         if (bulkHistoryRef) bulkHistoryRef.off();
+        if (ownershipRef) ownershipRef.off();
+
+        renderAlbumOwnershipVault();
 
         if (activeTournament.status === 'in_preparation' || !activeTournament.groups) {
             document.getElementById('loader').style.display = 'none';
@@ -1665,8 +2131,20 @@
         collectionRef = db.ref(`${dbKey}_collection`);
         sealsRef = db.ref(`${dbKey}_seals`);
         bulkHistoryRef = db.ref(`${dbKey}_bulk_history`);
+        ownershipRef = db.ref(`${dbKey}_album_ownership`);
 
         // Attach listeners
+        ownershipRef.on('value', (snapshot) => {
+            const val = snapshot.val();
+            if (val) {
+                albumOwnershipData[activeTournament.id] = val;
+                try {
+                    localStorage.setItem(`panini_ownership_${activeTournament.id}`, JSON.stringify(val));
+                } catch(e) {}
+                renderAlbumOwnershipVault();
+            }
+        });
+
         sealsRef.on('value', (snapshot) => {
             sealData = snapshot.val() || {};
         });
@@ -1932,17 +2410,81 @@
         updateUIVisibility();
     }
 
+    function setShelfFilter(filter) {
+        currentShelfFilter = filter;
+        const route = parseRoute();
+        renderTournamentsList(route.categoryId);
+    }
+
     function renderTournamentsList(categoryId) {
         const cat = TOURNAMENTS_CONFIG.categories.find(c => c.id === categoryId);
         document.getElementById('tournamentsCategoryTitle').innerText = (cat ? cat.name : 'Tournaments') + ' Albums';
         document.getElementById('tournamentsCategorySubtitle').innerText = 'Select an album edition to manage and track your collection.';
 
-        const grid = document.getElementById('tournamentsGridContainer');
-        grid.innerHTML = '';
-
-        const matchingTournaments = Object.values(TOURNAMENTS_CONFIG.tournaments || {})
+        const allMatching = Object.values(TOURNAMENTS_CONFIG.tournaments || {})
             .filter(t => t.categoryId === categoryId)
             .sort((a, b) => (b.year || 0) - (a.year || 0));
+
+        // Calculate ownership metrics across this championship category
+        const totalTourneys = allMatching.length;
+        const ownedAlbumsCount = allMatching.filter(t => {
+            const own = getAlbumOwnership(t.id);
+            return !!own.hasAlbum;
+        }).length;
+        const fullAlbumsCount = allMatching.filter(t => {
+            const own = getAlbumOwnership(t.id);
+            return !!own.hasFullAlbum;
+        }).length;
+
+        // Render Shelf Summary Bar
+        const summaryContainer = document.getElementById('tournamentsShelfSummary');
+        if (summaryContainer) {
+            summaryContainer.innerHTML = `
+                <div class="shelf-summary-bar">
+                    <div class="shelf-stats-group">
+                        <div class="shelf-stat-item">
+                            <span>🏆 Total Editions:</span>
+                            <strong>${totalTourneys}</strong>
+                        </div>
+                        <div class="shelf-stat-item" style="border-color: rgba(16, 185, 129, 0.4);">
+                            <span>📖 Physical Albums:</span>
+                            <strong style="color: #34d399;">${ownedAlbumsCount} / ${totalTourneys}</strong>
+                        </div>
+                        <div class="shelf-stat-item" style="border-color: rgba(245, 158, 11, 0.4);">
+                            <span>✨ Full Albums (Dolu):</span>
+                            <strong style="color: var(--gold-light);">${fullAlbumsCount} / ${totalTourneys}</strong>
+                        </div>
+                    </div>
+                    <div class="shelf-filters">
+                        <button class="shelf-filter-btn ${currentShelfFilter === 'all' ? 'active' : ''}" onclick="setShelfFilter('all')">
+                            All Editions (${totalTourneys})
+                        </button>
+                        <button class="shelf-filter-btn ${currentShelfFilter === 'album' ? 'active' : ''}" onclick="setShelfFilter('album')">
+                            📖 Physical Album (${ownedAlbumsCount})
+                        </button>
+                        <button class="shelf-filter-btn ${currentShelfFilter === 'full' ? 'active' : ''}" onclick="setShelfFilter('full')">
+                            🏆 Full / Dolu (${fullAlbumsCount})
+                        </button>
+                        <button class="shelf-filter-btn ${currentShelfFilter === 'missing' ? 'active' : ''}" onclick="setShelfFilter('missing')">
+                            ❌ Missing Copy (${totalTourneys - ownedAlbumsCount})
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Apply shelf filter
+        let matchingTournaments = allMatching;
+        if (currentShelfFilter === 'album') {
+            matchingTournaments = allMatching.filter(t => getAlbumOwnership(t.id).hasAlbum);
+        } else if (currentShelfFilter === 'full') {
+            matchingTournaments = allMatching.filter(t => getAlbumOwnership(t.id).hasFullAlbum);
+        } else if (currentShelfFilter === 'missing') {
+            matchingTournaments = allMatching.filter(t => !getAlbumOwnership(t.id).hasAlbum);
+        }
+
+        const grid = document.getElementById('tournamentsGridContainer');
+        grid.innerHTML = '';
 
         if (matchingTournaments.length > 0) {
             matchingTournaments.forEach(tourney => {
@@ -1951,13 +2493,17 @@
                 card.onclick = () => navigateTo(`#/${categoryId}/${tourney.year || tourney.id}`);
 
                 const isClassic = (tourney.year >= 1970 && tourney.year <= 1986);
+                const isGolden = (tourney.year >= 1990 && tourney.year <= 2006);
                 const isPrep = tourney.status === 'in_preparation';
+                const own = getAlbumOwnership(tourney.id);
 
                 let eraBadge = '';
                 if (isPrep) {
                     eraBadge = `<span class="tournament-year-badge" style="background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.4);">⏳ ${tourney.phase || 'IN PREPARATION'} (${tourney.year})</span>`;
                 } else if (isClassic) {
                     eraBadge = `<span class="tournament-year-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--gold-light); border: 1px solid rgba(245, 158, 11, 0.4);">📜 CLASSIC ERA (${tourney.year})</span>`;
+                } else if (isGolden) {
+                    eraBadge = `<span class="tournament-year-badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4);">⚡ GOLDEN ERA (${tourney.year})</span>`;
                 } else {
                     eraBadge = `<span class="tournament-year-badge">🏆 ${tourney.year} EDITION</span>`;
                 }
@@ -1967,20 +2513,8 @@
                     : `<span style="font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: #34d399; font-weight: 600; margin-left: 8px;">Team Code-Based</span>`;
 
                 const stickerCountText = tourney.totalStickers ? `${tourney.totalStickers} Stickers` : 'Complete Set';
-
-                let descText = '';
-                let btnText = `Open ${tourney.year} Tracker →`;
-                let btnStyle = '';
-
-                if (isPrep) {
-                    descText = tourney.description || `Official Panini ${tourney.year} World Cup sticker checklist scheduled for upcoming release.`;
-                    btnText = `Preview ${tourney.year} Edition ⏳`;
-                    btnStyle = `background: rgba(255, 255, 255, 0.08); color: var(--text-muted);`;
-                } else if (isClassic) {
-                    descText = `Official Panini ${tourney.year} album checklist with real player names, badges, and complete sequential tracking.`;
-                } else {
-                    descText = 'Complete official Panini sticker album tracker with real-time cloud sync, smart bulk queries, and duplicate swaps.';
-                }
+                const descText = tourney.description || `Official Panini ${tourney.year} album checklist with real player names, badges, and complete sequential tracking.`;
+                const btnText = `Open ${tourney.year} Tracker →`;
 
                 card.innerHTML = `
                     <div>
@@ -1990,16 +2524,34 @@
                         </div>
                         <h3 class="tournament-title">${tourney.title}</h3>
                         <div class="tournament-sub">${tourney.subtitle || ''} • ${stickerCountText}</div>
+                        
+                        <!-- Physical Album Ownership Quick Toggles -->
+                        <div class="card-ownership-bar" onclick="event.stopPropagation()">
+                            <button class="pill-ownership ${own.hasAlbum ? 'owned' : ''}" title="Click to toggle physical album ownership" onclick="toggleAlbumOwnership('${tourney.id}', 'album', event)">
+                                ${own.hasAlbum ? '📖 Albüm Var ✓' : '📖 Albüm Yok'}
+                            </button>
+                            <button class="pill-ownership full ${own.hasFullAlbum ? 'owned' : ''}" title="Click to toggle completed/full album ownership" onclick="toggleAlbumOwnership('${tourney.id}', 'fullAlbum', event)">
+                                ${own.hasFullAlbum ? '✨ Dolu Albüm 🏆' : '🏆 Dolu Değil'}
+                            </button>
+                        </div>
+
                         <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:18px; line-height:1.5;">
                             ${descText}
                         </p>
                     </div>
-                    <button class="btn-open-tournament" style="${btnStyle}">${btnText}</button>
+                    <button class="btn-open-tournament">${btnText}</button>
                 `;
                 grid.appendChild(card);
             });
         } else {
-            grid.innerHTML = `<div style="color:var(--text-dim); padding:20px;">No tournaments available in this category yet.</div>`;
+            grid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align:center; color:var(--text-dim); padding:40px 20px; background:var(--surface-card); border-radius:var(--radius-md); border:1px dashed var(--border);">
+                    No tournaments match the selected shelf filter. <br>
+                    <button onclick="setShelfFilter('all')" style="margin-top:10px; padding:6px 14px; background:var(--surface-elevated); border:1px solid var(--border-light); color:var(--text-main); border-radius:var(--radius-sm); cursor:pointer;">
+                        Show All Editions (${totalTourneys})
+                    </button>
+                </div>
+            `;
         }
     }
 
@@ -2584,6 +3136,10 @@
             div.className = 'sticker';
             if (isOwned) div.classList.add('owned');
 
+            const isShiny = isStickerShiny(activeTournament, stickerCode);
+            if (isShiny) div.classList.add('is-shiny');
+            const shinyTag = isShiny ? `<span class="shiny-tag">FOIL</span>` : '';
+
             let controlsHtml = '';
             if (isAdmin) {
                 controlsHtml = `
@@ -2609,6 +3165,7 @@
 
             div.innerHTML = `
                 <div class="sticker-card-body">
+                    ${shinyTag}
                     ${codeBadge}
                     <div class="sticker-num">${displayNum}</div>
                     ${nameHtml}
@@ -2845,7 +3402,8 @@
         }
     }
 
-    // Initialize Routing on load and on hash change
+    // Initialize Album Ownership & Routing
+    initAlbumOwnership();
     window.addEventListener('hashchange', handleRoute);
     window.addEventListener('DOMContentLoaded', handleRoute);
     // Run immediately in case DOMContentLoaded already fired
