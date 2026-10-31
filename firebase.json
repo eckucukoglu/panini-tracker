@@ -12,6 +12,17 @@
       ]
     },
     {
+      "site": "panini-wc-tracker",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "README.md",
+        "package.json"
+      ]
+    },
+    {
       "site": "paniniwc2026-75962",
       "public": ".",
       "ignore": [
