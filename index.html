@@ -470,21 +470,63 @@
 
         .tournament-card {
             border: 1px solid var(--border-light);
+            border-left: 6px solid #1e3a5f;
             border-radius: var(--radius-md);
             padding: 24px;
             background: linear-gradient(160deg, #132238 0%, #0e1828 100%);
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
         }
 
         .tournament-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--pitch-green);
-            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
+            transform: translateY(-5px);
+            border-color: #38bdf8;
+            border-left-color: #38bdf8;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 15px rgba(56, 189, 248, 0.2);
+        }
+
+        .tournament-card.is-owned-album {
+            border-left-color: #10b981;
+        }
+
+        .tournament-card.is-full-album {
+            border-color: var(--gold);
+            border-left-color: var(--gold);
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
+            background: linear-gradient(160deg, #18283f 0%, #111a28 100%);
+        }
+
+        .tournament-card.is-full-album:hover {
+            box-shadow: 0 12px 32px rgba(245, 158, 11, 0.4), 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .album-crown-seal {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.3) 100%);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.6);
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+            pointer-events: none;
+        }
+
+        .album-crown-seal.owned {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
         }
 
         .tournament-year-badge {
@@ -600,6 +642,37 @@
         .stat-badge.stat-progress .stat-val { color: #34d399; }
         .stat-badge.stat-total .stat-val { color: #38bdf8; }
         .stat-badge.stat-cost .stat-val { color: var(--gold-light); }
+
+        /* Scoreboard Physical Album Badge */
+        .stat-badge.stat-album {
+            transition: all 0.2s ease;
+            user-select: none;
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+        .stat-badge.stat-album:hover {
+            transform: translateY(-2px);
+            border-color: #38bdf8;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+        }
+        .stat-badge.stat-album.stat-owned {
+            border-color: rgba(16, 185, 129, 0.6);
+            background: rgba(6, 78, 59, 0.25);
+        }
+        .stat-badge.stat-album.stat-owned .stat-val {
+            color: #34d399;
+        }
+        .stat-badge.stat-album.stat-gold {
+            border-color: rgba(245, 158, 11, 0.6);
+            background: rgba(180, 83, 9, 0.22);
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.25);
+        }
+        .stat-badge.stat-album.stat-gold .stat-val {
+            color: var(--gold-light);
+            text-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
+        }
+        .stat-badge.stat-album.stat-missing .stat-val {
+            color: var(--text-dim);
+        }
 
         /* Controls Bar */
         .controls {
@@ -1268,8 +1341,8 @@
         /* SHINY / FOIL PANINI STICKERS (Badges, Trophies, Mascots, Legends) */
         .sticker.is-shiny {
             border: 1px solid rgba(245, 158, 11, 0.45);
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, #0d1624 50%, rgba(56, 189, 248, 0.08) 100%);
-            box-shadow: inset 0 0 10px rgba(245, 158, 11, 0.1);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, #0d1624 50%, rgba(56, 189, 248, 0.1) 100%);
+            box-shadow: inset 0 0 12px rgba(245, 158, 11, 0.15);
         }
 
         .sticker.is-shiny .shiny-tag {
@@ -1279,19 +1352,37 @@
             font-size: 0.58rem;
             font-weight: 800;
             color: var(--gold-light);
-            background: rgba(245, 158, 11, 0.2);
+            background: rgba(245, 158, 11, 0.25);
+            border: 1px solid rgba(245, 158, 11, 0.4);
             padding: 1px 4px;
             border-radius: 3px;
             letter-spacing: 0.4px;
             pointer-events: none;
+            box-shadow: 0 0 6px rgba(245, 158, 11, 0.2);
         }
 
         .sticker.is-shiny.owned {
-            background: linear-gradient(135deg, #065f46 0%, #0c382e 25%, #1e3a5f 50%, #4c1d95 75%, #065f46 100%);
+            background: linear-gradient(135deg, #065f46 0%, #0c382e 20%, #1e3a5f 45%, #6d28d9 70%, #065f46 100%);
             background-size: 300% 300%;
             animation: holoRainbow 4s ease infinite;
             border: 1px solid var(--gold);
-            box-shadow: 0 0 16px rgba(245, 158, 11, 0.35), inset 0 0 12px rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 18px rgba(245, 158, 11, 0.4), inset 0 0 14px rgba(255, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .sticker.is-shiny.owned::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+            animation: foilGlint 3.5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes foilGlint {
+            0% { left: -100%; }
+            20% { left: 100%; }
+            100% { left: 100%; }
         }
 
         @keyframes holoRainbow {
@@ -1583,7 +1674,7 @@
         <div class="brand-container" onclick="navigateTo('#/')">
             <span class="brand-logo-crest">🏆</span>
             <h1 class="brand-title">
-                <span class="panini-highlight">Panini</span> Tracker <span class="app-version">0.0.6</span>
+                <span class="panini-highlight">Panini</span> Tracker <span class="app-version">0.0.7</span>
             </h1>
         </div>
         <div class="top-actions">
@@ -1853,15 +1944,15 @@
             localStorage.setItem('panini_album_ownership', JSON.stringify(albumOwnershipData));
         } catch(e) {}
 
-        try {
-            if (db) {
+        if (db && isAdmin) {
+            try {
                 const tDef = TOURNAMENTS_CONFIG.tournaments[tournamentId];
                 const dbKey = tDef ? (tDef.dbKey || tournamentId) : tournamentId;
-                db.ref(`${dbKey}_album_ownership`).set(updated);
-                db.ref(`album_ownership/${tournamentId}`).set(updated);
+                db.ref(`${dbKey}_album_ownership`).set(updated).catch(e => console.warn("Firebase ownership sync error:", e));
+                db.ref(`album_ownership/${tournamentId}`).set(updated).catch(e => console.warn("Firebase ownership sync error:", e));
+            } catch(e) {
+                console.warn("Could not save ownership to Firebase:", e);
             }
-        } catch(e) {
-            console.warn("Could not save ownership to Firebase:", e);
         }
 
         const tourney = TOURNAMENTS_CONFIG.tournaments[tournamentId];
@@ -1873,9 +1964,14 @@
         }
 
         renderAlbumOwnershipVault();
+        updateStats();
         const route = parseRoute();
         if (route.view === 'tournaments') {
+            const scrollY = (typeof window !== 'undefined' && window.scrollY) || 0;
             renderTournamentsList(route.categoryId);
+            if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+                window.scrollTo(0, scrollY);
+            }
         }
     }
 
@@ -2342,9 +2438,11 @@
         const bulkSectionDiv = document.getElementById('bulkSectionDiv');
         const controlsDiv = document.getElementById('controlsDiv');
         const teamDetailSection = document.getElementById('teamDetailSection');
+        const vaultCard = document.getElementById('albumOwnershipVaultCard');
 
         if (activeTournament.status === 'in_preparation') {
             document.getElementById('loader').style.display = 'none';
+            if (vaultCard) vaultCard.style.display = 'none';
             if (controlsDiv) controlsDiv.style.display = 'none';
             if (bulkSectionDiv) bulkSectionDiv.style.display = 'none';
             if (bulkQueryContainer) bulkQueryContainer.style.display = 'none';
@@ -2385,12 +2483,14 @@
         }
 
         if (route.view === 'bulk-query') {
+            if (vaultCard) vaultCard.style.display = 'none';
             teamsContainer.style.display = 'none';
             bulkSectionDiv.style.display = 'none';
             controlsDiv.style.display = 'none';
             teamDetailSection.style.display = 'none';
             bulkQueryContainer.style.display = 'flex';
         } else if (route.view === 'team') {
+            if (vaultCard) vaultCard.style.display = 'none';
             teamsContainer.style.display = 'none';
             bulkSectionDiv.style.display = 'none';
             controlsDiv.style.display = 'none';
@@ -2399,6 +2499,10 @@
             renderTeamDetail(route.teamCode);
         } else {
             // Main tournament dashboard
+            if (vaultCard) {
+                vaultCard.style.display = 'flex';
+                renderAlbumOwnershipVault();
+            }
             bulkQueryContainer.style.display = 'none';
             teamDetailSection.style.display = 'none';
             controlsDiv.style.display = 'flex';
@@ -2488,14 +2592,14 @@
 
         if (matchingTournaments.length > 0) {
             matchingTournaments.forEach(tourney => {
-                const card = document.createElement('div');
-                card.className = 'tournament-card';
-                card.onclick = () => navigateTo(`#/${categoryId}/${tourney.year || tourney.id}`);
-
                 const isClassic = (tourney.year >= 1970 && tourney.year <= 1986);
                 const isGolden = (tourney.year >= 1990 && tourney.year <= 2006);
                 const isPrep = tourney.status === 'in_preparation';
                 const own = getAlbumOwnership(tourney.id);
+
+                const card = document.createElement('div');
+                card.className = 'tournament-card' + (own.hasFullAlbum ? ' is-full-album' : (own.hasAlbum ? ' is-owned-album' : ''));
+                card.onclick = () => navigateTo(`#/${categoryId}/${tourney.year || tourney.id}`);
 
                 let eraBadge = '';
                 if (isPrep) {
@@ -2508,6 +2612,13 @@
                     eraBadge = `<span class="tournament-year-badge">🏆 ${tourney.year} EDITION</span>`;
                 }
 
+                let sealHtml = '';
+                if (own.hasFullAlbum) {
+                    sealHtml = `<span class="album-crown-seal">🏆 MINT COMPLETE</span>`;
+                } else if (own.hasAlbum) {
+                    sealHtml = `<span class="album-crown-seal owned">📖 IN ARCHIVE</span>`;
+                }
+
                 const systemBadge = tourney.isSequential
                     ? `<span style="font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-weight: 600; margin-left: 8px;">1..${tourney.totalStickers} Contiguous</span>`
                     : `<span style="font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: #34d399; font-weight: 600; margin-left: 8px;">Team Code-Based</span>`;
@@ -2517,6 +2628,7 @@
                 const btnText = `Open ${tourney.year} Tracker →`;
 
                 card.innerHTML = `
+                    ${sealHtml}
                     <div>
                         <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px; margin-bottom:10px;">
                             ${eraBadge}
@@ -2574,7 +2686,10 @@
         if (!text || !activeTournament) return [];
         const allowDuplicates = !!options.allowDuplicates;
 
-        let normalized = text.replace(/[\u2010-\u2015\u2212~]/g, '-');
+        let normalized = text.replace(/[#№]/g, ' ')
+            .replace(/\bN[°o]\.?\s*/gi, ' ')
+            .replace(/[\u2010-\u2015\u2212~]/g, '-');
+        normalized = normalized.replace(/([A-Za-z]{2,4})[-_](\d+)/g, '$1$2');
         normalized = normalized.replace(/([A-Za-z]{2,4})\s+(\d+)/g, '$1$2');
         normalized = normalized.replace(/([A-Za-z0-9]+)\s*-\s*([A-Za-z0-9]+)/g, '$1-$2');
 
@@ -2599,7 +2714,7 @@
             let currentTeamContext = null;
 
             rawTokens.forEach(rawToken => {
-                let token = rawToken.trim();
+                let token = rawToken.trim().replace(/^[#№]+/, '');
                 if (!token) return;
 
                 if (token === '00' || token === 'FWC00') {
@@ -2968,12 +3083,20 @@
             grandTotalCost += (parseFloat(bulkHistoryData[key].cost) || 0);
         }
 
+        const own = getAlbumOwnership(activeTournament.id);
+        const albumStatusLabel = own.hasFullAlbum ? '🏆 Dolu Albüm (100%)' : (own.hasAlbum ? '📖 Albüm Var' : '❌ Albüm Yok');
+        const albumStatusClass = own.hasFullAlbum ? 'stat-gold' : (own.hasAlbum ? 'stat-owned' : 'stat-missing');
+
         const statsDiv = document.getElementById('statsDisplay');
         if (statsDiv) {
             statsDiv.innerHTML = `
                 <div class="stat-badge stat-progress">
                     <span class="stat-label">Album Progress</span>
                     <span class="stat-val">${uniqueCollected} / ${total} <small style="font-size:0.8rem; font-weight:700;">(${percentage}%)</small></span>
+                </div>
+                <div class="stat-badge stat-album ${albumStatusClass}" onclick="toggleAlbumOwnership('${activeTournament.id}', 'album')" style="cursor:pointer;" title="Click to toggle Physical Album ownership">
+                    <span class="stat-label">Physical Album</span>
+                    <span class="stat-val" style="font-size:1.02rem;">${albumStatusLabel}</span>
                 </div>
                 <div class="stat-badge stat-total">
                     <span class="stat-label">Physical Stickers</span>
@@ -3194,7 +3317,7 @@
         const raw = input.value.trim();
         if (!raw) return;
 
-        let code = raw.toUpperCase().replace(/\s+/g, '');
+        let code = raw.toUpperCase().replace(/^(?:NO\.?|#)\s*/i, '').replace(/[\s\-_]+/g, '');
         // In sequential tournament, if user types "042", normalize to "42"
         if (activeTournament && activeTournament.isSequential && /^\d+$/.test(code)) {
             code = String(parseInt(code, 10));
@@ -3272,7 +3395,7 @@
         const queryRaw = input.value.trim();
         if (!queryRaw) return;
 
-        let queryCode = queryRaw.toUpperCase().replace(/\s+/g, '');
+        let queryCode = queryRaw.toUpperCase().replace(/^(?:NO\.?|#)\s*/i, '').replace(/[\s\-_]+/g, '');
         if (activeTournament && activeTournament.isSequential && /^\d+$/.test(queryCode)) {
             queryCode = String(parseInt(queryCode, 10));
         }

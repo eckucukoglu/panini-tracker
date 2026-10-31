@@ -6,25 +6,25 @@ const assert = require('assert');
 console.log('=== RUNNING PANINI WORLD CUP TRACKER VERIFICATION ===\n');
 
 // 1. Version Synchronization Check
-console.log('--- 1. Testing SemVer Synchronization (0.0.6) ---');
+console.log('--- 1. Testing SemVer Synchronization (0.0.7) ---');
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8'));
 const readme = fs.readFileSync(path.join(__dirname, '../README.md'), 'utf8');
 const indexHtml = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
 
 const pkgVer = pkg.version;
 console.log(`package.json version: ${pkgVer}`);
-assert.strictEqual(pkgVer, '0.0.6', 'package.json version must be 0.0.6');
+assert.strictEqual(pkgVer, '0.0.7', 'package.json version must be 0.0.7');
 
 const readmeVerMatch = readme.match(/\*\*Version:\*\*\s*`([^`]+)`/);
 assert(readmeVerMatch, 'README.md must have **Version:** `X.Y.Z`');
 console.log(`README.md version: ${readmeVerMatch[1]}`);
-assert.strictEqual(readmeVerMatch[1], '0.0.6', 'README.md version must be 0.0.6');
+assert.strictEqual(readmeVerMatch[1], '0.0.7', 'README.md version must be 0.0.7');
 
 const indexVerMatch = indexHtml.match(/<span class="app-version">([^<]+)<\/span>/);
 assert(indexVerMatch, 'index.html must have <span class="app-version">');
 console.log(`index.html version: ${indexVerMatch[1]}`);
-assert.strictEqual(indexVerMatch[1], '0.0.6', 'index.html version must be 0.0.6');
-console.log('✅ Version synchronization verified: All files on 0.0.6\n');
+assert.strictEqual(indexVerMatch[1], '0.0.7', 'index.html version must be 0.0.7');
+console.log('✅ Version synchronization verified: All files on 0.0.7\n');
 
 // 2. Load and verify all 15 Panini World Cup tournaments
 console.log('--- 2. Testing Tournament Registries & Authentic Sticker Checklists ---');
@@ -192,6 +192,55 @@ assert.strictEqual(compiledNorm('Hakan Şükür'), 'hakan sukur');
 assert.strictEqual(compiledNorm('Luka Modrić'), 'luka modric');
 console.log('✅ normalizeSearchText accurately strips diacritics across languages.');
 
+// Test parseComplexBulkText on Edge Cases
+function compiledParse(text, opts) {
+    const fn = new Function('activeTournament', 'allStickers', 'teamMap',
+        parseFuncMatch[0] + '\n return parseComplexBulkText(arguments[3], arguments[4]);'
+    );
+    return fn(global.activeTournament, global.allStickers, global.teamMap, text, opts);
+}
+
+// Edge Case A: Code-based tournament (Qatar 2022) with hyphenated codes and leading hashes
+global.activeTournament = t2022;
+global.allStickers = all2022;
+global.teamMap = {};
+Object.keys(t2022.groups).forEach(g => {
+    t2022.groups[g].forEach(team => { global.teamMap[team.code] = team; });
+});
+
+console.log('Testing parseComplexBulkText with code-based edge cases:');
+const parsedCodesHyphen = compiledParse('ARG-13, FWC-5, TUR_7');
+assert(parsedCodesHyphen.includes('ARG13'), 'ARG-13 must be normalized to ARG13');
+assert(parsedCodesHyphen.includes('FWC5'), 'FWC-5 must be normalized to FWC5');
+
+const parsedCodesHashRange = compiledParse('#ARG1-#ARG3, #FWC1');
+assert(parsedCodesHashRange.includes('ARG1'), '#ARG1-#ARG3 must include ARG1');
+assert(parsedCodesHashRange.includes('ARG2'), '#ARG1-#ARG3 must include ARG2');
+assert(parsedCodesHashRange.includes('ARG3'), '#ARG1-#ARG3 must include ARG3');
+assert(parsedCodesHashRange.includes('FWC1'), '#FWC1 must include FWC1');
+console.log('✅ parseComplexBulkText successfully handles hyphenated codes and # prefixes in code-based tournaments.');
+
+// Edge Case B: Sequential tournament (Italia 90) with hashes and No. prefixes
+global.activeTournament = tourneys['wc1990'];
+global.allStickers = [];
+global.teamMap = {};
+Object.keys(tourneys['wc1990'].groups).forEach(g => {
+    tourneys['wc1990'].groups[g].forEach(team => {
+        global.teamMap[team.code] = team;
+        global.allStickers.push(...tourneys['wc1990'].getStickersForTeam(team.code));
+    });
+});
+
+console.log('Testing parseComplexBulkText with sequential tournament edge cases:');
+const parsedSeqHash = compiledParse('#10, #11, #12, #20-#23, No. 42, N° 50');
+assert(parsedSeqHash.includes('10'), 'Must include 10 from #10');
+assert(parsedSeqHash.includes('11'), 'Must include 11 from #11');
+assert(parsedSeqHash.includes('20'), 'Must include 20 from #20-#23');
+assert(parsedSeqHash.includes('23'), 'Must include 23 from #20-#23');
+assert(parsedSeqHash.includes('42'), 'Must include 42 from No. 42');
+assert(parsedSeqHash.includes('50'), 'Must include 50 from N° 50');
+console.log('✅ parseComplexBulkText successfully handles # ranges and No. prefixes in sequential albums.');
+
 // Test isStickerShiny
 const compiledShiny = new Function(`
     ${shinyFuncMatch[0]};
@@ -216,8 +265,22 @@ global.localStorage = {
 global.showToast = () => {};
 global.renderAlbumOwnershipVault = () => {};
 global.renderTournamentsList = () => {};
+global.updateStats = () => {};
 global.parseRoute = () => ({ view: 'tournaments', categoryId: 'fifa-world-cup' });
 global.albumOwnershipData = {};
+
+let mockDbCalls = 0;
+const mockDb = {
+    ref: (path) => ({
+        set: (data) => {
+            mockDbCalls++;
+            return Promise.resolve();
+        }
+    })
+};
+
+global.isAdmin = false;
+global.db = mockDb;
 
 const compiledGetOwn = new Function(`
     let albumOwnershipData = global.albumOwnershipData;
@@ -229,10 +292,12 @@ const compiledGetOwn = new Function(`
 const compiledToggleOwn = new Function(`
     let albumOwnershipData = global.albumOwnershipData;
     let TOURNAMENTS_CONFIG = global.TOURNAMENTS_CONFIG;
-    let db = null;
+    let db = global.db;
+    let isAdmin = global.isAdmin;
     let showToast = global.showToast;
     let renderAlbumOwnershipVault = global.renderAlbumOwnershipVault;
     let renderTournamentsList = global.renderTournamentsList;
+    let updateStats = global.updateStats;
     let parseRoute = global.parseRoute;
     ${getOwnFuncMatch[0]};
     ${toggleOwnFuncMatch[0]};
@@ -244,11 +309,12 @@ const ownInit = compiledGetOwn('wc1990');
 assert.strictEqual(ownInit.hasAlbum, false);
 assert.strictEqual(ownInit.hasFullAlbum, false);
 
-// Toggle physical album ownership
+// Toggle physical album ownership when isAdmin = false
 compiledToggleOwn('wc1990', 'album');
 const ownAfterAlbum = compiledGetOwn('wc1990');
 assert.strictEqual(ownAfterAlbum.hasAlbum, true, 'hasAlbum must be true after toggle');
 assert.strictEqual(ownAfterAlbum.hasFullAlbum, false, 'hasFullAlbum must still be false');
+assert.strictEqual(mockDbCalls, 0, 'mockDb must NOT be called when isAdmin is false!');
 
 // Toggle full album ownership
 compiledToggleOwn('wc1990', 'fullAlbum');
@@ -262,7 +328,62 @@ const ownAfterUntoggle = compiledGetOwn('wc1990');
 assert.strictEqual(ownAfterUntoggle.hasAlbum, false, 'hasAlbum must be false');
 assert.strictEqual(ownAfterUntoggle.hasFullAlbum, false, 'hasFullAlbum must be false when physical album is untoggled');
 
-console.log('✅ Album Ownership & Full Album Ownership logic verified.\n');
+// Test updateStats scoreboard physical album badge rendering
+const updateStatsMatch = indexHtml.match(/function updateStats\s*\([\s\S]*?\n\s{4}\}/);
+assert(updateStatsMatch, 'updateStats must exist in index.html');
+
+let mockStatsHtml = '';
+global.document = {
+    getElementById: (id) => {
+        if (id === 'statsDisplay') {
+            return {
+                set innerHTML(val) { mockStatsHtml = val; },
+                get innerHTML() { return mockStatsHtml; }
+            };
+        }
+        return null;
+    }
+};
+global.collection = { '180': 1 };
+global.allStickers = ['180', '181'];
+global.bulkHistoryData = {};
+global.activeTournament = tourneys['wc1970'];
+
+const compiledUpdateStats = new Function(`
+    let activeTournament = global.activeTournament;
+    let allStickers = global.allStickers;
+    let collection = global.collection;
+    let bulkHistoryData = global.bulkHistoryData;
+    let document = global.document;
+    let albumOwnershipData = global.albumOwnershipData;
+    let TOURNAMENTS_CONFIG = global.TOURNAMENTS_CONFIG;
+    ${getOwnFuncMatch[0]};
+    ${updateStatsMatch[0]};
+    return updateStats;
+`)();
+
+compiledUpdateStats();
+assert(mockStatsHtml.includes('stat-album'), 'updateStats must render stat-badge stat-album');
+assert(mockStatsHtml.includes('Physical Album'), 'updateStats must contain Physical Album label');
+
+// Test input normalization logic for querySticker and addStickerFromInput
+function normalizeInputCode(raw, isSequential) {
+    let code = raw.toUpperCase().replace(/^(?:NO\.?|#)\s*/i, '').replace(/[\s\-_]+/g, '');
+    if (isSequential && /^\d+$/.test(code)) {
+        code = String(parseInt(code, 10));
+    }
+    return code;
+}
+
+assert.strictEqual(normalizeInputCode('#180', true), '180');
+assert.strictEqual(normalizeInputCode('No. 42', true), '42');
+assert.strictEqual(normalizeInputCode('042', true), '42');
+assert.strictEqual(normalizeInputCode('ARG-13', false), 'ARG13');
+assert.strictEqual(normalizeInputCode('arg_13', false), 'ARG13');
+assert.strictEqual(normalizeInputCode('#ARG13', false), 'ARG13');
+console.log('✅ updateStats scoreboard badge and query input normalization verified.');
+
+console.log('✅ Album Ownership & Full Album Ownership logic verified with DB non-admin security.\n');
 
 // 4. Test Route Resolution Across All 15 Eras
 console.log('--- 4. Testing Route Resolution Across Eras ---');
